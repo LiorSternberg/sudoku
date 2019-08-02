@@ -5,4 +5,4 @@ set(CMAKE_C_STANDARD 90)
 
 add_executable(final_project main.c MemoryError.c MemoryError.h Editor.h Editor.c GameManager.h GameManager.c
         Initializer.h Initializer.c Parser.h Parser.c Printer.h Printer.c Solver.h Solver.c UserHandler.h UserHandler.c
-        Logic/Backtracking.h Logic/Backtracking.c Logic/ILP.h Logic/ILP.c)
+        Logic/Backtracking.h Logic/Backtracking.c Logic/ILP.h Logic/ILP.c Command.c Command.h)
