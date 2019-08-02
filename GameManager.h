@@ -1,8 +1,4 @@
-//
-// Created by USER on 02/08/2019.
-//
-
 #ifndef FINAL_PROJECT_GAMEMANAGER_H
 #define FINAL_PROJECT_GAMEMANAGER_H
 
-#endif //FINAL_PROJECT_GAMEMANAGER_H
+#endif

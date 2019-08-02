@@ -1,8 +1,4 @@
-//
-// Created by USER on 02/08/2019.
-//
-
 #ifndef FINAL_PROJECT_INITIALIZER_H
 #define FINAL_PROJECT_INITIALIZER_H
 
-#endif //FINAL_PROJECT_INITIALIZER_H
+#endif
