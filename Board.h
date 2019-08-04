@@ -5,4 +5,6 @@ typedef struct {
  /* TODO */
 } Board;
 
+void free_board_resources(Board* board);
+
 #endif

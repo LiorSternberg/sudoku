@@ -12,6 +12,19 @@ typedef struct State_ {
 
 typedef struct {
     State* head;
+    State* end;
 } StatesList;
+
+
+void add(StatesList* states, Board* board);
+
+int next(StatesList* states);
+
+int prev(StatesList* states);
+
+void clear_all(StatesList* states);
+
+void clear_next(StatesList* states);
+
 
 #endif
