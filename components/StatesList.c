@@ -4,13 +4,13 @@
 #include <stdlib.h>
 
 StatesList* create_list() {
-    StatesList* states = malloc(sizeof(StatesList));
+    StatesList *states = malloc(sizeof(StatesList));
     states->head = NULL;
     states->end = NULL;
     return states;
 }
 
-int destroy_list(StatesList* states) {
+int destroy_list(StatesList *states) {
     if (states->end != NULL || states->head != NULL) {
         return 1;
     }
@@ -19,8 +19,8 @@ int destroy_list(StatesList* states) {
     return 0;
 }
 
-void add(StatesList* states, Board* board) {
-    State* state = malloc(sizeof(State));
+void add(StatesList *states, Board *board) {
+    State *state = malloc(sizeof(State));
 
     state->board = board;
     state->prev = states->end;
@@ -29,8 +29,8 @@ void add(StatesList* states, Board* board) {
     states->end = state;
 }
 
-void delete_last(StatesList* states) {
-    State* last = states->end;
+void delete_last(StatesList *states) {
+    State *last = states->end;
     if (last == NULL) {
         return;
     }
@@ -46,7 +46,7 @@ void delete_last(StatesList* states) {
 }
 
 
-int next(StatesList* states) {
+int next(StatesList *states) {
     /* Check if there is a next state, if not return exit status 1 */
     if (states->head == NULL || states->head->next == NULL) {
         return 1;
@@ -56,7 +56,7 @@ int next(StatesList* states) {
     return 0;
 }
 
-int prev(StatesList* states) {
+int prev(StatesList *states) {
     /* Check if there is a previous state, if not return exit status 1 */
     if (states->head == NULL || states->head->prev== NULL) {
         return 1;
@@ -66,13 +66,13 @@ int prev(StatesList* states) {
     return 0;
 }
 
-void clear_all(StatesList* states) {
+void clear_all(StatesList *states) {
     while (states->end != NULL) {
         delete_last(states);
     }
 }
 
-void clear_next(StatesList* states) {
+void clear_next(StatesList *states) {
     while (states->end != states->head) {
         delete_last(states);
     }

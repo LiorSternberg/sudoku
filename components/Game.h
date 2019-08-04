@@ -9,7 +9,7 @@ typedef enum { edit, solve, init } GameMode;
 typedef struct {
     GameMode mode;
     bool mark_errors;
-    StatesList* states;
+    StatesList *states;
 } Game;
 
 
