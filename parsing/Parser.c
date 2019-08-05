@@ -4,7 +4,7 @@
 
 #include "Parser.h"
 
-#define MAX_ARGS 5
+#define MAX_ARGS 4
 #define WHITESPACE " \t\r\n"
 
 
