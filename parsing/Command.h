@@ -12,14 +12,15 @@ typedef enum { solve, edit, mark_errors, print_board, set, validate, guess, gene
 
 typedef struct {
     char* path;
-} SolveCommand;
+} SolveCommand, SaveCommand;
 
 typedef struct {
     char* path;
+    bool from_file;
 } EditCommand;
 
 typedef struct {
-    int setting;
+    bool setting;
 } MarkErrorsCommand;
 
 typedef struct {
@@ -29,7 +30,7 @@ typedef struct {
 } SetCommand;
 
 typedef struct {
-    float threshold;
+    double threshold;
 } GuessCommand;
 
 typedef struct {
@@ -38,38 +39,34 @@ typedef struct {
 } GenerateCommand;
 
 typedef struct {
-    char* path;
-} SaveCommand;
-
-typedef struct {
     int row;
     int column;
-} HintCommand;
-
-typedef struct {
-    int row;
-    int column;
-} GuessHintCommand;
+} HintCommand, GuessHintCommand;
 
 
 /* The command information such as the type of the command, and the command-specific data. */
-typedef struct {
+typedef struct Command_ {
     CommandType type;
     union {
-        SolveCommand solve;
-        EditCommand edit;
-        MarkErrorsCommand mark_errors;
-        SetCommand set;
-        GuessCommand guess;
-        GenerateCommand generate;
-        SaveCommand save;
-        HintCommand hintCommand;
-        GuessHintCommand guess_hint;
+        SolveCommand *solve;
+        EditCommand *edit;
+        MarkErrorsCommand *mark_errors;
+        SetCommand *set;
+        GuessCommand *guess;
+        GenerateCommand *generate;
+        SaveCommand *save;
+        HintCommand *hint;
+        GuessHintCommand *guess_hint;
     } data;
+    void (*_parse_args)(struct Command_*, char**, int);
+    void (*_validate)(struct Command_*);
     char* error_message;
     bool valid;
-
 } Command;
 
+
+void parse_type(Command *command, char *token);
+
+void invalidate(Command *command, char *error_message);
 
 #endif
