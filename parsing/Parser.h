@@ -4,6 +4,6 @@
 
 #include "Command.h"
 
-void parse_tokens(char *raw_command, Command *command);
+void parse_command(char *raw_command, Command *command);
 
 #endif
