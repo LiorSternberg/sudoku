@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "List.h"
+#include "../MemoryError.h"
 
 struct Node {
     void *item;
@@ -12,6 +13,8 @@ struct Node {
 
 List* create_list() {
     List *list = malloc(sizeof(List));
+    validate_memory_allocation("create_list", list);
+
     list->head = NULL;
     list->end = NULL;
     return list;

@@ -11,7 +11,15 @@ typedef struct {
 } Change;
 
 typedef struct {
-    List changes;
+    List *changes;
 } Move;
+
+Change* create_change(int row, int column, int prev_val, int new_val);
+
+void destroy_change(Change *change);
+
+Move* create_move();
+
+void destroy_move(Move *move);
 
 #endif

@@ -4,13 +4,17 @@
 #include <stdbool.h>
 #include "StatesList.h"
 
-typedef enum { edit, solve, init } GameMode;
+typedef enum { edit_mode, solve_mode, init_mode } GameMode;
 
 typedef struct {
     GameMode mode;
     bool mark_errors;
     States *states;
 } Game;
+
+Game* create_game();
+
+void destroy_game(Game *game);
 
 
 #endif

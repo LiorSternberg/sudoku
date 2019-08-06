@@ -2,6 +2,7 @@
 #define FINAL_PROJECT_COMMAND_H
 
 #include <stdbool.h>
+#include "../components/Game.h"
 
 /* The possible types of commands (empty refers to a non-command that should be ignored) */
 typedef enum { solve, edit, mark_errors, print_board, set, validate, guess, generate, undo, redo, save, hint,
@@ -59,14 +60,16 @@ typedef struct Command_ {
         GuessHintCommand *guess_hint;
     } data;
     void (*_parse_args)(struct Command_*, char**, int);
-    void (*_validate)(struct Command_*);
+    void (*_validate)(struct Command_*, Game *game);
     char* error_message;
     bool valid;
 } Command;
 
 
-void parse_type(Command *command, char *token);
-
 void invalidate(Command *command, char *error_message);
+
+Command* create_command();
+
+void destroy_command(Command* command);
 
 #endif
