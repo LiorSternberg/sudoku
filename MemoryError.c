@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "MemoryError.h"
 
+/* Alert of a failed memory allocation, and exit */
 void report_memory_allocation_error(char *function_name) {
     printf("Error: function \"%s\" has failed\n", function_name);
     exit(1);

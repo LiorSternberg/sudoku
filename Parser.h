@@ -1,4 +1,0 @@
-#ifndef FINAL_PROJECT_PARSER_H
-#define FINAL_PROJECT_PARSER_H
-
-#endif

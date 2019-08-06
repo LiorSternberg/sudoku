@@ -7,5 +7,9 @@ typedef struct {
     List *moves;
 } States;
 
+States* create_states_list();
+
+void destroy_states_list(States *states);
+
 
 #endif

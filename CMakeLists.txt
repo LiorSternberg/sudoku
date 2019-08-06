@@ -13,8 +13,8 @@ add_executable(final_project
         GameManager.c
         Initializer.h
         Initializer.c
-        Parser.h
-        Parser.c
+        parsing/Parser.h
+        parsing/Parser.c
         Printer.h
         Printer.c
         Solver.h
@@ -25,8 +25,10 @@ add_executable(final_project
         logic/Backtracking.c
         logic/ILP.h
         logic/ILP.c
-        Command.c
-        Command.h
+        parsing/Command.c
+        parsing/Command.h
+        parsing/validation.h
+        parsing/validation.c
         components/Game.c
         components/Game.h
         components/StatesList.c
