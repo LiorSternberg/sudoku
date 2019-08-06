@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "parsing/Parser.h"
 #include "UserHandler.h"
+#include "parsing/validators.h"
 
 int main() {
     Command *command;
@@ -9,18 +10,16 @@ int main() {
 
     announce_game_start();
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
     while (true) {
         command = create_command();
         get_user_command(game, command);
+        validate_command(command, game);
 
         if (!command->valid) {
             printf("%s\n", command->error_message);
         }
         destroy_command(command);
     }
-#pragma clang diagnostic pop
 
     destroy_game(game);
     return 0;

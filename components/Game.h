@@ -4,7 +4,11 @@
 #include <stdbool.h>
 #include "StatesList.h"
 
-typedef enum { edit_mode, solve_mode, init_mode } GameMode;
+typedef enum {
+    edit_mode = 1,
+    solve_mode = 2,
+    init_mode = 4
+} GameMode;
 
 typedef struct {
     GameMode mode;

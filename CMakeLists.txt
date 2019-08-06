@@ -27,8 +27,8 @@ add_executable(final_project
         logic/ILP.c
         parsing/Command.c
         parsing/Command.h
-        parsing/validation.h
-        parsing/validation.c
+        parsing/validators.h
+        parsing/validators.c
         components/Game.c
         components/Game.h
         components/StatesList.c

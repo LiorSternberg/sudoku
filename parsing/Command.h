@@ -34,11 +34,39 @@
 #define RESET_FORMAT "reset"
 #define EXIT_FORMAT "exit"
 
+#define SOLVE_MODES (solve_mode + edit_mode + init_mode)
+#define EDIT_MODES (solve_mode + edit_mode + init_mode)
+#define MARK_ERRORS_MODES (solve_mode)
+#define PRINT_BOARD_MODES (solve_mode + edit_mode)
+#define SET_MODES (solve_mode + edit_mode)
+#define VALIDATE_MODES (solve_mode + edit_mode)
+#define GUESS_MODES (solve_mode)
+#define GENERATE_MODES (edit_mode)
+#define UNDO_MODES (solve_mode + edit_mode)
+#define REDO_MODES (solve_mode + edit_mode)
+#define SAVE_MODES (solve_mode + edit_mode)
+#define HINT_MODES (solve_mode)
+#define GUESS_HINT_MODES (solve_mode)
+#define NUM_SOLUTIONS_MODES (solve_mode + edit_mode)
+#define AUTOFILL_MODES (solve_mode)
+#define RESET_MODES (solve_mode + edit_mode)
+#define EXIT_MODES (solve_mode + edit_mode + init_mode)
 
 /* The possible types of commands (empty refers to a non-command that should be ignored) */
 typedef enum { solve, edit, mark_errors, print_board, set, validate, guess, generate, undo, redo, save, hint,
     guess_hint, num_solutions, autofill, reset, exit_game, empty } CommandType;
 
+/* The possible error levels */
+typedef enum {
+    invalid_command_length,
+    invalid_command_name,
+    invalid_command_for_mode,
+    invalid_num_of_args,
+    invalid_arg_range,
+    invalid_arg_value_for_state,
+    invalid_board_state,
+    execution_failure
+} ErrorLevel;
 
 /* The different commands: */
 
@@ -79,6 +107,8 @@ typedef struct {
 /* The command information such as the type of the command, and the command-specific data. */
 typedef struct Command_ {
     CommandType type;
+    char* format;
+    int modes;
     union {
         SolveCommand *solve;
         EditCommand *edit;
@@ -92,13 +122,13 @@ typedef struct Command_ {
     } data;
     void (*_parse_args)(struct Command_*, char**, int);
     void (*_validate)(struct Command_*, Game *game);
-    char* error_message;
-    char* format;
     bool valid;
+    char* error_message;
+    int error_level;
 } Command;
 
 
-void invalidate(Command *command, char *error_message);
+void invalidate(Command *command, char *error_message, int error_level);
 
 Command* create_command();
 
