@@ -1,22 +1,23 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "validators.h"
 #include "../components/Game.h"
 
 #define FIXED_ERROR "Error: cell is fixed\n"
 #define INVALID_VALUE_ERROR "Error: value is invalid\n"
 
-#define MAX_ERROR_MESSAGE_LEN 2048
+#define MAX_ERROR_MESSAGE_LEN 1024
 
 #define INVALID_COMMAND_FOR_MODE_ERROR "Error: command is not available in the current mode. Only available in:"
 #define ALL_MODES "Init, Edit, Solve."
-#define SOLVE_AND_EDIT_MODES "Init, Edit."
+#define SOLVE_AND_EDIT_MODES "Solve, Edit."
 #define SOLVE_MODE "Solve."
 #define EDIT_MODE "Edit."
 
 
 void assert_game_mode(Command *command, GameMode mode) {
     int res;
-    char error_message[MAX_ERROR_MESSAGE_LEN] = {0};
+    char *error_message = calloc(MAX_ERROR_MESSAGE_LEN, sizeof(char));
     char *modes[8] = {0};
 
     modes[init_mode + solve_mode + edit_mode] = ALL_MODES;

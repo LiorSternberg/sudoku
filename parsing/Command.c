@@ -30,6 +30,7 @@ void destroy_command(Command* command) {
     free(command->data.save);
     free(command->data.hint);
     free(command->data.guess_hint);
+    free(command->error_message);
     free(command);
 }
 
