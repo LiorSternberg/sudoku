@@ -71,3 +71,7 @@ void destroy_board(Board *board){
     free(board->cells_arr);
     free(board);
 }
+
+bool is_cell_fixed(Board *board, int row, int column) {
+    return board->cells_arr[row][column]->fixed;
+}

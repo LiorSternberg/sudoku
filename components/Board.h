@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 #define CLEAR (0)
+#define MIN_INDEX (1)
 
 typedef struct {
     int val;
@@ -27,5 +28,7 @@ typedef struct {
 Board* create_board(int rows_in_block, int columns_in_block);
 
 void destroy_board(Board *board);
+
+bool is_cell_fixed(Board *board, int row, int column);
 
 #endif

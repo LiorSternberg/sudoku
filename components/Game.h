@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include "StatesList.h"
+#include "Board.h"
 
 typedef enum {
     edit_mode = 1,
@@ -14,6 +15,7 @@ typedef struct {
     GameMode mode;
     bool mark_errors;
     States *states;
+    Board *board;
 } Game;
 
 Game* create_game();

@@ -1,4 +1,0 @@
-#ifndef FINAL_PROJECT_EDITOR_H
-#define FINAL_PROJECT_EDITOR_H
-
-#endif
