@@ -8,6 +8,9 @@
 #define MAX_ARGS 4
 #define WHITESPACE " \t\r\n"
 
+#define INT_BASE 10
+#define ERROR_VALUE -1
+
 #define INVALID_COMMAND_INIT_ERROR "Error: invalid command. Available commands are: solve, edit, exit."
 #define INVALID_COMMAND_EDIT_ERROR "Error: invalid command. Available commands are: solve, edit, print_board, set, " \
                                    "validate, generate, undo, redo, save, num_solutions, reset, exit."
@@ -38,24 +41,43 @@ void assert_num_of_args(Command *command, int min_expected, int max_expected, in
 /* parsers for specific types of args */
 
 void parse_int_arg(char *token, int *p_int) {
-    *p_int = atoi(token);
+    int num;
+    char *end_p;
+
+    errno = 0;
+    num = strtol(token, &end_p, INT_BASE);
+
+    /* check if token is a valid positive integer */
+    if (num >= 0 && token != end_p && *end_p == '\0' && errno == 0) {
+        *p_int = num;
+    } else {
+        *p_int = ERROR_VALUE;
+    }
 }
 
 void parse_double_arg(char *token, double *p_double) {
-    *p_double = atof(token);
+    double num;
+    char *end_p;
+
+    errno = 0;
+    num = strtod(token, &end_p);
+
+    /* check if token is a valid positive double */
+    if (num >= 0 && token != end_p && *end_p == '\0' && errno == 0) {
+        *p_double = num;
+    } else {
+        *p_double = ERROR_VALUE;
+    }
 }
 
-void parse_bool_arg(Command *command, char *token, bool *p_bool) {
-    int bool_value;
-
-    parse_int_arg(token, &bool_value);
-
-    if (bool_value == 0) {
-        *p_bool = false;
-    } else if (bool_value == 1) {
-        *p_bool = true;
+void parse_bool_arg(char *token, int *p_bool) {
+    if (strcmp(token, "0") == 0) {
+        *p_bool = 0;
+    } else if (strcmp(token, "1") == 0) {
+        *p_bool = 1;
     } else {
-        invalidate(command, ARG_OUT_OF_RANGE_ERROR, invalid_arg_range);
+        /* invalid value for boolean field */
+        *p_bool = ERROR_VALUE;
     }
 }
 
@@ -104,7 +126,7 @@ void mark_errors_args_parser(Command *self, char **args, int num_of_args) {
         return;
     }
 
-    parse_bool_arg(self, args[0], &data->setting);
+    parse_bool_arg(args[0], &data->setting);
     self->data.mark_errors = data;
 }
 

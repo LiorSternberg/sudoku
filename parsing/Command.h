@@ -80,7 +80,7 @@ typedef struct {
 } EditCommand;
 
 typedef struct {
-    bool setting;
+    int setting;
 } MarkErrorsCommand;
 
 typedef struct {
