@@ -9,7 +9,7 @@
 #define WHITESPACE " \t\r\n"
 
 #define INT_BASE 10
-#define ERROR_VALUE -1
+#define ERROR_VALUE (-1)
 
 #define INVALID_COMMAND_INIT_ERROR "Error: invalid command. Available commands are: solve, edit, exit."
 #define INVALID_COMMAND_EDIT_ERROR "Error: invalid command. Available commands are: solve, edit, print_board, set, " \

@@ -108,7 +108,7 @@ typedef struct {
 typedef struct Command_ {
     CommandType type;
     char* format;
-    int modes;
+    unsigned short modes;
     union {
         SolveCommand *solve;
         EditCommand *edit;
