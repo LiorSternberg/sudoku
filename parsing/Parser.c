@@ -214,13 +214,13 @@ void guess_hint_args_parser(Command *self, char **args, int num_of_args) {
 }
 
 
-void base_parser(Command *self, char **args, int num_of_args) {
+void basic_parser(Command *self, char **args, int num_of_args) {
     assert_num_of_args(self, NO_ARGS, NO_ARGS, num_of_args);
 }
 
 
 void configure_by_type(Command *command, char *type_str, GameMode mode) {
-    command->_parse_args = base_parser;
+    command->_parse_args = basic_parser;
 
     if (strcmp(type_str, "solve") == 0) {
         command->type = solve;

@@ -1,10 +1,14 @@
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "validators.h"
 #include "../components/Game.h"
+#include "Command.h"
 
 #define FIXED_ERROR "Error: cell is fixed\n"
 #define INVALID_VALUE_ERROR "Error: value is invalid\n"
+#define FILE_DOESNT_EXIST_ERROR "Error: The given file doesn't exist!\n"
+#define FILE_NOT_READABLE_ERROR "Error: The given file cannot be read (no permission)\n"
 
 #define MAX_ERROR_MESSAGE_LEN 1024
 
@@ -25,9 +29,18 @@ void assert_game_mode(Command *command, GameMode mode) {
     modes[solve_mode] = SOLVE_MODE;
     modes[edit_mode] = EDIT_MODE;
 
+    /* bitwise 'and' to check mode compatibility */
     if ((command->modes & mode) == 0) {
         res = sprintf(error_message, "%s %s", INVALID_COMMAND_FOR_MODE_ERROR, modes[command->modes]);
         invalidate(command, error_message, invalid_command_for_mode);
+    }
+}
+
+void assert_file_readable(Command *command, char *path) {
+    if(access(path, F_OK) == -1) { /* file doesn't exist */
+        invalidate(command, FILE_DOESNT_EXIST_ERROR, execution_failure);
+    } else if (access(path, R_OK) == -1) { /* file doesn't have read permissions */
+        invalidate(command, FILE_NOT_READABLE_ERROR, execution_failure);
     }
 }
 
@@ -36,9 +49,13 @@ void base_validator(Command *command, Game *game) {
 }
 
 void solve_validator(Command *command, Game *game) {
+    assert_file_readable(command, command->data.solve->path);
 }
 
 void edit_validator(Command *command, Game *game) {
+    if (command->data.edit->from_file == true) {
+        assert_file_readable(command, command->data.edit->path);
+    }
 }
 
 void mark_errors_validator(Command *command, Game *game) {
@@ -88,6 +105,8 @@ void exit_validator(Command *command, Game *game) {
 
 void validate_command(Command *command, Game *game) {
     base_validator(command, game);
-    command->_validate(command, game);
+    if (command->_validate != NULL) {
+        command->_validate(command, game);
+    }
 }
 

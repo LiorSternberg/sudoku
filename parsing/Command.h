@@ -124,7 +124,7 @@ typedef struct Command_ {
     void (*_validate)(struct Command_*, Game *game);
     bool valid;
     char* error_message;
-    int error_level;
+    ErrorLevel error_level;
 } Command;
 
 
