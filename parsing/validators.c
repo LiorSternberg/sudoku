@@ -85,8 +85,6 @@ void reset_validator(Command *command, Game *game) {
 void exit_validator(Command *command, Game *game) {
 }
 
-void empty_validator(Command *command, Game *game) {}
-
 void validate_command(Command *command, Game *game) {
     base_validator(command, game);
     command->_validate(command, game);

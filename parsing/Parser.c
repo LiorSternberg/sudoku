@@ -213,18 +213,11 @@ void guess_hint_args_parser(Command *self, char **args, int num_of_args) {
     self->data.guess_hint = data;
 }
 
-void empty_parser(Command *self, char **args, int num_of_args) {}
 
 void base_parser(Command *self, char **args, int num_of_args) {
     assert_num_of_args(self, NO_ARGS, NO_ARGS, num_of_args);
 }
 
-
-void configure_empty_command(Command *command) {
-    command->type = empty;
-    command->_parse_args = empty_parser;
-    command->_validate = empty_validator;
-}
 
 void configure_by_type(Command *command, char *type_str, GameMode mode) {
     command->_parse_args = base_parser;
@@ -363,7 +356,7 @@ void parse_command(char *raw_command, Command *command, Game *game) {
     /* get the first token (the type of the command, if exists) */
     token = strtok(raw_command, WHITESPACE);
     if (token == NULL) {
-        configure_empty_command(command);
+        command->type = empty;
         return;
     }
 

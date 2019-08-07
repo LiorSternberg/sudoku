@@ -13,7 +13,6 @@ int main() {
     while (true) {
         command = create_command();
         get_user_command(game, command);
-        validate_command(command, game);
 
         if (!command->valid) {
             printf("%s\n", command->error_message);

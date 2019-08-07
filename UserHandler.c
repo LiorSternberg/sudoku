@@ -39,7 +39,7 @@ void get_user_command(Game *game, Command *command) {
     }
 
     parse_command(raw_command,  command, game);
-    if (!command->valid) {
+    if (command->type == empty) {
         return;
     }
 
