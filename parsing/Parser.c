@@ -250,7 +250,6 @@ void configure_by_type(Command *command, char *type_str, GameMode mode) {
         command->type = print_board;
         command->format = PRINT_BOARD_FORMAT;
         command->modes = PRINT_BOARD_MODES;
-        command->_validate = print_board_validator;
 
     } else if (strcmp(type_str, "set") == 0) {
         command->type = set;

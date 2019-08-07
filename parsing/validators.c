@@ -94,9 +94,6 @@ void mark_errors_validator(Command *command, Game *game) {
     assert_bool_arg(command, "set", command->data.mark_errors->setting);
 }
 
-void print_board_validator(Command *command, Game *game) {
-}
-
 void set_validator(Command *command, Game *game) {
 }
 
