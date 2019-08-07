@@ -21,11 +21,11 @@
 #define TOO_FEW_ARGS_ERROR "Error: not enough arguments were given."
 #define ARG_OUT_OF_RANGE_ERROR "Error: argument is not in the correct range."
 
-#define MAX_ERROR_MESSAGE_LEN 2048
+#define MAX_ERROR_MESSAGE_LEN 1024
 
 
 void assert_num_of_args(Command *command, int min_expected, int max_expected, int actual) {
-    char error_message[MAX_ERROR_MESSAGE_LEN] = {0};
+    char *error_message = calloc(MAX_ERROR_MESSAGE_LEN, sizeof(char));
     int res;
 
     if (actual > max_expected) {
