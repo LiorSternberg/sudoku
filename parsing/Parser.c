@@ -19,23 +19,26 @@
                                     "num_solutions, autofill, reset, "
 #define TOO_MANY_ARGS_ERROR "Error: too many arguments were given."
 #define TOO_FEW_ARGS_ERROR "Error: not enough arguments were given."
-#define ARG_OUT_OF_RANGE_ERROR "Error: argument is not in the correct range."
 
 #define MAX_ERROR_MESSAGE_LEN 1024
 
 
 void assert_num_of_args(Command *command, int min_expected, int max_expected, int actual) {
-    char *error_message = calloc(MAX_ERROR_MESSAGE_LEN, sizeof(char));
+    char *error_message, *error_type;
     int res;
 
     if (actual > max_expected) {
-        res = sprintf(error_message, "%s Correct command format: %s", TOO_MANY_ARGS_ERROR, command->format);
-        invalidate(command, error_message, invalid_num_of_args);
+        error_type = TOO_MANY_ARGS_ERROR;
     }
     else if (actual < min_expected) {
-        res = sprintf(error_message, "%s Correct command format: %s", TOO_FEW_ARGS_ERROR, command->format);
-        invalidate(command, error_message, invalid_num_of_args);
+        error_type = TOO_FEW_ARGS_ERROR;
+    } else {
+        return;  /* valid */
     }
+
+    error_message = calloc(MAX_ERROR_MESSAGE_LEN, sizeof(char));
+    res = sprintf(error_message, "%s Correct command format: %s", error_type, command->format);
+    invalidate(command, error_message, invalid_num_of_args);
 }
 
 /* parsers for specific types of args */

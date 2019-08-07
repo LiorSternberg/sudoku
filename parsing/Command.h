@@ -18,7 +18,7 @@
 
 #define SOLVE_FORMAT "solve <path>"
 #define EDIT_FORMAT "edit [<path>]"
-#define MARK_ERRORS_FORMAT "mark_errors <0/1>"
+#define MARK_ERRORS_FORMAT "mark_errors <set>"
 #define PRINT_BOARD_FORMAT "print_board"
 #define SET_FORMAT "set <column> <row> <value>"
 #define VALIDATE_FORMAT "validate"

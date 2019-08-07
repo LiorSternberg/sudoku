@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include "validators.h"
 #include "../components/Game.h"
@@ -12,16 +13,19 @@
 
 #define MAX_ERROR_MESSAGE_LEN 1024
 
-#define INVALID_COMMAND_FOR_MODE_ERROR "Error: command is not available in the current mode. Only available in:"
+#define INVALID_COMMAND_FOR_MODE_ERROR "Error: command is not available in the current mode. Only available in: "
 #define ALL_MODES "Init, Edit, Solve."
 #define SOLVE_AND_EDIT_MODES "Solve, Edit."
 #define SOLVE_MODE "Solve."
 #define EDIT_MODE "Edit."
 
+#define ARG_OUT_OF_RANGE_ERROR "Error: argument <%s> if not valid. "
+#define BOOL_RANGE "Must be either 0 or 1."
+#define INT_RANGE "Must be a valid number between %d and %d."
+
 
 void assert_game_mode(Command *command, GameMode mode) {
-    int res;
-    char *error_message = calloc(MAX_ERROR_MESSAGE_LEN, sizeof(char));
+    char *error_message;
     char *modes[8] = {0};
 
     modes[init_mode + solve_mode + edit_mode] = ALL_MODES;
@@ -31,7 +35,8 @@ void assert_game_mode(Command *command, GameMode mode) {
 
     /* bitwise 'and' to check mode compatibility */
     if ((command->modes & mode) == 0) {
-        res = sprintf(error_message, "%s %s", INVALID_COMMAND_FOR_MODE_ERROR, modes[command->modes]);
+        error_message = calloc(MAX_ERROR_MESSAGE_LEN, sizeof(char));
+        strcat(strcpy(error_message, INVALID_COMMAND_FOR_MODE_ERROR), modes[command->modes]);
         invalidate(command, error_message, invalid_command_for_mode);
     }
 }
@@ -44,21 +49,49 @@ void assert_file_readable(Command *command, char *path) {
     }
 }
 
+
+void assert_bool_arg(Command *command, char *arg_name, int value) {
+    char *error_message, error_format[MAX_ERROR_MESSAGE_LEN] = {0};
+    int res;
+
+    if (value == 0 || value == 1) {
+        return; /* valid */
+    }
+
+    error_message = calloc(MAX_ERROR_MESSAGE_LEN, sizeof(char));
+    strcat(strcpy(error_format, ARG_OUT_OF_RANGE_ERROR), BOOL_RANGE);
+    res = sprintf(error_message, error_format, arg_name);
+    invalidate(command, error_message, invalid_arg_range);
+}
+
 void base_validator(Command *command, Game *game) {
     assert_game_mode(command, game->mode);
 }
 
 void solve_validator(Command *command, Game *game) {
+    if (command->data.solve == NULL) {
+        return;
+    }
+
     assert_file_readable(command, command->data.solve->path);
 }
 
 void edit_validator(Command *command, Game *game) {
+    if (command->data.edit == NULL) {
+        return;
+    }
+
     if (command->data.edit->from_file == true) {
         assert_file_readable(command, command->data.edit->path);
     }
 }
 
 void mark_errors_validator(Command *command, Game *game) {
+    if (command->data.mark_errors == NULL) {
+        return;
+    }
+
+    assert_bool_arg(command, "set", command->data.mark_errors->setting);
 }
 
 void print_board_validator(Command *command, Game *game) {

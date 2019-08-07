@@ -16,6 +16,15 @@ Command* create_command() {
     command->valid = true;
     command->error_message = NULL;
     command->error_level = 0;
+    command->data.solve = NULL;
+    command->data.edit = NULL;
+    command->data.mark_errors = NULL;
+    command->data.set = NULL;
+    command->data.guess = NULL;
+    command->data.generate = NULL;
+    command->data.save = NULL;
+    command->data.hint = NULL;
+    command->data.guess_hint = NULL;
 
     return command;
 }
