@@ -7,8 +7,6 @@ add_executable(final_project
         main.c
         MemoryError.c
         MemoryError.h
-        Editor.h
-        Editor.c
         GameManager.h
         GameManager.c
         Initializer.h
