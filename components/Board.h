@@ -34,4 +34,6 @@ void destroy_board(Board *board);
 
 bool is_cell_fixed(Board *board, int row, int column);
 
+bool is_cell_empty(Board *board, int row, int column);
+
 #endif

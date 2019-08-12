@@ -67,8 +67,7 @@ typedef enum {
     invalid_command_for_mode,
     invalid_num_of_args,
     invalid_arg_range,
-    invalid_arg_value_for_state,
-    invalid_board_state,
+    invalid_state,
     execution_failure
 } ErrorLevel;
 

@@ -10,6 +10,7 @@
 #define FILE_NOT_READABLE_ERROR "Error: The given file cannot be read (no permission)."
 #define FILE_NOT_WRITABLE_ERROR "Error: The given file cannot be written to (no permission)."
 #define FIXED_ERROR "Error: cell is fixed."
+#define NOT_EMPTY_ERROR "Error: cell is not empty."
 #define BOARD_ERRONEOUS_ERROR "Error: this command is not available when the board is erroneous."
 #define NO_UNDO_MOVES_ERROR "Error: there are no moves available to undo."
 #define NO_REDO_MOVES_ERROR "Error: there are no moves available to redo."
@@ -107,7 +108,19 @@ void assert_double_arg_in_range(Command *command, char *arg_name, double value, 
 
 void assert_board_not_erroneous(Command *command, Board *board) {
     if (board != NULL && board->erroneous == true) {
-        invalidate(command, BOARD_ERRONEOUS_ERROR, invalid_board_state);
+        invalidate(command, BOARD_ERRONEOUS_ERROR, invalid_state);
+    }
+}
+
+void assert_cell_not_fixed(Command *command, Board *board, int row, int column) {
+    if (board != NULL && is_cell_fixed(board, row, column)) {
+        invalidate(command, FIXED_ERROR, invalid_state);
+    }
+}
+
+void assert_cell_empty(Command *command, Board *board, int row, int column) {
+    if (board != NULL && !is_cell_empty(board, row, column)) {
+        invalidate(command, NOT_EMPTY_ERROR, invalid_state);
     }
 }
 
@@ -155,8 +168,8 @@ void set_validator(Command *command, Game *game) {
     assert_int_arg_in_range(command, "row", command->data.set->row, MIN_INDEX, game->board->dim);
     assert_int_arg_in_range(command, "value", command->data.set->value, CLEAR, game->board->dim);
 
-    if (game->mode == solve_mode && is_cell_fixed(game->board, command->data.set->row, command->data.set->column)) {
-        invalidate(command, FIXED_ERROR, invalid_arg_value_for_state);
+    if (game->mode == solve_mode) {
+        assert_cell_not_fixed(command, game->board, command->data.set->row, command->data.set->column);
     }
 }
 
@@ -211,6 +224,16 @@ void save_validator(Command *command, Game *game) {
 }
 
 void hint_validator(Command *command, Game *game) {
+    if (command->data.hint == NULL || game->board == NULL) {
+        return;
+    }
+
+    assert_int_arg_in_range(command, "column", command->data.hint->column, MIN_INDEX, game->board->dim);
+    assert_int_arg_in_range(command, "row", command->data.hint->row, MIN_INDEX, game->board->dim);
+
+    assert_board_not_erroneous(command, game->board);
+    assert_cell_not_fixed(command, game->board, command->data.set->row, command->data.set->column);
+    assert_cell_empty(command, game->board, command->data.set->row, command->data.set->column);
 }
 
 void guess_hint_validator(Command *command, Game *game) {

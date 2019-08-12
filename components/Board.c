@@ -75,3 +75,7 @@ void destroy_board(Board *board){
 bool is_cell_fixed(Board *board, int row, int column) {
     return board->cells_arr[row][column]->fixed;
 }
+
+bool is_cell_empty(Board *board, int row, int column) {
+    return board->cells_arr[row][column]->val == CLEAR;
+}
