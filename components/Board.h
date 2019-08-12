@@ -20,6 +20,7 @@ typedef struct {
     bool solved;
     int _errors_count;
     bool erroneous;
+    int empty_count;
 } Board;
 
 

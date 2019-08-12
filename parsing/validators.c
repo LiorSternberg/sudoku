@@ -160,11 +160,22 @@ void guess_validator(Command *command, Game *game) {
         return;
     }
 
-    assert_double_arg_in_range(command, "threshold", command->data.guess->threshold, 0, 1);
+    assert_double_arg_in_range(command, "threshold", command->data.guess->threshold, MIN_THRESHOLD, MAX_THRESHOLD);
     assert_board_not_erroneous(command, game->board);
 }
 
 void generate_validator(Command *command, Game *game) {
+    if (command->data.guess == NULL || game->board == NULL) {
+        return;
+    }
+
+    assert_int_arg_in_range(command, "#cells to fill", command->data.generate->num_to_fill,
+                            MIN_CELLS, game->board->empty_count);
+
+    assert_int_arg_in_range(command, "#cells to leave", command->data.generate->num_to_leave,
+                            MIN_CELLS, game->board->dim * game->board->dim);
+
+
 }
 
 void undo_validator(Command *command, Game *game) {

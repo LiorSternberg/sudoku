@@ -34,6 +34,10 @@
 #define RESET_FORMAT "reset"
 #define EXIT_FORMAT "exit"
 
+#define MIN_THRESHOLD 0
+#define MAX_THRESHOLD 1
+#define MIN_CELLS 1
+
 #define SOLVE_MODES (solve_mode + edit_mode + init_mode)
 #define EDIT_MODES (solve_mode + edit_mode + init_mode)
 #define MARK_ERRORS_MODES (solve_mode)
