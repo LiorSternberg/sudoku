@@ -8,6 +8,7 @@
 
 #define FILE_DOESNT_EXIST_ERROR "Error: The given file doesn't exist!"
 #define FILE_NOT_READABLE_ERROR "Error: The given file cannot be read (no permission)."
+#define FILE_NOT_WRITABLE_ERROR "Error: The given file cannot be written to (no permission)."
 #define FIXED_ERROR "Error: cell is fixed."
 #define BOARD_ERRONEOUS_ERROR "Error: this command is not available when the board is erroneous."
 #define NO_UNDO_MOVES_ERROR "Error: there are no moves available to undo."
@@ -51,6 +52,12 @@ void assert_file_readable(Command *command, char *path) {
         invalidate(command, FILE_DOESNT_EXIST_ERROR, execution_failure);
     } else if (access(path, R_OK) == -1) { /* file doesn't have read permissions */
         invalidate(command, FILE_NOT_READABLE_ERROR, execution_failure);
+    }
+}
+
+void assert_file_writable(Command *command, char *path) {
+    if (access(path, W_OK) == -1) { /* file doesn't have write permissions */
+        invalidate(command, FILE_NOT_WRITABLE_ERROR, execution_failure);
     }
 }
 
@@ -193,6 +200,11 @@ void redo_validator(Command *command, Game *game) {
 }
 
 void save_validator(Command *command, Game *game) {
+    if (command->data.save == NULL) {
+        return;
+    }
+
+    assert_file_writable(command, command->data.solve->path);
 }
 
 void hint_validator(Command *command, Game *game) {
