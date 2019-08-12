@@ -23,6 +23,7 @@
 #define MAX_ERROR_MESSAGE_LEN 1024
 
 
+/* Asserts the number of arguments that was entered by the user is correct. */
 void assert_num_of_args(Command *command, int min_expected, int max_expected, int actual) {
     char *error_message, *error_type;
     int res;
@@ -40,6 +41,7 @@ void assert_num_of_args(Command *command, int min_expected, int max_expected, in
     res = sprintf(error_message, "%s Correct command format: %s", error_type, command->format);
     invalidate(command, error_message, invalid_num_of_args);
 }
+
 
 /* parsers for specific types of args */
 
@@ -85,7 +87,7 @@ void parse_bool_arg(char *token, int *p_bool) {
 }
 
 
-/* command-specific arg parsers */
+/* Command-specific arg parsers */
 
 void solve_args_parser(Command *self, char **args, int num_of_args) {
     SolveCommand *data = malloc(sizeof(SolveCommand));
@@ -216,12 +218,13 @@ void guess_hint_args_parser(Command *self, char **args, int num_of_args) {
     self->data.guess_hint = data;
 }
 
-
+/* A basic parser for commands with no additional arguments. */
 void basic_parser(Command *self, char **args, int num_of_args) {
     assert_num_of_args(self, NO_ARGS, NO_ARGS, num_of_args);
 }
 
 
+/* Configures the Command fields based ont the parsed type. */
 void configure_by_type(Command *command, char *type_str, GameMode mode) {
     command->_parse_args = basic_parser;
 
@@ -355,6 +358,8 @@ void parse_command(char *raw_command, Command *command, Game *game) {
 
     /* get the first token (the type of the command, if exists) */
     token = strtok(raw_command, WHITESPACE);
+
+    /* ignore empty lines (treated as 'empty' commands) */
     if (token == NULL) {
         command->type = empty;
         return;

@@ -31,6 +31,7 @@
 
 /* Generic assertions */
 
+/* Assert that the command is available in the current game mode. */
 void assert_game_mode(Command *command, GameMode mode) {
     char *error_message;
     char *modes[8] = {0};
@@ -48,6 +49,7 @@ void assert_game_mode(Command *command, GameMode mode) {
     }
 }
 
+/* Assert that the given file exists and is readable. */
 void assert_file_readable(Command *command, char *path) {
     if(access(path, F_OK) == -1) { /* file doesn't exist */
         invalidate(command, FILE_DOESNT_EXIST_ERROR, execution_failure);
@@ -56,13 +58,14 @@ void assert_file_readable(Command *command, char *path) {
     }
 }
 
+/* Assert that the given file exists and is writable. */
 void assert_file_writable(Command *command, char *path) {
     if (access(path, W_OK) == -1) { /* file doesn't have write permissions */
         invalidate(command, FILE_NOT_WRITABLE_ERROR, execution_failure);
     }
 }
 
-
+/* Assert that an int argument was parsed successfully, and contains a legal boolean value (0/1). */
 void assert_bool_arg(Command *command, char *arg_name, int value) {
     char *error_message, error_format[MAX_ERROR_MESSAGE_LEN] = {0};
     int res;
@@ -77,6 +80,7 @@ void assert_bool_arg(Command *command, char *arg_name, int value) {
     invalidate(command, error_message, invalid_arg_range);
 }
 
+/* Assert that an int argument was parsed successfully, and contains a legal value in the allowed range. */
 void assert_int_arg_in_range(Command *command, char *arg_name, int value, int min, int max) {
     char *error_message, error_format[MAX_ERROR_MESSAGE_LEN] = {0};
     int res;
@@ -91,6 +95,7 @@ void assert_int_arg_in_range(Command *command, char *arg_name, int value, int mi
     invalidate(command, error_message, invalid_arg_range);
 }
 
+/* Assert that a double argument was parsed successfully, and contains a legal value in the allowed range. */
 void assert_double_arg_in_range(Command *command, char *arg_name, double value, double min, double max) {
     char *error_message, error_format[MAX_ERROR_MESSAGE_LEN] = {0};
     int res;
@@ -105,19 +110,21 @@ void assert_double_arg_in_range(Command *command, char *arg_name, double value, 
     invalidate(command, error_message, invalid_arg_range);
 }
 
-
+/* Assert that the board is not currently erroneous. */
 void assert_board_not_erroneous(Command *command, Board *board) {
     if (board != NULL && board->erroneous == true) {
         invalidate(command, BOARD_ERRONEOUS_ERROR, invalid_state);
     }
 }
 
+/* Assert that the given cell is not fixed. */
 void assert_cell_not_fixed(Command *command, Board *board, int row, int column) {
     if (board != NULL && is_cell_fixed(board, row, column)) {
         invalidate(command, FIXED_ERROR, invalid_state);
     }
 }
 
+/* Assert that the given cell is empty. */
 void assert_cell_empty(Command *command, Board *board, int row, int column) {
     if (board != NULL && !is_cell_empty(board, row, column)) {
         invalidate(command, NOT_EMPTY_ERROR, invalid_state);
@@ -131,7 +138,9 @@ void base_validator(Command *command, Game *game) {
 }
 
 
-/* Command-specific validators */
+/* Command-specific validators
+ * Note: for validation of errors at the same level, the order of validations
+ * within the function IS IMPORTANT and should not be changed. */
 
 void solve_validator(Command *command, Game *game) {
     if (command->data.solve == NULL) {
@@ -164,6 +173,7 @@ void set_validator(Command *command, Game *game) {
         return;
     }
 
+    /* Check argument range by order of entry */
     assert_int_arg_in_range(command, "column", command->data.set->column, MIN_INDEX, game->board->dim);
     assert_int_arg_in_range(command, "row", command->data.set->row, MIN_INDEX, game->board->dim);
     assert_int_arg_in_range(command, "value", command->data.set->value, CLEAR, game->board->dim);
@@ -191,13 +201,11 @@ void generate_validator(Command *command, Game *game) {
         return;
     }
 
+    /* Check argument range by order of entry */
     assert_int_arg_in_range(command, "#cells to fill", command->data.generate->num_to_fill,
                             MIN_CELLS, game->board->empty_count);
-
     assert_int_arg_in_range(command, "#cells to leave", command->data.generate->num_to_leave,
                             MIN_CELLS, game->board->dim * game->board->dim);
-
-
 }
 
 void undo_validator(Command *command, Game *game) {
@@ -224,9 +232,11 @@ void save_validator(Command *command, Game *game) {
 }
 
 void hint_base_validator(Command *command, Board *board, int row, int column) {
+    /* Check argument range by order of entry */
     assert_int_arg_in_range(command, "column", column, MIN_INDEX, board->dim);
     assert_int_arg_in_range(command, "row", row, MIN_INDEX, board->dim);
 
+    /* Check state related errors by the required order */
     assert_board_not_erroneous(command, board);
     assert_cell_not_fixed(command, board, row, column);
     assert_cell_empty(command, board, row, column);
@@ -259,6 +269,9 @@ void autofill_validator(Command *command, Game *game) {
 
 /* main validation function */
 
+/* Validates the command first with the basic validator that's relevant
+ * for all command types, and then using the command-specific validator
+ * if one exists for that command type. */
 void validate_command(Command *command, Game *game) {
     base_validator(command, game);
     if (command->_validate != NULL) {

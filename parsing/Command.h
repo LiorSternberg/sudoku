@@ -4,6 +4,9 @@
 #include <stdbool.h>
 #include "../components/Game.h"
 
+/** Command:
+ *   this module defines the structured commands and their configurations. */
+
 #define NO_ARGS 0
 #define SOLVE_ARGS 1
 #define EDIT_MIN_ARGS 0
@@ -57,10 +60,13 @@
 #define EXIT_MODES (solve_mode + edit_mode + init_mode)
 
 /* The possible types of commands (empty refers to a non-command that should be ignored) */
+
 typedef enum { solve, edit, mark_errors, print_board, set, validate, guess, generate, undo, redo, save, hint,
     guess_hint, num_solutions, autofill, reset, exit_game, empty } CommandType;
 
+
 /* The possible error levels */
+
 typedef enum {
     invalid_command_length,
     invalid_command_name,
@@ -71,7 +77,8 @@ typedef enum {
     execution_failure
 } ErrorLevel;
 
-/* The different commands: */
+
+/* The different commands' data */
 
 typedef struct {
     char* path;
@@ -108,6 +115,7 @@ typedef struct {
 
 
 /* The command information such as the type of the command, and the command-specific data. */
+
 typedef struct Command_ {
     CommandType type;
     char* format;
@@ -131,10 +139,13 @@ typedef struct Command_ {
 } Command;
 
 
+/* Sets a command's error message and error level, and by doing so, invalidating it. */
 void invalidate(Command *command, char *error_message, int error_level);
 
+/* Initialize a new command */
 Command* create_command();
 
+/* Free all the resources used by the command */
 void destroy_command(Command* command);
 
 #endif

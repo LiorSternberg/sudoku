@@ -4,8 +4,13 @@
 #include "Command.h"
 #include "../components/Game.h"
 
+/** validators:
+ *   this module is responsible for the validation of structured commands.
+ *   It contains the type-specific validators for commands that require custom
+ *   validations, and the main validation function used to validate a Command. */
 
-void base_validator(Command *command, Game *game);
+
+/* Command-specific validators (used by the Parser at the configuration stage) */
 
 void solve_validator(Command *command, Game *game);
 
@@ -35,6 +40,8 @@ void num_solutions_validator(Command *command, Game *game);
 
 void autofill_validator(Command *command, Game *game);
 
+/* Validates the command - adds a relevant error message and error level
+ * if the command is found to be invalid. */
 void validate_command(Command *command, Game *game);
 
 #endif
