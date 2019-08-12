@@ -205,6 +205,9 @@ void save_validator(Command *command, Game *game) {
     }
 
     assert_file_writable(command, command->data.solve->path);
+    if (game->mode == edit_mode){
+        assert_board_not_erroneous(command, game->board);
+    }
 }
 
 void hint_validator(Command *command, Game *game) {
