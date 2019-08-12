@@ -22,6 +22,7 @@
 #define ARG_OUT_OF_RANGE_ERROR "Error: argument <%s> is not valid. "
 #define BOOL_RANGE "Must be either 0 or 1."
 #define INT_RANGE "Must be a valid integer between %d and %d."
+#define DOUBLE_RANGE "Must be a valid floating point number between %.1f and %.1f."
 
 
 /* Generic assertions */
@@ -79,6 +80,21 @@ void assert_int_arg_in_range(Command *command, char *arg_name, int value, int mi
     res = sprintf(error_message, error_format, arg_name, min, max);
     invalidate(command, error_message, invalid_arg_range);
 }
+
+void assert_double_arg_in_range(Command *command, char *arg_name, double value, double min, double max) {
+    char *error_message, error_format[MAX_ERROR_MESSAGE_LEN] = {0};
+    int res;
+
+    if (value >= min && value <= max) {
+        return; /* valid */
+    }
+
+    error_message = calloc(MAX_ERROR_MESSAGE_LEN, sizeof(char));
+    strcat(strcpy(error_format, ARG_OUT_OF_RANGE_ERROR), DOUBLE_RANGE);
+    res = sprintf(error_message, error_format, arg_name, min, max);
+    invalidate(command, error_message, invalid_arg_range);
+}
+
 
 void assert_board_not_erroneous(Command *command, Board *board) {
     if (board != NULL && board->erroneous == true) {
@@ -140,6 +156,12 @@ void validate_validator(Command *command, Game *game) {
 }
 
 void guess_validator(Command *command, Game *game) {
+    if (command->data.guess == NULL) {
+        return;
+    }
+
+    assert_double_arg_in_range(command, "threshold", command->data.guess->threshold, 0, 1);
+    assert_board_not_erroneous(command, game->board);
 }
 
 void generate_validator(Command *command, Game *game) {
