@@ -18,6 +18,8 @@ typedef struct {
     int num_of_columns_in_block;
     BoardCell ***cells_arr;
     bool solved;
+    int _errors_count;
+    bool erroneous;
 } Board;
 
 

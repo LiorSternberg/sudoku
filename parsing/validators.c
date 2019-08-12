@@ -6,10 +6,10 @@
 #include "../components/Game.h"
 #include "Command.h"
 
-#define FIXED_ERROR "Error: cell is fixed\n"
-#define INVALID_VALUE_ERROR "Error: value is invalid\n"
 #define FILE_DOESNT_EXIST_ERROR "Error: The given file doesn't exist!\n"
-#define FILE_NOT_READABLE_ERROR "Error: The given file cannot be read (no permission)\n"
+#define FILE_NOT_READABLE_ERROR "Error: The given file cannot be read (no permission).\n"
+#define FIXED_ERROR "Error: cell is fixed\n"
+#define BOARD_ERRONEOUS_ERROR "Error: this command is not available when the board is erroneous.\n"
 
 #define MAX_ERROR_MESSAGE_LEN 1024
 
@@ -23,6 +23,8 @@
 #define BOOL_RANGE "Must be either 0 or 1."
 #define INT_RANGE "Must be a valid integer between %d and %d."
 
+
+/* Generic assertions */
 
 void assert_game_mode(Command *command, GameMode mode) {
     char *error_message;
@@ -78,9 +80,20 @@ void assert_int_arg_in_range(Command *command, char *arg_name, int value, int mi
     invalidate(command, error_message, invalid_arg_range);
 }
 
+void assert_board_not_erroneous(Command *command, Board *board) {
+    if (board != NULL && board->erroneous == true) {
+        invalidate(command, BOARD_ERRONEOUS_ERROR, invalid_board_state);
+    }
+}
+
+/* Validators */
+
 void base_validator(Command *command, Game *game) {
     assert_game_mode(command, game->mode);
 }
+
+
+/* Command-specific validators */
 
 void solve_validator(Command *command, Game *game) {
     if (command->data.solve == NULL) {
@@ -123,6 +136,7 @@ void set_validator(Command *command, Game *game) {
 }
 
 void validate_validator(Command *command, Game *game) {
+    assert_board_not_erroneous(command, game->board);
 }
 
 void guess_validator(Command *command, Game *game) {
