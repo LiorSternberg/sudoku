@@ -223,20 +223,29 @@ void save_validator(Command *command, Game *game) {
     }
 }
 
+void hint_base_validator(Command *command, Board *board, int row, int column) {
+    assert_int_arg_in_range(command, "column", column, MIN_INDEX, board->dim);
+    assert_int_arg_in_range(command, "row", row, MIN_INDEX, board->dim);
+
+    assert_board_not_erroneous(command, board);
+    assert_cell_not_fixed(command, board, row, column);
+    assert_cell_empty(command, board, row, column);
+}
+
 void hint_validator(Command *command, Game *game) {
     if (command->data.hint == NULL || game->board == NULL) {
         return;
     }
 
-    assert_int_arg_in_range(command, "column", command->data.hint->column, MIN_INDEX, game->board->dim);
-    assert_int_arg_in_range(command, "row", command->data.hint->row, MIN_INDEX, game->board->dim);
-
-    assert_board_not_erroneous(command, game->board);
-    assert_cell_not_fixed(command, game->board, command->data.set->row, command->data.set->column);
-    assert_cell_empty(command, game->board, command->data.set->row, command->data.set->column);
+    hint_base_validator(command, game->board, command->data.hint->row, command->data.hint->column);
 }
 
 void guess_hint_validator(Command *command, Game *game) {
+    if (command->data.guess_hint == NULL || game->board == NULL) {
+        return;
+    }
+
+    hint_base_validator(command, game->board, command->data.guess_hint->row, command->data.guess_hint->column);
 }
 
 void num_solutions_validator(Command *command, Game *game) {
