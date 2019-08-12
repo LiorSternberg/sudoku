@@ -19,9 +19,9 @@
 #define SOLVE_MODE "Solve."
 #define EDIT_MODE "Edit."
 
-#define ARG_OUT_OF_RANGE_ERROR "Error: argument <%s> if not valid. "
+#define ARG_OUT_OF_RANGE_ERROR "Error: argument <%s> is not valid. "
 #define BOOL_RANGE "Must be either 0 or 1."
-#define INT_RANGE "Must be a valid number between %d and %d."
+#define INT_RANGE "Must be a valid integer between %d and %d."
 
 
 void assert_game_mode(Command *command, GameMode mode) {
@@ -64,6 +64,20 @@ void assert_bool_arg(Command *command, char *arg_name, int value) {
     invalidate(command, error_message, invalid_arg_range);
 }
 
+void assert_int_arg_in_range(Command *command, char *arg_name, int value, int min, int max) {
+    char *error_message, error_format[MAX_ERROR_MESSAGE_LEN] = {0};
+    int res;
+
+    if (value >= min && value <= max) {
+        return; /* valid */
+    }
+
+    error_message = calloc(MAX_ERROR_MESSAGE_LEN, sizeof(char));
+    strcat(strcpy(error_format, ARG_OUT_OF_RANGE_ERROR), INT_RANGE);
+    res = sprintf(error_message, error_format, arg_name, min, max);
+    invalidate(command, error_message, invalid_arg_range);
+}
+
 void base_validator(Command *command, Game *game) {
     assert_game_mode(command, game->mode);
 }
@@ -95,6 +109,17 @@ void mark_errors_validator(Command *command, Game *game) {
 }
 
 void set_validator(Command *command, Game *game) {
+    if (command->data.set == NULL || game->board == NULL) {
+        return;
+    }
+
+    assert_int_arg_in_range(command, "column", command->data.set->column, MIN_INDEX, game->board->dim);
+    assert_int_arg_in_range(command, "row", command->data.set->row, MIN_INDEX, game->board->dim);
+    assert_int_arg_in_range(command, "value", command->data.set->value, CLEAR, game->board->dim);
+
+    if (game->mode == solve_mode && is_cell_fixed(game->board, command->data.set->row, command->data.set->column)) {
+        invalidate(command, FIXED_ERROR, invalid_arg_value_for_state);
+    }
 }
 
 void validate_validator(Command *command, Game *game) {

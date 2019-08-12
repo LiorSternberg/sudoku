@@ -45,7 +45,7 @@ void destroy_command(Command* command) {
 
 
 void invalidate(Command *command, char *error_message, int error_level) {
-    if (command->valid == false && command->error_level < error_level) {
+    if (command->valid == false && command->error_level <= error_level) {
         return;
     }
 
