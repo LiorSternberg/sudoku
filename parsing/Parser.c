@@ -327,13 +327,11 @@ void configure_by_type(Command *command, char *type_str, GameMode mode) {
         command->type = reset;
         command->format = RESET_FORMAT;
         command->modes = RESET_MODES;
-        command->_validate = reset_validator;
 
     } else if (strcmp(type_str, "exit") == 0) {
         command->type = exit_game;
         command->format = EXIT_FORMAT;
         command->modes = EXIT_MODES;
-        command->_validate = exit_validator;
 
     } else {
         if (mode == init_mode) {

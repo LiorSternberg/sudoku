@@ -13,8 +13,6 @@ void edit_validator(Command *command, Game *game);
 
 void mark_errors_validator(Command *command, Game *game);
 
-void print_board_validator(Command *command, Game *game);
-
 void set_validator(Command *command, Game *game);
 
 void validate_validator(Command *command, Game *game);
@@ -36,10 +34,6 @@ void guess_hint_validator(Command *command, Game *game);
 void num_solutions_validator(Command *command, Game *game);
 
 void autofill_validator(Command *command, Game *game);
-
-void reset_validator(Command *command, Game *game);
-
-void exit_validator(Command *command, Game *game);
 
 void validate_command(Command *command, Game *game);
 

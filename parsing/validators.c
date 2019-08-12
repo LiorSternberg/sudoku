@@ -249,16 +249,15 @@ void guess_hint_validator(Command *command, Game *game) {
 }
 
 void num_solutions_validator(Command *command, Game *game) {
+    assert_board_not_erroneous(command, game->board);
 }
 
 void autofill_validator(Command *command, Game *game) {
+    assert_board_not_erroneous(command, game->board);
 }
 
-void reset_validator(Command *command, Game *game) {
-}
 
-void exit_validator(Command *command, Game *game) {
-}
+/* main validation function */
 
 void validate_command(Command *command, Game *game) {
     base_validator(command, game);
