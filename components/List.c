@@ -57,10 +57,13 @@ void* remove_last(List *list) {
     return item;
 }
 
+bool has_next(List *list) {
+    return (list->head != NULL && list->head->next != NULL);
+}
 
 int next(List *list) {
     /* Check if there is a next node, if not return exit status 1 */
-    if (list->head == NULL || list->head->next == NULL) {
+    if (has_next(list) == false) {
         return 1;
     }
 
@@ -68,12 +71,20 @@ int next(List *list) {
     return 0;
 }
 
+bool has_prev(List *list) {
+    return (list->head != NULL && list->head->prev != NULL);
+}
+
 int prev(List *list) {
     /* Check if there is a previous node, if not return exit status 1 */
-    if (list->head == NULL || list->head->prev== NULL) {
+    if (has_prev(list) == false) {
         return 1;
     }
 
     list->head = list->head->prev;
     return 0;
+}
+
+bool is_empty(List *list) {
+    return list->end == NULL;
 }

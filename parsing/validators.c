@@ -6,10 +6,12 @@
 #include "../components/Game.h"
 #include "Command.h"
 
-#define FILE_DOESNT_EXIST_ERROR "Error: The given file doesn't exist!\n"
-#define FILE_NOT_READABLE_ERROR "Error: The given file cannot be read (no permission).\n"
-#define FIXED_ERROR "Error: cell is fixed\n"
-#define BOARD_ERRONEOUS_ERROR "Error: this command is not available when the board is erroneous.\n"
+#define FILE_DOESNT_EXIST_ERROR "Error: The given file doesn't exist!"
+#define FILE_NOT_READABLE_ERROR "Error: The given file cannot be read (no permission)."
+#define FIXED_ERROR "Error: cell is fixed."
+#define BOARD_ERRONEOUS_ERROR "Error: this command is not available when the board is erroneous."
+#define NO_UNDO_MOVES_ERROR "Error: there are no moves available to undo."
+#define NO_REDO_MOVES_ERROR "Error: there are no moves available to redo."
 
 #define MAX_ERROR_MESSAGE_LEN 1024
 
@@ -179,9 +181,15 @@ void generate_validator(Command *command, Game *game) {
 }
 
 void undo_validator(Command *command, Game *game) {
+    if (has_prev(game->states->moves) == false) {
+        invalidate(command, NO_UNDO_MOVES_ERROR, execution_failure);
+    }
 }
 
 void redo_validator(Command *command, Game *game) {
+    if (has_next(game->states->moves) == false) {
+        invalidate(command, NO_REDO_MOVES_ERROR, execution_failure);
+    }
 }
 
 void save_validator(Command *command, Game *game) {
