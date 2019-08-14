@@ -1,4 +1,0 @@
-#ifndef FINAL_PROJECT_LOADER_H
-#define FINAL_PROJECT_LOADER_H
-
-#endif

@@ -35,8 +35,8 @@ add_executable(final_project
         components/Move.h
         components/List.c
         components/List.h
-        io/Loader.c
-        io/Loader.h
+        io/Serializer.c
+        io/Serializer.h
         io/Error.c
         io/Error.h
         )
