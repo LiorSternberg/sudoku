@@ -62,6 +62,9 @@ Board* create_board(int rows_in_block, int columns_in_block){
     return board;
 }
 
+
+/* Query functions */
+
 void destroy_board(Board *board){
     int i;
     for (i=0; i < board->dim; i++) {
@@ -79,3 +82,6 @@ bool is_cell_fixed(Board *board, int row, int column) {
 bool is_cell_empty(Board *board, int row, int column) {
     return board->cells_arr[row][column]->val == CLEAR;
 }
+
+
+/* Board manipulation functions */

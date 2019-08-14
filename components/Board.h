@@ -32,8 +32,15 @@ Board* create_board(int rows_in_block, int columns_in_block);
 
 void destroy_board(Board *board);
 
+
+/* Query functions */
+
 bool is_cell_fixed(Board *board, int row, int column);
 
 bool is_cell_empty(Board *board, int row, int column);
+
+
+/* Board manipulation functions */
+
 
 #endif
