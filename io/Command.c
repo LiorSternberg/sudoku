@@ -12,7 +12,7 @@ Command* create_command() {
     command->type = empty;
     command->format = NULL;
     command->modes = 0;
-    command->error = create_empty_error();
+    command->error = create_error();
     command->data.solve = NULL;
     command->data.edit = NULL;
     command->data.mark_errors = NULL;
@@ -46,7 +46,6 @@ void invalidate(Command *command, char *error_message, int error_level) {
         return;
     }
 
-    command->error->message = error_message;
-    command->error->level = error_level;
+    set_error(command->error, error_message, error_level);
 }
 

@@ -27,10 +27,9 @@ typedef struct  {
  *   - an empty error
  *   - an error with a message and a matching error level */
 
-Error* create_empty_error();
+Error* create_error();
 
-Error* create_error(char *message, ErrorLevel level);
-
+void set_error(Error *error, char *message, ErrorLevel level);
 
 /* Free all the resources used by the error */
 void destroy_error(Error* error);
