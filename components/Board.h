@@ -42,5 +42,8 @@ bool is_cell_empty(Board *board, int row, int column);
 
 /* Board manipulation functions */
 
+void set_cell_value(Board *board, int row, int column, int value);
+
+void fix_cell(Board *board, int row, int column);
 
 #endif

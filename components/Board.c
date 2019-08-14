@@ -50,6 +50,10 @@ Board* create_board(int rows_in_block, int columns_in_block){
     board->num_of_rows_in_block = rows_in_block;
     board->num_of_columns_in_block = columns_in_block;
     board->dim = dim;
+    board->erroneous = false;
+    board->solved = false;
+    board->empty_count = 0;
+    board->_errors_count = 0;
 
     BoardCell ***cells_arr = malloc(dim * sizeof(BoardCell**));
     validate_memory_allocation("create_board", board);
@@ -85,3 +89,12 @@ bool is_cell_empty(Board *board, int row, int column) {
 
 
 /* Board manipulation functions */
+
+void set_cell_value(Board *board, int row, int column, int value) {
+    board->cells_arr[row][column]->val = value;
+}
+
+void fix_cell(Board *board, int row, int column) {
+    board->cells_arr[row][column]->fixed = true;
+
+}
