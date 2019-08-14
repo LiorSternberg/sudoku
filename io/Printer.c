@@ -45,7 +45,7 @@ void print_row(Board *board, int row, bool mark_errors) {
     printf("|\n");
 }
 
-void print_board(Board *board, bool mark_errors) {
+void print(Board *board, bool mark_errors) {
     int row;
     char *sep = generate_row_sep(board);
 

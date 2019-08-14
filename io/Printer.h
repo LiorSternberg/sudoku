@@ -8,6 +8,6 @@
 
 
 /* Prints the sudoku board to stdout. */
-void print_board(Board *board, bool mark_errors);
+void print(Board *board, bool mark_errors);
 
 #endif
