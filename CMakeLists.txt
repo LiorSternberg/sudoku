@@ -33,4 +33,10 @@ add_executable(final_project
         components/StatesList.h
         components/Board.c
         components/Board.h
-        components/Move.c components/Move.h components/List.c components/List.h)
+        components/Move.c
+        components/Move.h
+        components/List.c
+        components/List.h
+        io/Loader.c
+        io/Loader.h
+        )
