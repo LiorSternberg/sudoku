@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "parsing/Parser.h"
+#include "io/Parser.h"
 #include "UserHandler.h"
-#include "parsing/validators.h"
+#include "io/validators.h"
 
 int main() {
     Command *command;
@@ -14,8 +14,8 @@ int main() {
         command = create_command();
         get_user_command(game, command);
 
-        if (!command->valid) {
-            printf("%s\n", command->error_message);
+        if (command->error->level < no_error) {
+            announce_error(command->error);
         }
         destroy_command(command);
     }

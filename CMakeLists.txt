@@ -9,10 +9,10 @@ add_executable(final_project
         MemoryError.h
         GameManager.h
         GameManager.c
-        parsing/Parser.h
-        parsing/Parser.c
-        Printer.h
-        Printer.c
+        io/Parser.h
+        io/Parser.c
+        io/Printer.h
+        io/Printer.c
         Solver.h
         Solver.c
         UserHandler.h
@@ -21,10 +21,10 @@ add_executable(final_project
         logic/Backtracking.c
         logic/ILP.h
         logic/ILP.c
-        parsing/Command.c
-        parsing/Command.h
-        parsing/validators.h
-        parsing/validators.c
+        io/Command.c
+        io/Command.h
+        io/validators.h
+        io/validators.c
         components/Game.c
         components/Game.h
         components/StatesList.c
@@ -37,4 +37,6 @@ add_executable(final_project
         components/List.h
         io/Loader.c
         io/Loader.h
+        io/Error.c
+        io/Error.h
         )

@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "Command.h"
 #include "../MemoryError.h"
@@ -13,9 +12,7 @@ Command* create_command() {
     command->type = empty;
     command->format = NULL;
     command->modes = 0;
-    command->valid = true;
-    command->error_message = NULL;
-    command->error_level = 0;
+    command->error = create_empty_error();
     command->data.solve = NULL;
     command->data.edit = NULL;
     command->data.mark_errors = NULL;
@@ -39,18 +36,17 @@ void destroy_command(Command* command) {
     free(command->data.save);
     free(command->data.hint);
     free(command->data.guess_hint);
-    free(command->error_message);
+    destroy_error(command->error);
     free(command);
 }
 
 
 void invalidate(Command *command, char *error_message, int error_level) {
-    if (command->valid == false && command->error_level <= error_level) {
+    if (command->error->level <= error_level) {
         return;
     }
 
-    command->valid = false;
-    command->error_message = error_message;
-    command->error_level = error_level;
+    command->error->message = error_message;
+    command->error->level = error_level;
 }
 

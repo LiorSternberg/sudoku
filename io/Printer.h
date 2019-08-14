@@ -1,7 +1,7 @@
 #ifndef FINAL_PROJECT_PRINTER_H
 #define FINAL_PROJECT_PRINTER_H
 
-#include "components/Board.h"
+#include "../components/Board.h"
 
 /** Printer:
  *   this module is responsible for printing the game board. */

@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "UserHandler.h"
-#include "parsing/Command.h"
-#include "parsing/Parser.h"
-#include "parsing/validators.h"
+#include "io/Command.h"
+#include "io/Parser.h"
+#include "io/validators.h"
 
 
 #define MAX_COMMAND_LEN 256
@@ -51,3 +51,6 @@ void announce_game_start() {
     printf("%s Welcome! Let the Games Begin!\n\n", HEADLINE);
 }
 
+void announce_error(Error *error) {
+    printf("%s\n", error->message);
+}

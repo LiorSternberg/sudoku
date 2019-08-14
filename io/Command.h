@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include "../components/Game.h"
+#include "Error.h"
 
 /** Command:
  *   this module defines the structured commands and their configurations. */
@@ -65,19 +66,6 @@ typedef enum { solve, edit, mark_errors, print_board, set, validate, guess, gene
     guess_hint, num_solutions, autofill, reset, exit_game, empty } CommandType;
 
 
-/* The possible error levels */
-
-typedef enum {
-    invalid_command_length,
-    invalid_command_name,
-    invalid_command_for_mode,
-    invalid_num_of_args,
-    invalid_arg_range,
-    invalid_state,
-    execution_failure
-} ErrorLevel;
-
-
 /* The different commands' data */
 
 typedef struct {
@@ -134,8 +122,7 @@ typedef struct Command_ {
     void (*_parse_args)(struct Command_*, char**, int);
     void (*_validate)(struct Command_*, Game *game);
     bool valid;
-    char* error_message;
-    ErrorLevel error_level;
+    Error *error;
 } Command;
 
 
