@@ -27,6 +27,9 @@
 #define MIN_BOARD_SIZE 1
 
 
+/* Parse a cell (value and fixed indicator) from a given token.
+ * Returns SUCCESS if the cell data was parsed and FAILURE if an
+ * error occurred. */
 int parse_value(char *token, int *p_int, bool *fixed) {
     int num;
     char *end_p;
@@ -52,6 +55,9 @@ int parse_value(char *token, int *p_int, bool *fixed) {
     return SUCCESS;
 }
 
+/* Read the next token from the file (ignore whitespace).
+ * Returns SUCCESS if one token was read and FAILURE if an
+ * error occurred (token too long, or EOF for example). */
 int read_next(FILE *file, char *token) {
     /* Assert one value was successfully parsed, and that the char before-last is null
      * (the last one is always null, but the one before might differ if the value is too long)*/
@@ -62,6 +68,9 @@ int read_next(FILE *file, char *token) {
     return SUCCESS;
 }
 
+/* Read and parse the dimensions of the board (#rows & #columns).
+ * Returns SUCCESS if the dimensions were parsed and found to be of legal format
+ * (i.e. not fixed for example), and FAILURE if an error occurred. */
 int read_dimensions(FILE *file, int *rows, int *columns, Error *error) {
     char m[MAX_VALUE_LEN] = {0}, n[MAX_VALUE_LEN] = {0};
     bool m_fixed, n_fixed;
@@ -87,6 +96,8 @@ int read_dimensions(FILE *file, int *rows, int *columns, Error *error) {
     return SUCCESS;
 }
 
+/* Read and parse a cell (value and fixed indicator), then set it to the board.
+ * Returns SUCCESS if the cell data was parsed and FAILURE if an error occurred. */
 int read_cell_data(FILE *file, Board *board, int row, int column, Error *error) {
     char cell_token[MAX_VALUE_LEN] = {0};
     int value;
