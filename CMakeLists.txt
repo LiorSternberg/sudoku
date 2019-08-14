@@ -9,8 +9,6 @@ add_executable(final_project
         MemoryError.h
         GameManager.h
         GameManager.c
-        Initializer.h
-        Initializer.c
         parsing/Parser.h
         parsing/Parser.c
         Printer.h
