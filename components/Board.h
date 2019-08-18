@@ -39,6 +39,8 @@ bool is_cell_fixed(Board *board, int row, int column);
 
 bool is_cell_empty(Board *board, int row, int column);
 
+int get_cell_value(Board *board, int row, int column);
+
 
 /* Board manipulation functions */
 

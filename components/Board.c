@@ -87,6 +87,10 @@ bool is_cell_empty(Board *board, int row, int column) {
     return board->cells_arr[row][column]->val == CLEAR;
 }
 
+int get_cell_value(Board *board, int row, int column) {
+    return board->cells_arr[row][column]->val;
+}
+
 
 /* Board manipulation functions */
 

@@ -11,6 +11,7 @@
 #define INT_BASE (10)
 
 #define FIXED_MARK "."
+#define EMPTY ""
 
 #define CANT_OPEN_FILE_ERROR "Error: The given file could not be opened."
 #define CANT_CLOSE_FILE_ERROR "Error: The file could not be closed."
@@ -20,6 +21,7 @@
 #define TOO_MANY_VALUES_ERROR "Error: Too many values found, please make sure the file format is correct " \
                               "and contains the correct number of values."
 #define ILLEGAL_BOARD_SIZE_ERROR "Error: Board size is not legal."
+#define CANT_WRITE_ERROR "Error: Writing to the file failed."
 
 #define MAX_ERROR_MESSAGE_LEN 1024
 #define MAX_VALUE_LEN 5
@@ -167,3 +169,43 @@ Board* load_from_file(char *path, Error *error) {
 }
 
 
+void save_to_file(Game *game, char *path, Error *error) {
+    FILE *file;
+    int i, j;
+    char *format, *fixed;
+
+    /* Open the file */
+    if ((file = fopen(path, "w")) == NULL) {
+        set_error(error, CANT_OPEN_FILE_ERROR, execution_failure);
+        return;
+    }
+
+    /* Write dimensions */
+    if (fprintf(file, "%d %d\n", game->board->num_of_rows_in_block, game->board->num_of_columns_in_block) < 0) {
+        set_error(error, CANT_WRITE_ERROR, execution_failure);
+        return;
+    }
+
+    /* Write values */
+    for (i=0; i < game->board->dim; i++) {
+        for (j=0; j < game->board->dim; j++) {
+            if (j == (game->board->dim - 1)) {
+                format = "%d%s\n";
+            } else {
+                format = "%d%s ";
+            }
+
+            fixed = (game->mode == edit_mode || is_cell_fixed(game->board, i, j)) ? FIXED_MARK : EMPTY;
+
+            if (fprintf(file, format, get_cell_value(game->board, i, j), fixed) < 0) {
+                set_error(error, CANT_WRITE_ERROR, execution_failure);
+                return;
+            }
+        }
+    }
+
+    /* Close file */
+    if (fclose(file) == EOF) {
+        set_error(error, CANT_CLOSE_FILE_ERROR, execution_failure);
+    }
+}
