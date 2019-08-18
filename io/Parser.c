@@ -4,6 +4,8 @@
 
 #include "Parser.h"
 #include "validators.h"
+#include "../logic/actions.h"
+#include "../MemoryError.h"
 
 #define MAX_ARGS 4
 #define WHITESPACE " \t\r\n"
@@ -38,6 +40,8 @@ void assert_num_of_args(Command *command, int min_expected, int max_expected, in
     }
 
     error_message = calloc(MAX_ERROR_MESSAGE_LEN, sizeof(char));
+    validate_memory_allocation("assert_num_of_args", error_message);
+
     res = sprintf(error_message, "%s Correct command format: %s", error_type, command->format);
     invalidate(command, error_message, invalid_num_of_args);
 }
@@ -91,29 +95,38 @@ void parse_bool_arg(char *token, int *p_bool) {
 
 void solve_args_parser(Command *self, char **args, int num_of_args) {
     SolveCommand *data = malloc(sizeof(SolveCommand));
+    validate_memory_allocation("solve_args_parser", data);
+
     assert_num_of_args(self, SOLVE_ARGS, SOLVE_ARGS, num_of_args);
 
-    if (!self->valid) {
+    if (!is_valid(self)) {
         free(data);
         return;
     }
 
-    data->path = args[0];
+    data->path = (char*) calloc(strlen(args[0]), sizeof(char));
+    validate_memory_allocation("solve_args_parser", data->path);
+    strcpy(data->path, args[0]);
     self->data.solve = data;
 }
 
 void edit_args_parser(Command *self, char **args, int num_of_args) {
     EditCommand *data = malloc(sizeof(EditCommand));
+    validate_memory_allocation("edit_args_parser", data);
+
     assert_num_of_args(self, EDIT_MIN_ARGS, EDIT_MAX_ARGS, num_of_args);
 
-    if (!self->valid) {
+    if (!is_valid(self)) {
         free(data);
         return;
     }
 
     if (num_of_args == EDIT_MAX_ARGS) {
         data->from_file = true;
-        data->path = args[0];
+        data->path = calloc(strlen(args[0]), sizeof(char));
+        validate_memory_allocation("edit_args_parser", data);
+        strcpy(data->path, args[0]);
+
     } else if (num_of_args == EDIT_MIN_ARGS) {
         data->from_file = false;
         data->path = NULL;
@@ -124,9 +137,11 @@ void edit_args_parser(Command *self, char **args, int num_of_args) {
 
 void mark_errors_args_parser(Command *self, char **args, int num_of_args) {
     MarkErrorsCommand *data = malloc(sizeof(MarkErrorsCommand));
+    validate_memory_allocation("mark_errors_args_parser", data);
+
     assert_num_of_args(self, MARK_ERRORS_ARGS, MARK_ERRORS_ARGS, num_of_args);
 
-    if (!self->valid) {
+    if (!is_valid(self)) {
         free(data);
         return;
     }
@@ -137,9 +152,11 @@ void mark_errors_args_parser(Command *self, char **args, int num_of_args) {
 
 void set_args_parser(Command *self, char **args, int num_of_args) {
     SetCommand *data = malloc(sizeof(SetCommand));
+    validate_memory_allocation("set_args_parser", data);
+
     assert_num_of_args(self, SET_ARGS, SET_ARGS, num_of_args);
 
-    if (!self->valid) {
+    if (!is_valid(self)) {
         free(data);
         return;
     }
@@ -152,9 +169,11 @@ void set_args_parser(Command *self, char **args, int num_of_args) {
 
 void guess_args_parser(Command *self, char **args, int num_of_args) {
     GuessCommand *data = malloc(sizeof(GuessCommand));
+    validate_memory_allocation("guess_args_parser", data);
+
     assert_num_of_args(self, GUESS_ARGS, GUESS_ARGS, num_of_args);
 
-    if (!self->valid) {
+    if (!is_valid(self)) {
         free(data);
         return;
     }
@@ -165,9 +184,11 @@ void guess_args_parser(Command *self, char **args, int num_of_args) {
 
 void generate_args_parser(Command *self, char **args, int num_of_args) {
     GenerateCommand *data = malloc(sizeof(GenerateCommand));
+    validate_memory_allocation("generate_args_parser", data);
+
     assert_num_of_args(self, GENERATE_ARGS, GENERATE_ARGS, num_of_args);
 
-    if (!self->valid) {
+    if (!is_valid(self)) {
         free(data);
         return;
     }
@@ -179,22 +200,28 @@ void generate_args_parser(Command *self, char **args, int num_of_args) {
 
 void save_args_parser(Command *self, char **args, int num_of_args) {
     SaveCommand *data = malloc(sizeof(SaveCommand));
+    validate_memory_allocation("save_args_parser", data);
+
     assert_num_of_args(self, SAVE_ARGS, SAVE_ARGS, num_of_args);
 
-    if (!self->valid) {
+    if (!is_valid(self)) {
         free(data);
         return;
     }
 
-    data->path = args[0];
+    data->path = calloc(strlen(args[0]), sizeof(char));
+    validate_memory_allocation("save_args_parser", data);
+    strcpy(data->path, args[0]);
     self->data.save = data;
 }
 
 void hint_args_parser(Command *self, char **args, int num_of_args) {
     HintCommand *data = malloc(sizeof(HintCommand));
+    validate_memory_allocation("hint_args_parser", data);
+
     assert_num_of_args(self, HINT_ARGS, HINT_ARGS, num_of_args);
 
-    if (!self->valid) {
+    if (!is_valid(self)) {
         free(data);
         return;
     }
@@ -206,9 +233,11 @@ void hint_args_parser(Command *self, char **args, int num_of_args) {
 
 void guess_hint_args_parser(Command *self, char **args, int num_of_args) {
     GuessHintCommand *data = malloc(sizeof(GuessHintCommand));
+    validate_memory_allocation("guess_hint_args_parser", data);
+
     assert_num_of_args(self, GUESS_HINT_ARGS, GUESS_HINT_ARGS, num_of_args);
 
-    if (!self->valid) {
+    if (!is_valid(self)) {
         free(data);
         return;
     }
@@ -234,6 +263,7 @@ void configure_by_type(Command *command, char *type_str, GameMode mode) {
         command->modes = SOLVE_MODES;
         command->_parse_args = solve_args_parser;
         command->_validate = solve_validator;
+        command->_play = play_solve;
 
     } else if (strcmp(type_str, "edit") == 0) {
         command->type = edit;
@@ -241,6 +271,7 @@ void configure_by_type(Command *command, char *type_str, GameMode mode) {
         command->modes = EDIT_MODES;
         command->_parse_args = edit_args_parser;
         command->_validate = edit_validator;
+        command->_play = play_edit;
 
     } else if (strcmp(type_str, "mark_errors") == 0) {
         command->type = mark_errors;
@@ -248,11 +279,13 @@ void configure_by_type(Command *command, char *type_str, GameMode mode) {
         command->modes = MARK_ERRORS_MODES;
         command->_parse_args = mark_errors_args_parser;
         command->_validate = mark_errors_validator;
+        command->_play = play_mark_errors;
 
     } else if (strcmp(type_str, "print_board") == 0) {
         command->type = print_board;
         command->format = PRINT_BOARD_FORMAT;
         command->modes = PRINT_BOARD_MODES;
+        command->_play = play_print_board;
 
     } else if (strcmp(type_str, "set") == 0) {
         command->type = set;
@@ -260,12 +293,14 @@ void configure_by_type(Command *command, char *type_str, GameMode mode) {
         command->modes = SET_MODES;
         command->_parse_args = set_args_parser;
         command->_validate = set_validator;
+        command->_play = play_set;
 
     } else if (strcmp(type_str, "validate") == 0) {
         command->type = validate;
         command->format = VALIDATE_FORMAT;
         command->modes = VALIDATE_MODES;
         command->_validate = validate_validator;
+        command->_play = play_validate;
 
     } else if (strcmp(type_str, "guess") == 0) {
         command->type = guess;
@@ -273,6 +308,7 @@ void configure_by_type(Command *command, char *type_str, GameMode mode) {
         command->modes = GUESS_MODES;
         command->_parse_args = guess_args_parser;
         command->_validate = guess_validator;
+        command->_play = play_guess;
 
     } else if (strcmp(type_str, "generate") == 0) {
         command->type = generate;
@@ -280,18 +316,21 @@ void configure_by_type(Command *command, char *type_str, GameMode mode) {
         command->modes = GENERATE_MODES;
         command->_parse_args = generate_args_parser;
         command->_validate = generate_validator;
+        command->_play = play_generate;
 
     } else if (strcmp(type_str, "undo") == 0) {
         command->type = undo;
         command->format = UNDO_FORMAT;
         command->modes = UNDO_MODES;
         command->_validate = undo_validator;
+        command->_play = play_undo;
 
     } else if (strcmp(type_str, "redo") == 0) {
         command->type = redo;
         command->format = REDO_FORMAT;
         command->modes = REDO_MODES;
         command->_validate = redo_validator;
+        command->_play = play_redo;
 
     } else if (strcmp(type_str, "save") == 0) {
         command->type = save;
@@ -299,6 +338,7 @@ void configure_by_type(Command *command, char *type_str, GameMode mode) {
         command->modes = SAVE_MODES;
         command->_parse_args = save_args_parser;
         command->_validate = save_validator;
+        command->_play = play_save;
 
     } else if (strcmp(type_str, "hint") == 0) {
         command->type = hint;
@@ -306,6 +346,7 @@ void configure_by_type(Command *command, char *type_str, GameMode mode) {
         command->modes = HINT_MODES;
         command->_parse_args = hint_args_parser;
         command->_validate = hint_validator;
+        command->_play = play_hint;
 
     } else if (strcmp(type_str, "guess_hint") == 0) {
         command->type = guess_hint;
@@ -313,28 +354,33 @@ void configure_by_type(Command *command, char *type_str, GameMode mode) {
         command->modes = GUESS_HINT_MODES;
         command->_parse_args = guess_hint_args_parser;
         command->_validate = guess_hint_validator;
+        command->_play = play_guess_hint;
 
     } else if (strcmp(type_str, "num_solutions") == 0) {
         command->type = num_solutions;
         command->format = NUM_SOLUTIONS_FORMAT;
         command->modes = NUM_SOLUTIONS_MODES;
         command->_validate = num_solutions_validator;
+        command->_play = play_num_solutions;
 
     } else if (strcmp(type_str, "autofill") == 0) {
         command->type = autofill;
         command->format = AUTOFILL_FORMAT;
         command->modes = AUTOFILL_MODES;
         command->_validate = autofill_validator;
+        command->_play = play_autofill;
 
     } else if (strcmp(type_str, "reset") == 0) {
         command->type = reset;
         command->format = RESET_FORMAT;
         command->modes = RESET_MODES;
+        command->_play = play_reset;
 
     } else if (strcmp(type_str, "exit") == 0) {
         command->type = exit_game;
         command->format = EXIT_FORMAT;
         command->modes = EXIT_MODES;
+        command->_play = play_exit_game;
 
     } else {
         if (mode == init_mode) {

@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "Printer.h"
+#include "../MemoryError.h"
 
 #define COL_SEP "|"
 #define EMPTY_CELL_FORMAT "    "
@@ -14,6 +15,7 @@
 char* generate_row_sep(Board *board) {
     int len = (4 * board->dim + board->num_of_rows_in_block + 1);
     char *str = malloc((len + 2) * sizeof(char));
+    validate_memory_allocation("generate_row_sep", str);
 
     memset(str, '-', (len * sizeof(char)));
     str[len] = '\0';

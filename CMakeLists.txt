@@ -39,4 +39,6 @@ add_executable(final_project
         io/Serializer.h
         io/Error.c
         io/Error.h
+        logic/actions.c
+        logic/actions.h
         )

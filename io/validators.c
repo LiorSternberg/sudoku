@@ -5,6 +5,7 @@
 #include "validators.h"
 #include "../components/Game.h"
 #include "Command.h"
+#include "../MemoryError.h"
 
 #define FILE_DOESNT_EXIST_ERROR "Error: The given file doesn't exist!"
 #define FILE_NOT_READABLE_ERROR "Error: The given file cannot be read (no permission)."
@@ -44,6 +45,8 @@ void assert_game_mode(Command *command, GameMode mode) {
     /* bitwise 'and' to check mode compatibility */
     if ((command->modes & mode) == 0) {
         error_message = calloc(MAX_ERROR_MESSAGE_LEN, sizeof(char));
+        validate_memory_allocation("assert_game_mode", error_message);
+
         strcat(strcpy(error_message, INVALID_COMMAND_FOR_MODE_ERROR), modes[command->modes]);
         invalidate(command, error_message, invalid_command_for_mode);
     }
@@ -75,6 +78,8 @@ void assert_bool_arg(Command *command, char *arg_name, int value) {
     }
 
     error_message = calloc(MAX_ERROR_MESSAGE_LEN, sizeof(char));
+    validate_memory_allocation("assert_bool_arg", error_message);
+
     strcat(strcpy(error_format, ARG_OUT_OF_RANGE_ERROR), BOOL_RANGE);
     res = sprintf(error_message, error_format, arg_name);
     invalidate(command, error_message, invalid_arg_range);
@@ -90,6 +95,8 @@ void assert_int_arg_in_range(Command *command, char *arg_name, int value, int mi
     }
 
     error_message = calloc(MAX_ERROR_MESSAGE_LEN, sizeof(char));
+    validate_memory_allocation("assert_int_arg_in_range", error_message);
+
     strcat(strcpy(error_format, ARG_OUT_OF_RANGE_ERROR), INT_RANGE);
     res = sprintf(error_message, error_format, arg_name, min, max);
     invalidate(command, error_message, invalid_arg_range);
@@ -105,6 +112,8 @@ void assert_double_arg_in_range(Command *command, char *arg_name, double value, 
     }
 
     error_message = calloc(MAX_ERROR_MESSAGE_LEN, sizeof(char));
+    validate_memory_allocation("assert_double_arg_in_range", error_message);
+
     strcat(strcpy(error_format, ARG_OUT_OF_RANGE_ERROR), DOUBLE_RANGE);
     res = sprintf(error_message, error_format, arg_name, min, max);
     invalidate(command, error_message, invalid_arg_range);

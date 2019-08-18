@@ -121,7 +121,7 @@ typedef struct Command_ {
     } data;
     void (*_parse_args)(struct Command_*, char**, int);
     void (*_validate)(struct Command_*, Game *game);
-    bool valid;
+    void (*_play)(struct Command_*, Game *game);
     Error *error;
 } Command;
 
@@ -134,5 +134,9 @@ Command* create_command();
 
 /* Free all the resources used by the command */
 void destroy_command(Command* command);
+
+
+/* Check if a command is valid */
+bool is_valid(Command *command);
 
 #endif
