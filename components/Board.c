@@ -72,6 +72,11 @@ Board* create_board(int rows_in_block, int columns_in_block){
 
 void destroy_board(Board *board){
     int i;
+
+    if (board == NULL) {
+        return;
+    }
+    
     for (i=0; i < board->dim; i++) {
         destroy_row(board->cells_arr[i], board->dim);
     }

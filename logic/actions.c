@@ -4,17 +4,35 @@
 #include "../UserHandler.h"
 #include "../io/Printer.h"
 
+#define DEFAULT_SIZE (3)
 
 void play_solve(Command *command, Game *game) {
-    game->board = load_from_file(command->data.solve->path, command->error);
+    Board *board = load_from_file(command->data.solve->path, command->error);
     if (is_valid(command)) {
+        destroy_board(game->board);
+        game->board = board;
         game->mode = solve_mode;
         clear_states_list(game->states);
-        print(game->board, game->mark_errors);
+        print(game);
     }
 }
 
-void play_edit(Command *command, Game *game) {}
+void play_edit(Command *command, Game *game) {
+    Board *board;
+    if (command->data.edit->from_file == true) {
+        board = load_from_file(command->data.edit->path, command->error);
+    } else {
+        board = create_board(DEFAULT_SIZE, DEFAULT_SIZE);
+    }
+
+    if (is_valid(command)) {
+        destroy_board(game->board);
+        game->board = board;
+        game->mode = edit_mode;
+        clear_states_list(game->states);
+        print(game);
+    }
+}
 
 void play_mark_errors(Command *command, Game *game) {}
 

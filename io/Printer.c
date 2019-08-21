@@ -47,15 +47,16 @@ void print_row(Board *board, int row, bool mark_errors) {
     printf("|\n");
 }
 
-void print(Board *board, bool mark_errors) {
+void print(Game *game) {
     int row;
-    char *sep = generate_row_sep(board);
+    char *sep = generate_row_sep(game->board);
+    bool mark_errors = game->mark_errors || game->mode == edit_mode;
 
-    for (row=0; row < board->dim; row++) {
-        if ((row % board->num_of_rows_in_block) == 0) {
+    for (row=0; row < game->board->dim; row++) {
+        if ((row % game->board->num_of_rows_in_block) == 0) {
             printf("%s\n", sep);
         }
-        print_row(board, row, mark_errors);
+        print_row(game->board, row, mark_errors);
     }
     printf("%s\n", sep);
 }
