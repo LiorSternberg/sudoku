@@ -14,11 +14,15 @@ States* create_states_list() {
     return states;
 }
 
-void destroy_states_list(States *states) {
+void clear_states_list(States *states) {
     Move *move;
     while ((move = remove_last(states->moves)) != NULL) {
         destroy_move(move);
     }
+}
+
+void destroy_states_list(States *states) {
+    clear_states_list(states);
     destroy_list(states->moves);
     free(states);
 }

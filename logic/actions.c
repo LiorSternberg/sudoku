@@ -9,6 +9,7 @@ void play_solve(Command *command, Game *game) {
     game->board = load_from_file(command->data.solve->path, command->error);
     if (is_valid(command)) {
         game->mode = solve_mode;
+        clear_states_list(game->states);
         print(game->board, game->mark_errors);
     }
 }

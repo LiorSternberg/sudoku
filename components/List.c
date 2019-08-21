@@ -30,15 +30,29 @@ int destroy_list(List *list) {
 }
 
 void add(List *list, void *item) {
+    if (item == NULL) {
+        return;
+    }
+
     Node *node = malloc(sizeof(Node));
     validate_memory_allocation("List -> add", node);
-
 
     node->item = item;
     node->prev = list->end;
     node->next = NULL;
 
+    if (is_empty(list)) {
+        list->head = node;
+    } else {
+        list->end->next = node;
+    }
+
     list->end = node;
+
+}
+
+void clear_list(List *list) {
+    while (remove_last(list) != NULL);
 }
 
 void* remove_last(List *list) {
@@ -51,7 +65,9 @@ void* remove_last(List *list) {
 
     /* move end to prev */
     list->end = last->prev;
-    list->end->next = NULL;
+    if (list->end != NULL) {
+        list->end->next = NULL;
+    }
 
     /* pop last node */
     item = last->item;

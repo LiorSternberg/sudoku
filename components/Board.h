@@ -46,6 +46,6 @@ int get_cell_value(Board *board, int row, int column);
 
 void set_cell_value(Board *board, int row, int column, int value);
 
-void fix_cell(Board *board, int row, int column);
+bool fix_cell(Board *board, int row, int column);
 
 #endif

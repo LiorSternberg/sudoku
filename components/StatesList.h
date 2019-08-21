@@ -9,6 +9,8 @@ typedef struct {
 
 States* create_states_list();
 
+void clear_states_list(States *states);
+
 void destroy_states_list(States *states);
 
 

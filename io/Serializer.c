@@ -19,6 +19,7 @@
 #define CANT_PARSE_VALUE_ERROR "Error: Could not parse values, please make sure the file format " \
                                "is correct and contains the correct number of values."
 #define CLEAR_FIXED_ERROR "Error: An empty cell cannot be fixed, please make sure the file format is correct."
+#define CONFLICTING_FIXED_ERROR "Error: Found conflicting fixed cells, please make sure the file format is correct."
 #define LARGE_VALUE_ERROR "Error: Found a value that is too large for the given board dimensions, please make " \
                           "sure the file format is correct."
 #define TOO_MANY_VALUES_ERROR "Error: Too many values found, please make sure the file format is correct " \
@@ -128,7 +129,11 @@ int read_cell_data(FILE *file, Board *board, int row, int column, Error *error) 
             return FAILURE;
         }
 
-        fix_cell(board, row, column);
+        /* Assert cell is not conflicting with another fixed neighbor */
+        if (fix_cell(board, row, column) == false) {
+            set_error(error, CONFLICTING_FIXED_ERROR, execution_failure);
+            return FAILURE;
+        }
     }
     return SUCCESS;
 }

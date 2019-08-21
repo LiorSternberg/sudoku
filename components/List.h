@@ -19,6 +19,8 @@ int destroy_list(List *list);
 
 void add(List *list, void *item);
 
+void clear_list(List *list);
+
 void* remove_last(List *list);
 
 bool has_next(List *list);
