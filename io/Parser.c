@@ -17,8 +17,8 @@
 #define INVALID_COMMAND_EDIT_ERROR "Error: invalid command. Available commands are: solve, edit, print_board, set, " \
                                    "validate, generate, undo, redo, save, num_solutions, reset, exit."
 #define INVALID_COMMAND_SOLVE_ERROR "Error: invalid command. Available commands are: solve, edit, mark_errors, " \
-                                    "print_board, set, validate, guess, undo, redo, save, hint, guess_hint, exit" \
-                                    "num_solutions, autofill, reset, "
+                                   "print_board, set, validate, guess, undo, redo, save, hint, guess_hint, " \
+                                   "num_solutions, autofill, reset, exit."
 #define TOO_MANY_ARGS_ERROR "Error: too many arguments were given."
 #define TOO_FEW_ARGS_ERROR "Error: not enough arguments were given."
 
