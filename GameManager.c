@@ -15,6 +15,11 @@ void play_turn(Game *game, Command *command) {
         return;
     }
 
+    if (command->type == empty) {
+        destroy_command(command);
+        return;
+    }
+
     command->_play(command, game);
     if (!is_valid(command)) {
         dispose_of_command_on_error(command);

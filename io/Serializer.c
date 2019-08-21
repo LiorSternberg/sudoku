@@ -18,6 +18,9 @@
 #define CANT_PARSE_DIMENSIONS_ERROR "Error: Could not parse the board dimensions, please make sure the file format is correct."
 #define CANT_PARSE_VALUE_ERROR "Error: Could not parse values, please make sure the file format " \
                                "is correct and contains the correct number of values."
+#define CLEAR_FIXED_ERROR "Error: An empty cell cannot be fixed, please make sure the file format is correct."
+#define LARGE_VALUE_ERROR "Error: Found a value that is too large for the given board dimensions, please make " \
+                          "sure the file format is correct."
 #define TOO_MANY_VALUES_ERROR "Error: Too many values found, please make sure the file format is correct " \
                               "and contains the correct number of values."
 #define ILLEGAL_BOARD_SIZE_ERROR "Error: Board size is not legal."
@@ -110,11 +113,23 @@ int read_cell_data(FILE *file, Board *board, int row, int column, Error *error) 
         return FAILURE;
     }
 
-    set_cell_value(board, row, column, value);
-    if (fixed == true) {
-        fix_cell(board, row, column);
+    /* Assert value is in the allowed range for board size */
+    if (value > board->dim) {
+        set_error(error, LARGE_VALUE_ERROR, execution_failure);
+        return FAILURE;
     }
 
+    set_cell_value(board, row, column, value);
+    if (fixed == true) {
+
+        /* Assert empty cells are not marked as fixed */
+        if (value == CLEAR) {
+            set_error(error, CLEAR_FIXED_ERROR, execution_failure);
+            return FAILURE;
+        }
+
+        fix_cell(board, row, column);
+    }
     return SUCCESS;
 }
 

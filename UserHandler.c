@@ -36,6 +36,7 @@ void get_user_command(Game *game, Command *command) {
     fgets(raw_command, INPUT_LEN, stdin);
     if (raw_command[MAX_COMMAND_LEN] != 0) {
         invalidate(command, COMMAND_TOO_LONG_ERROR, invalid_command_length);
+        fflush(stdin);
         return;
     }
 
