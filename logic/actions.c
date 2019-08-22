@@ -7,7 +7,7 @@
 #define DEFAULT_SIZE (3)
 
 void play_solve(Command *command, Game *game) {
-    Board *board = load_from_file(command->data.solve->path, command->error);
+    Board *board = load_from_file(command->data.solve->path, command->error, solve_mode);
     if (is_valid(command)) {
         destroy_board(game->board);
         game->board = board;
@@ -20,7 +20,7 @@ void play_solve(Command *command, Game *game) {
 void play_edit(Command *command, Game *game) {
     Board *board;
     if (command->data.edit->from_file == true) {
-        board = load_from_file(command->data.edit->path, command->error);
+        board = load_from_file(command->data.edit->path, command->error, edit_mode);
     } else {
         board = create_board(DEFAULT_SIZE, DEFAULT_SIZE);
     }

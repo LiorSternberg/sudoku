@@ -104,7 +104,7 @@ int read_dimensions(FILE *file, int *rows, int *columns, Error *error) {
 
 /* Read and parse a cell (value and fixed indicator), then set it to the board.
  * Returns SUCCESS if the cell data was parsed and FAILURE if an error occurred. */
-int read_cell_data(FILE *file, Board *board, int row, int column, Error *error) {
+int read_cell_data(FILE *file, Board *board, int row, int column, Error *error, GameMode mode) {
     char cell_token[MAX_VALUE_LEN] = {0};
     int value;
     bool fixed;
@@ -121,7 +121,7 @@ int read_cell_data(FILE *file, Board *board, int row, int column, Error *error) 
     }
 
     set_cell_value(board, row, column, value);
-    if (fixed == true) {
+    if (fixed == true && mode == solve_mode) {
 
         /* Assert empty cells are not marked as fixed */
         if (value == CLEAR) {
@@ -138,7 +138,7 @@ int read_cell_data(FILE *file, Board *board, int row, int column, Error *error) 
     return SUCCESS;
 }
 
-Board* load_from_file(char *path, Error *error) {
+Board* load_from_file(char *path, Error *error, GameMode mode) {
     FILE *file;
     Board *board;
     int rows, columns, i, j;
@@ -164,7 +164,7 @@ Board* load_from_file(char *path, Error *error) {
     board = create_board(rows, columns);
     for (i=0; i < board->dim; i++) {
         for (j=0; j < board->dim; j++) {
-            if (read_cell_data(file, board, i, j, error) == FAILURE) {
+            if (read_cell_data(file, board, i, j, error, mode) == FAILURE) {
                 destroy_board(board);
                 return NULL;
             }
