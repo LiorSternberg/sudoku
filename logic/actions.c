@@ -34,9 +34,13 @@ void play_edit(Command *command, Game *game) {
     }
 }
 
-void play_mark_errors(Command *command, Game *game) {}
+void play_mark_errors(Command *command, Game *game) {
+    game->mark_errors = (bool) command->data.mark_errors->setting;
+}
 
-void play_print_board(Command *command, Game *game) {}
+void play_print_board(Command *command, Game *game) {
+    print(game);
+}
 
 void play_set(Command *command, Game *game) {}
 
