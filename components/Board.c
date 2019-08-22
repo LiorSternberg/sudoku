@@ -12,11 +12,20 @@ BoardCell* create_cell() {
     cell->val = CLEAR;
     cell->fixed = false;
     cell->erroneous = false;
+    cell->neighbors = NULL;
+    cell->conflicting = create_list();
 
     return cell;
 }
 
 void destroy_cell(BoardCell *cell) {
+    if (cell->neighbors != NULL) {
+        clear_list(cell->neighbors);
+        destroy_list(cell->neighbors);
+    }
+
+    clear_list(cell->conflicting);
+    destroy_list(cell->conflicting);
     free(cell);
 }
 
@@ -67,9 +76,6 @@ Board* create_board(int rows_in_block, int columns_in_block){
     return board;
 }
 
-
-/* Query functions */
-
 void destroy_board(Board *board){
     int i;
 
@@ -85,6 +91,9 @@ void destroy_board(Board *board){
     free(board);
 }
 
+
+/* Query functions */
+
 bool is_cell_fixed(Board *board, int row, int column) {
     return board->cells_arr[row][column]->fixed;
 }
@@ -97,44 +106,120 @@ int get_cell_value(Board *board, int row, int column) {
     return board->cells_arr[row][column]->val;
 }
 
-List* get_neighbors(Board *board, int row, int column) {
+void get_block_indices(Board *board, int row, int column, int *r_start, int *r_end, int *c_start, int *c_end) {
+    *r_start = row - (row % board->num_of_rows_in_block);
+    *r_end = (row % board->num_of_rows_in_block) + board->num_of_rows_in_block;
+    *c_start = column - (column % board->num_of_columns_in_block);
+    *c_end = (column % board->num_of_columns_in_block) + board->num_of_columns_in_block;
+}
+
+List* generate_neighbors_list(Board *board, int row, int column) {
     int i, r_start, r_end, j, c_start, c_end;
     List *neighbors = create_list();
 
-    r_start = row - (row % board->num_of_rows_in_block);
-    r_end = (row % board->num_of_rows_in_block) + board->num_of_rows_in_block;
-    c_start = column - (column % board->num_of_columns_in_block);
-    c_end = (column % board->num_of_columns_in_block) + board->num_of_columns_in_block;
+    /* row & column neighbors */
+    for (i = 0; i < board->dim; i++) {
+        if (i != column) {
+            add(neighbors, board->cells_arr[row][i]);
+        }
+        if (i != row) {
+            add(neighbors, board->cells_arr[i][column]);
+        }
+    }
 
+    /* block neighbors */
+    get_block_indices(board, row, column, &r_start, &r_end, &c_start, &c_end);
     for (i = r_start; i < r_end; i++) {
         for (j = c_start; j < c_end; j++) {
-            add(neighbors, board->cells_arr[i][j]);
+            if (i != row && j != column) {
+                add(neighbors, board->cells_arr[i][j]);
+            }
         }
     }
     return neighbors;
 }
 
+List* get_neighbors(Board *board, int row, int column) {
+    if (board->cells_arr[row][column]->neighbors == NULL) {
+        board->cells_arr[row][column]->neighbors = generate_neighbors_list(board, row, column);
+    }
+
+    reset_head(board->cells_arr[row][column]->neighbors);
+    return board->cells_arr[row][column]->neighbors;
+}
+
+List* get_conflicting(Board *board, int row, int column) {
+    reset_head(board->cells_arr[row][column]->conflicting);
+    return board->cells_arr[row][column]->conflicting;
+}
 
 /* Board manipulation functions */
 
+void add_conflict(Board *board, BoardCell *cell, BoardCell *conflicting_cell) {
+    /* fixed cells are never erroneous */
+    if (cell->fixed) {
+        return;
+    }
+
+    if (is_empty(cell->conflicting)) {
+        cell->erroneous = true;
+        board->_errors_count++;
+    }
+    add(cell->conflicting, conflicting_cell);
+}
+
+void remove_conflict(Board *board, BoardCell *cell, BoardCell *conflicting_cell) {
+    bool had_conflicts = !is_empty(cell->conflicting);
+
+    delete(cell->conflicting, conflicting_cell);
+
+    if (had_conflicts && is_empty(cell->conflicting)) {
+        cell->erroneous = false;
+        board->_errors_count--;
+    }
+}
+
 void set_cell_value(Board *board, int row, int column, int value) {
+    BoardCell *neighbor;
+    List *neighbors;
+
+    /* no action needed (value wasn't changed) */
+    if (board->cells_arr[row][column]->val == value) {
+        return;
+    }
+
+    neighbors = get_neighbors(board, row, column);
+
+    do {
+        neighbor = (BoardCell*) get_current_item(neighbors);
+        if (neighbor->val == value) {
+            add_conflict(board, board->cells_arr[row][column], neighbor);
+            add_conflict(board, neighbor, board->cells_arr[row][column]);
+
+        } else if (neighbor->val == board->cells_arr[row][column]->val) {
+            remove_conflict(board, board->cells_arr[row][column], neighbor);
+            remove_conflict(board, neighbor, board->cells_arr[row][column]);
+        }
+    } while (next(neighbors) == 0);
+
     board->cells_arr[row][column]->val = value;
 }
 
 bool fix_cell(Board *board, int row, int column) {
-    BoardCell *neighbor;
-    List *neighbors = get_neighbors(board, row, column);
+    BoardCell *conflicting_neighbor;
+    List *conflicting = get_conflicting(board, row, column);
     int value = get_cell_value(board, row, column);
 
-    while ((neighbor = remove_last(neighbors)) != NULL) {
-        if (neighbor->val == value && neighbor->fixed == true) {
-            clear_list(neighbors);
-            destroy_list(neighbors);
-            return false;
-        }
+    /* validate there are no conflicting fixed neighbors */
+    if (!is_empty(conflicting)) {
+        do {
+            conflicting_neighbor = (BoardCell*) get_current_item(conflicting);
+            if (conflicting_neighbor->fixed == true) {
+                return false;
+            }
+        } while (next(conflicting) == 0);
     }
 
     board->cells_arr[row][column]->fixed = true;
-    destroy_list(neighbors);
     return true;
 }

@@ -75,6 +75,26 @@ void* remove_last(List *list) {
     return item;
 }
 
+void delete(List *list, void *item) {
+    void *temp;
+    if (is_empty(list)) {
+        return;
+    }
+
+    reset_head(list);
+    do {
+        if (list->head->item == item) {
+            while (!is_empty(list) && list->end->item == item) {
+                remove_last(list);
+            }
+            temp = list->head->item;
+            list->head->item = list->end->item;
+            list->end->item = temp;
+            remove_last(list);
+        }
+    } while (next(list) == 0);
+}
+
 bool has_next(List *list) {
     return (list->head != NULL && list->head->next != NULL);
 }
@@ -103,6 +123,16 @@ int prev(List *list) {
     return 0;
 }
 
+void reset_head(List *list) {
+    while (has_prev(list)) {
+        prev(list);
+    }
+}
+
 bool is_empty(List *list) {
     return list->end == NULL;
+}
+
+void* get_current_item(List *list) {
+    return list->head->item;
 }

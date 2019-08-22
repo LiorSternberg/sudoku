@@ -2,6 +2,7 @@
 #define FINAL_PROJECT_BOARD_H
 
 #include <stdbool.h>
+#include "List.h"
 
 #define CLEAR (0)
 #define MIN_INDEX (1)
@@ -10,6 +11,8 @@ typedef struct {
     int val;
     bool fixed;
     bool erroneous;
+    List *neighbors;
+    List *conflicting;
 } BoardCell;
 
 typedef struct {
