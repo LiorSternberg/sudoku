@@ -202,6 +202,11 @@ void set_cell_value(Board *board, int row, int column, int value) {
         }
     } while (next(neighbors) == 0);
 
+    if (value == CLEAR) {
+        board->empty_count++;
+    } else if (board->cells_arr[row][column]->val == CLEAR) {
+        board->empty_count--;
+    }
     board->cells_arr[row][column]->val = value;
 }
 
