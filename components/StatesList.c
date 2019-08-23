@@ -11,18 +11,28 @@ States* create_states_list() {
 
     states->moves = create_list();
 
+    /* add dummy first move to allow for more convenient work
+     * with the states list */
+    add_new_move(states);
+
     return states;
 }
 
 void clear_states_list(States *states) {
     Move *move;
-    while ((move = remove_last(states->moves)) != NULL) {
+
+    /* clear all moves but the dummy */
+    while (has_prev(states->moves)) {
+        move = remove_last(states->moves);
         destroy_move(move);
     }
 }
 
 void destroy_states_list(States *states) {
+    Move *dummy;
     clear_states_list(states);
+    dummy = remove_last(states->moves);
+    destroy_move(dummy);
     destroy_list(states->moves);
     free(states);
 }
