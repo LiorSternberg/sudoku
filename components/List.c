@@ -69,6 +69,10 @@ void* remove_last(List *list) {
         list->end->next = NULL;
     }
 
+    if (list->head == last) {
+        list->head = list->end;
+    }
+
     /* pop last node */
     item = last->item;
     free(last);
@@ -84,8 +88,11 @@ void delete(List *list, void *item) {
     reset_head(list);
     do {
         if (list->head->item == item) {
-            while (!is_empty(list) && list->end->item == item) {
+            while (list->end->item == item) {
                 remove_last(list);
+                if (list->end == list->head) {
+                    return;
+                }
             }
             temp = list->head->item;
             list->head->item = list->end->item;
