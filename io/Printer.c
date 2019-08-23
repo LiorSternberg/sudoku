@@ -52,6 +52,7 @@ void print(Game *game) {
     char *sep = generate_row_sep(game->board);
     bool mark_errors = game->mark_errors || game->mode == edit_mode;
 
+    printf("\n");
     for (row=0; row < game->board->dim; row++) {
         if ((row % game->board->num_of_rows_in_block) == 0) {
             printf("%s\n", sep);

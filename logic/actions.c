@@ -1,18 +1,41 @@
+#include <stdio.h>
 #include "actions.h"
 #include "../io/Command.h"
 #include "../io/Serializer.h"
 #include "../UserHandler.h"
 #include "../io/Printer.h"
+#include "../components/Move.h"
 
 #define DEFAULT_SIZE (3)
 
 
+void set_change(Board *board, Change *change) {
+    set_cell_value(board, change->actual_row, change->actual_column, change->value);
+}
+
+void reset_change(Board *board, Change *change) {
+    set_cell_value(board, change->actual_row, change->actual_column, change->prev_value);
+}
+
+void print_change(Change *change, bool reverted) {
+    int from_value, to_value;
+
+    if (reverted) {
+        from_value = change->value;
+        to_value = change->prev_value;
+    } else {
+        to_value = change->value;
+        from_value = change->prev_value;
+    }
+    printf(" @ Cell (%d, %d): [%d] --> [%d]\n", change->column, change->row, from_value, to_value);
+}
+
 void make_change(Game *game, int row, int column, int new_value) {
     int actual_row = row - 1, actual_column = column - 1;
     int prev_value = get_cell_value(game->board, actual_row, actual_column);
+    Change *change = add_change(game->states, row, column, prev_value, new_value);
 
-    add_change(game->states, row, column, prev_value, new_value);
-    set_cell_value(game->board, actual_row, actual_column, new_value);
+    set_change(game->board, change);
 }
 
 
@@ -55,7 +78,6 @@ void play_print_board(Command *command, Game *game) {
 }
 
 void play_set(Command *command, Game *game) {
-    clear_redo(game->states);
     add_new_move(game->states);
     make_change(game, command->data.set->row, command->data.set->column, command->data.set->value);
     print(game);
@@ -77,9 +99,40 @@ void play_guess(Command *command, Game *game) {}
 
 void play_generate(Command *command, Game *game) {}
 
-void play_undo(Command *command, Game *game) {}
+void play_undo(Command *command, Game *game) {
+    Move *current_move = (Move*) get_current_item(game->states->moves);
+    Change *change;
 
-void play_redo(Command *command, Game *game) {}
+    reset_head(current_move->changes);
+    printf("The following changes were made: \n-------------------------------\n");
+    do {
+        change = (Change*) get_current_item(current_move->changes);
+        reset_change(game->board, change);
+        print_change(change, true);
+    }
+    while (next(current_move->changes) == 0);
+
+    prev(game->states->moves);
+    print(game);
+}
+
+void play_redo(Command *command, Game *game) {
+    Move *current_move;
+    Change *change;
+
+    next(game->states->moves);
+    current_move = (Move*) get_current_item(game->states->moves);
+
+    reset_head(current_move->changes);
+    printf("The following changes were made: \n-------------------------------\n");
+    do {
+        change = (Change*) get_current_item(current_move->changes);
+        set_change(game->board, change);
+        print_change(change, false);
+    }
+    while (next(current_move->changes) == 0);
+    print(game);
+}
 
 void play_save(Command *command, Game *game) {}
 

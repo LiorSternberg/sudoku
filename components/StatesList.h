@@ -2,6 +2,7 @@
 #define FINAL_PROJECT_STATESLIST_H
 
 #include "List.h"
+#include "Move.h"
 
 typedef struct {
     List *moves;
@@ -17,6 +18,6 @@ void clear_redo(States *states);
 
 void add_new_move(States *states);
 
-void add_change(States *states, int row, int column, int prev_val, int new_val);
+Change* add_change(States *states, int row, int column, int prev_val, int new_val);
 
 #endif

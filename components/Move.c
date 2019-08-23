@@ -4,14 +4,16 @@
 #include "../MemoryError.h"
 
 
-Change* create_change(int row, int column, int prev_val, int new_val) {
+Change* create_change(int row, int column, int prev_value, int new_value) {
     Change *change = malloc(sizeof(Change));
     validate_memory_allocation("create_change", change);
 
-    change->row=row;
-    change->col=column;
-    change->val=new_val;
-    change->prev_val=prev_val;
+    change->row = row;
+    change->actual_row = row - 1;
+    change->column = column;
+    change->actual_column = column - 1;
+    change->value = new_value;
+    change->prev_value = prev_value;
 
     return change;
 }

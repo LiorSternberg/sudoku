@@ -5,16 +5,18 @@
 
 typedef struct {
     int row;
-    int col;
-    int val;
-    int prev_val;
+    int actual_row;
+    int column;
+    int actual_column;
+    int value;
+    int prev_value;
 } Change;
 
 typedef struct {
     List *changes;
 } Move;
 
-Change* create_change(int row, int column, int prev_val, int new_val);
+Change* create_change(int row, int column, int prev_value, int new_value);
 
 void destroy_change(Change *change);
 

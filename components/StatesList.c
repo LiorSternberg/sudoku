@@ -2,7 +2,6 @@
 
 #include "StatesList.h"
 #include "../MemoryError.h"
-#include "Move.h"
 
 
 States* create_states_list() {
@@ -47,12 +46,15 @@ void clear_redo(States *states) {
 
 void add_new_move(States *states) {
     Move *move = create_move();
+    clear_redo(states);
     add(states->moves, move);
+    next(states->moves);
 }
 
-void add_change(States *states, int row, int column, int prev_val, int new_val) {
+Change* add_change(States *states, int row, int column, int prev_val, int new_val) {
     Change *change = create_change(row, column, prev_val, new_val);
     Move *current_move = get_current_item(states->moves);
     add(current_move->changes, change);
+    return change;
 }
 
