@@ -11,6 +11,10 @@ void announce_game_won();
 
 void announce_game_erroneous();
 
+void announce_changes_made();
+
+void print_change(Change *change, bool reverted);
+
 void get_user_command(Game *game, Command *command);
 
 void announce_error(Error *error);

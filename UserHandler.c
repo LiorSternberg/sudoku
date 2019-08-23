@@ -61,6 +61,23 @@ void announce_game_erroneous() {
     printf("Hmm this isn't quite right. You have some errors you need to fix in order to complete the game.\n\n");
 }
 
+void announce_changes_made() {
+    printf("The following changes were made: \n-------------------------------\n");
+}
+
+void print_change(Change *change, bool reverted) {
+    int from_value, to_value;
+
+    if (reverted) {
+        from_value = change->value;
+        to_value = change->prev_value;
+    } else {
+        to_value = change->value;
+        from_value = change->prev_value;
+    }
+    printf(" @ Cell (%d, %d): [%d] --> [%d]\n", change->column, change->row, from_value, to_value);
+}
+
 void announce_error(Error *error) {
     printf("%s\n", error->message);
 }

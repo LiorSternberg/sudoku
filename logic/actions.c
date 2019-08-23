@@ -17,19 +17,6 @@ void reset_change(Board *board, Change *change) {
     set_cell_value(board, change->actual_row, change->actual_column, change->prev_value);
 }
 
-void print_change(Change *change, bool reverted) {
-    int from_value, to_value;
-
-    if (reverted) {
-        from_value = change->value;
-        to_value = change->prev_value;
-    } else {
-        to_value = change->value;
-        from_value = change->prev_value;
-    }
-    printf(" @ Cell (%d, %d): [%d] --> [%d]\n", change->column, change->row, from_value, to_value);
-}
-
 void make_change(Game *game, int row, int column, int new_value) {
     int actual_row = row - 1, actual_column = column - 1;
     int prev_value = get_cell_value(game->board, actual_row, actual_column);
@@ -104,7 +91,7 @@ void play_undo(Command *command, Game *game) {
     Change *change;
 
     reset_head(current_move->changes);
-    printf("The following changes were made: \n-------------------------------\n");
+    announce_changes_made();
     do {
         change = (Change*) get_current_item(current_move->changes);
         reset_change(game->board, change);
@@ -124,7 +111,7 @@ void play_redo(Command *command, Game *game) {
     current_move = (Move*) get_current_item(game->states->moves);
 
     reset_head(current_move->changes);
-    printf("The following changes were made: \n-------------------------------\n");
+    announce_changes_made();
     do {
         change = (Change*) get_current_item(current_move->changes);
         set_change(game->board, change);
