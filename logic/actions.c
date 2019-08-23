@@ -16,6 +16,8 @@ void make_change(Game *game, int row, int column, int new_value) {
 }
 
 
+/* The different plays */
+
 void play_solve(Command *command, Game *game) {
     Board *board = load_from_file(command->data.solve->path, command->error, solve_mode);
     if (is_valid(command)) {
