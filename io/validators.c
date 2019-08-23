@@ -128,14 +128,14 @@ void assert_board_not_erroneous(Command *command, Board *board) {
 
 /* Assert that the given cell is not fixed. */
 void assert_cell_not_fixed(Command *command, Board *board, int row, int column) {
-    if (board != NULL && is_cell_fixed(board, row, column)) {
+    if (board != NULL && is_cell_fixed(board, row - 1, column - 1)) {
         invalidate(command, FIXED_ERROR, invalid_state);
     }
 }
 
 /* Assert that the given cell is empty. */
 void assert_cell_empty(Command *command, Board *board, int row, int column) {
-    if (board != NULL && !is_cell_empty(board, row, column)) {
+    if (board != NULL && !is_cell_empty(board, row - 1, column - 1)) {
         invalidate(command, NOT_EMPTY_ERROR, invalid_state);
     }
 }

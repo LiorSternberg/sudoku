@@ -53,6 +53,14 @@ void announce_game_start() {
     printf("%s Welcome! Let the Games Begin!\n\n", HEADLINE);
 }
 
+void announce_game_won() {
+    printf("*~*~*~*~* Woo Hoo! You did it! *~*~*~*~* \nPlease load another game or exit.\n\n");
+}
+
+void announce_game_erroneous() {
+    printf("Hmm this isn't quite right. You have some errors you need to fix in order to complete the game.\n\n");
+}
+
 void announce_error(Error *error) {
     printf("%s\n", error->message);
 }

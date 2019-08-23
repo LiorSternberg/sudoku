@@ -42,7 +42,20 @@ void play_print_board(Command *command, Game *game) {
     print(game);
 }
 
-void play_set(Command *command, Game *game) {}
+void play_set(Command *command, Game *game) {
+    set_cell_value(game->board, command->data.set->row - 1, command->data.set->column - 1, command->data.set->value);
+    print(game);
+
+    /* Check if this is the last cell to be filled */
+    if (game->mode == solve_mode && game->board->empty_count == 0) {
+        if (game->board->errors_count == 0) {
+            announce_game_won();
+            game->mode = init_mode;
+        } else {
+            announce_game_erroneous();
+        }
+    }
+}
 
 void play_validate(Command *command, Game *game) {}
 

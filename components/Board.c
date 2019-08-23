@@ -189,7 +189,6 @@ void add_conflict(Board *board, BoardCell *cell, BoardCell *conflicting_cell) {
         board->errors_count++;
     }
     add(cell->conflicting, conflicting_cell);
-    print_cell_conflicts(board, cell, conflicting_cell);
 }
 
 void remove_conflict(Board *board, BoardCell *cell, BoardCell *conflicting_cell) {
@@ -201,7 +200,6 @@ void remove_conflict(Board *board, BoardCell *cell, BoardCell *conflicting_cell)
         cell->erroneous = false;
         board->errors_count--;
     }
-    print_cell_conflicts(board, cell, conflicting_cell);
 }
 
 void set_cell_value(Board *board, int row, int column, int value) {
