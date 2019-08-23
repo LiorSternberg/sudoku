@@ -6,6 +6,16 @@
 
 #define DEFAULT_SIZE (3)
 
+
+void make_change(Game *game, int row, int column, int new_value) {
+    int actual_row = row - 1, actual_column = column - 1;
+    int prev_value = get_cell_value(game->board, actual_row, actual_column);
+
+    add_change(game->states, row, column, prev_value, new_value);
+    set_cell_value(game->board, actual_row, actual_column, new_value);
+}
+
+
 void play_solve(Command *command, Game *game) {
     Board *board = load_from_file(command->data.solve->path, command->error, solve_mode);
     if (is_valid(command)) {
@@ -43,7 +53,9 @@ void play_print_board(Command *command, Game *game) {
 }
 
 void play_set(Command *command, Game *game) {
-    set_cell_value(game->board, command->data.set->row - 1, command->data.set->column - 1, command->data.set->value);
+    clear_redo(game->states);
+    add_new_move(game->states);
+    make_change(game, command->data.set->row, command->data.set->column, command->data.set->value);
     print(game);
 
     /* Check if this is the last cell to be filled */
