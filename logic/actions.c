@@ -131,7 +131,22 @@ void play_num_solutions(Command *command, Game *game) {}
 
 void play_autofill(Command *command, Game *game) {}
 
-void play_reset(Command *command, Game *game) {}
+void play_reset(Command *command, Game *game) {
+    Move *current_move;
+    Change *change;
+
+    while (has_prev(game->states->moves)) {
+        current_move = (Move*) get_current_item(game->states->moves);
+        reset_head(current_move->changes);
+        do {
+            change = (Change*) get_current_item(current_move->changes);
+            reset_change(game->board, change);
+        } while (next(current_move->changes) == 0);
+        prev(game->states->moves);
+    };
+
+    print(game);
+}
 
 void play_exit_game(Command *command, Game *game) {
     game->over = true;
