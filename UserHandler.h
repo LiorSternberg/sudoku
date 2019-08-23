@@ -19,5 +19,7 @@ void get_user_command(Game *game, Command *command);
 
 void announce_error(Error *error);
 
+void announce_exit();
+
 #endif
 

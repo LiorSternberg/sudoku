@@ -133,4 +133,7 @@ void play_autofill(Command *command, Game *game) {}
 
 void play_reset(Command *command, Game *game) {}
 
-void play_exit_game(Command *command, Game *game) {}
+void play_exit_game(Command *command, Game *game) {
+    game->over = true;
+    announce_exit();
+}

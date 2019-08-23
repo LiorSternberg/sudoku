@@ -18,9 +18,10 @@ int main() {
      *
      */
 
-    while (true) {
+    while (!game->over) {
         play_turn(game, command);
     }
 
+    destroy_game(game);
     return 0;
 }

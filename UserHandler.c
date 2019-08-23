@@ -21,9 +21,10 @@
 "                                                                                     \n\n" \
 
 
-void handle_eof(Game *game) {
+void handle_eof(Game *game, Command *command) {
     if (feof(stdin)) {
-//        announce_exit();
+        announce_exit();
+        destroy_command(command);
         destroy_game(game);
         exit(0);
     }
@@ -34,6 +35,7 @@ void get_user_command(Game *game, Command *command) {
 
     printf("Please enter a command:\n");
     fgets(raw_command, INPUT_LEN, stdin);
+    handle_eof(game, command);
     if (raw_command[MAX_COMMAND_LEN] != 0) {
         invalidate(command, COMMAND_TOO_LONG_ERROR, invalid_command_length);
         fflush(stdin);
@@ -80,4 +82,8 @@ void print_change(Change *change, bool reverted) {
 
 void announce_error(Error *error) {
     printf("%s\n", error->message);
+}
+
+void announce_exit() {
+    printf("Exiting...\n");
 }
