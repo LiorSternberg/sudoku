@@ -2,9 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
 #include "validators.h"
-#include "../components/Game.h"
-#include "Command.h"
 #include "../MemoryError.h"
 
 #define FILE_DOESNT_EXIST_ERROR "Error: The given file doesn't exist!"

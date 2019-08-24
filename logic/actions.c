@@ -1,10 +1,7 @@
 #include <stdio.h>
 #include "actions.h"
-#include "../io/Command.h"
 #include "../io/Serializer.h"
-#include "../UserHandler.h"
 #include "../io/Printer.h"
-#include "../components/Move.h"
 
 #define DEFAULT_SIZE (3)
 

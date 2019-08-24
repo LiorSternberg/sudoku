@@ -1,13 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "io/Parser.h"
-#include "UserHandler.h"
-#include "io/validators.h"
-#include "io/Serializer.h"
+
 #include "GameManager.h"
+#include "io/Printer.h"
 
 int main() {
-    Command *command;
+    Command *command = NULL;
     Game *game = create_game();
     announce_game_start();
 

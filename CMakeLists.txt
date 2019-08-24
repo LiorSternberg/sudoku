@@ -15,8 +15,6 @@ add_executable(final_project
         io/Printer.c
         Solver.h
         Solver.c
-        UserHandler.h
-        UserHandler.c
         logic/Backtracking.h
         logic/Backtracking.c
         logic/ILP.h
