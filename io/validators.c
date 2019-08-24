@@ -28,6 +28,7 @@
 #define INT_RANGE "Must be a valid integer between %d and %d."
 #define DOUBLE_RANGE "Must be a valid floating point number between %.1f and %.1f."
 
+#define UNUSED(x) (void)(x)
 
 /* Generic assertions */
 
@@ -70,7 +71,6 @@ void assert_file_writable(Command *command, char *path) {
 /* Assert that an int argument was parsed successfully, and contains a legal boolean value (0/1). */
 void assert_bool_arg(Command *command, char *arg_name, int value) {
     char *error_message, error_format[MAX_ERROR_MESSAGE_LEN] = {0};
-    int res;
 
     if (value == 0 || value == 1) {
         return; /* valid */
@@ -80,14 +80,13 @@ void assert_bool_arg(Command *command, char *arg_name, int value) {
     validate_memory_allocation("assert_bool_arg", error_message);
 
     strcat(strcpy(error_format, ARG_OUT_OF_RANGE_ERROR), BOOL_RANGE);
-    res = sprintf(error_message, error_format, arg_name);
+    sprintf(error_message, error_format, arg_name);
     invalidate(command, error_message, invalid_arg_range);
 }
 
 /* Assert that an int argument was parsed successfully, and contains a legal value in the allowed range. */
 void assert_int_arg_in_range(Command *command, char *arg_name, int value, int min, int max) {
     char *error_message, error_format[MAX_ERROR_MESSAGE_LEN] = {0};
-    int res;
 
     if (value >= min && value <= max) {
         return; /* valid */
@@ -97,14 +96,13 @@ void assert_int_arg_in_range(Command *command, char *arg_name, int value, int mi
     validate_memory_allocation("assert_int_arg_in_range", error_message);
 
     strcat(strcpy(error_format, ARG_OUT_OF_RANGE_ERROR), INT_RANGE);
-    res = sprintf(error_message, error_format, arg_name, min, max);
+    sprintf(error_message, error_format, arg_name, min, max);
     invalidate(command, error_message, invalid_arg_range);
 }
 
 /* Assert that a double argument was parsed successfully, and contains a legal value in the allowed range. */
 void assert_double_arg_in_range(Command *command, char *arg_name, double value, double min, double max) {
     char *error_message, error_format[MAX_ERROR_MESSAGE_LEN] = {0};
-    int res;
 
     if (value >= min && value <= max) {
         return; /* valid */
@@ -114,7 +112,7 @@ void assert_double_arg_in_range(Command *command, char *arg_name, double value, 
     validate_memory_allocation("assert_double_arg_in_range", error_message);
 
     strcat(strcpy(error_format, ARG_OUT_OF_RANGE_ERROR), DOUBLE_RANGE);
-    res = sprintf(error_message, error_format, arg_name, min, max);
+    sprintf(error_message, error_format, arg_name, min, max);
     invalidate(command, error_message, invalid_arg_range);
 }
 
@@ -151,6 +149,8 @@ void base_validator(Command *command, Game *game) {
  * within the function IS IMPORTANT and should not be changed. */
 
 void solve_validator(Command *command, Game *game) {
+    UNUSED(game);
+
     if (command->data.solve == NULL) {
         return;
     }
@@ -159,6 +159,8 @@ void solve_validator(Command *command, Game *game) {
 }
 
 void edit_validator(Command *command, Game *game) {
+    UNUSED(game);
+
     if (command->data.edit == NULL) {
         return;
     }
@@ -169,6 +171,8 @@ void edit_validator(Command *command, Game *game) {
 }
 
 void mark_errors_validator(Command *command, Game *game) {
+    UNUSED(game);
+
     if (command->data.mark_errors == NULL) {
         return;
     }
