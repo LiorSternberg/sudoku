@@ -5,7 +5,7 @@
 #include "List.h"
 
 
-BoardCell* create_cell(row, column) {
+BoardCell* create_cell(int row, int column) {
     BoardCell *cell = malloc(sizeof(BoardCell));
     validate_memory_allocation("create_cell", cell);
 
@@ -54,6 +54,7 @@ void destroy_row(BoardCell **row, int length) {
 
 Board* create_board(int rows_in_block, int columns_in_block){
     int i, dim;
+    BoardCell ***cells_arr;
 
     Board *board = malloc(sizeof(Board));
     validate_memory_allocation("create_board", board);
@@ -66,7 +67,7 @@ Board* create_board(int rows_in_block, int columns_in_block){
     board->empty_count = dim * dim;
     board->errors_count = 0;
 
-    BoardCell ***cells_arr = malloc(dim * sizeof(BoardCell**));
+    cells_arr = malloc(dim * sizeof(BoardCell**));
     validate_memory_allocation("create_board", board);
 
     for (i=0; i < dim; i++) {
@@ -157,7 +158,7 @@ List* get_conflicting(Board *board, int row, int column) {
 /* Board manipulation functions */
 
 /* TODO: remove this function, it's for debug purposes */
-void print_cell_conflicts(Board *board, BoardCell *cell, BoardCell *conflicting_cell) {
+void print_cell_conflicts(Board *board, BoardCell *cell) {
     List *conflicting = get_conflicting(board, cell->row, cell->column);
     BoardCell *current;
     printf("=============================\n");
@@ -238,7 +239,6 @@ void set_cell_value(Board *board, int row, int column, int value) {
 bool fix_cell(Board *board, int row, int column) {
     BoardCell *conflicting_neighbor;
     List *conflicting = get_conflicting(board, row, column);
-    int value = get_cell_value(board, row, column);
 
     /* validate there are no conflicting fixed neighbors */
     if (!is_empty(conflicting)) {
