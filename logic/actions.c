@@ -4,7 +4,7 @@
 #include "../io/Printer.h"
 
 #define DEFAULT_SIZE (3)
-
+#define UNUSED(x) (void)(x)
 
 void set_change(Board *board, Change *change) {
     set_cell_value(board, change->actual_row, change->actual_column, change->value);
@@ -58,6 +58,7 @@ void play_mark_errors(Command *command, Game *game) {
 }
 
 void play_print_board(Command *command, Game *game) {
+    UNUSED(command);
     print(game);
 }
 
@@ -77,15 +78,26 @@ void play_set(Command *command, Game *game) {
     }
 }
 
-void play_validate(Command *command, Game *game) {}
+void play_validate(Command *command, Game *game) {
+    UNUSED(command);
+    UNUSED(game);
+}
 
-void play_guess(Command *command, Game *game) {}
+void play_guess(Command *command, Game *game) {
+    UNUSED(command);
+    UNUSED(game);
+}
 
-void play_generate(Command *command, Game *game) {}
+void play_generate(Command *command, Game *game) {
+    UNUSED(command);
+    UNUSED(game);
+}
 
 void play_undo(Command *command, Game *game) {
     Move *current_move = (Move*) get_current_item(game->states->moves);
     Change *change;
+
+    UNUSED(command);
 
     reset_head(current_move->changes);
     announce_changes_made();
@@ -104,6 +116,8 @@ void play_redo(Command *command, Game *game) {
     Move *current_move;
     Change *change;
 
+    UNUSED(command);
+
     next(game->states->moves);
     current_move = (Move*) get_current_item(game->states->moves);
 
@@ -118,19 +132,36 @@ void play_redo(Command *command, Game *game) {
     print(game);
 }
 
-void play_save(Command *command, Game *game) {}
+void play_save(Command *command, Game *game) {
+    UNUSED(command);
+    UNUSED(game);
+}
 
-void play_hint(Command *command, Game *game) {}
+void play_hint(Command *command, Game *game) {
+    UNUSED(command);
+    UNUSED(game);
+}
 
-void play_guess_hint(Command *command, Game *game) {}
+void play_guess_hint(Command *command, Game *game) {
+    UNUSED(command);
+    UNUSED(game);
+}
 
-void play_num_solutions(Command *command, Game *game) {}
+void play_num_solutions(Command *command, Game *game) {
+    UNUSED(command);
+    UNUSED(game);
+}
 
-void play_autofill(Command *command, Game *game) {}
+void play_autofill(Command *command, Game *game) {
+    UNUSED(command);
+    UNUSED(game);
+}
 
 void play_reset(Command *command, Game *game) {
     Move *current_move;
     Change *change;
+
+    UNUSED(command);
 
     while (has_prev(game->states->moves)) {
         current_move = (Move*) get_current_item(game->states->moves);
@@ -146,6 +177,8 @@ void play_reset(Command *command, Game *game) {
 }
 
 void play_exit_game(Command *command, Game *game) {
+    UNUSED(command);
+
     game->over = true;
     announce_exit();
 }
