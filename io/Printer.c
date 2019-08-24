@@ -12,11 +12,13 @@
 #define ERRONEOUS "*"
 #define NO_MARK " "
 
-#define HEADLINE \
+#define HEADLINE1 \
 "         _____           _       _           ___  ___          _                     \n" \
 "        /  ___|         | |     | |          |  \\/  |         | |                    \n" \
 "        \\ `--. _   _  __| | ___ | | ___   _  | .  . | __ _  __| |_ __   ___  ___ ___ \n" \
-"         `--. \\ | | |/ _` |/ _ \\| |/ / | | | | |\\/| |/ _` |/ _` | '_ \\ / _ \\/ __/ __|\n" \
+"         `--. \\ | | |/ _` |/ _ \\| |/ / | | | | |\\/| |/ _` |/ _` | '_ \\ / _ \\/ __/ __|\n"
+
+#define HEADLINE2 \
 "        /\\__/ / |_| | (_| | (_) |   <| |_| | | |  | | (_| | (_| | | | |  __/\\__ \\__ \\\n" \
 "        \\____/ \\__,_|\\__,_|\\___/|_|\\_\\\\__,_| \\_|  |_/\\__,_|\\__,_|_| |_|\\___||___/___/\n" \
 "                                                                                     \n\n" \
@@ -73,7 +75,9 @@ void print(Game *game) {
 }
 
 void announce_game_start() {
-    printf("%s Welcome! Let the Games Begin!\n\n", HEADLINE);
+    printf(HEADLINE1);
+    printf(HEADLINE2);
+    printf("Welcome! Let the Games Begin!\n\n");
 }
 
 void announce_game_won() {
