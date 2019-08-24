@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 
 #include "Parser.h"
 #include "validators.h"
@@ -24,11 +25,11 @@
 
 #define MAX_ERROR_MESSAGE_LEN 1024
 
+#define UNUSED(x) (void)(x)
 
 /* Asserts the number of arguments that was entered by the user is correct. */
 void assert_num_of_args(Command *command, int min_expected, int max_expected, int actual) {
     char *error_message, *error_type;
-    int res;
 
     if (actual > max_expected) {
         error_type = TOO_MANY_ARGS_ERROR;
@@ -42,7 +43,7 @@ void assert_num_of_args(Command *command, int min_expected, int max_expected, in
     error_message = calloc(MAX_ERROR_MESSAGE_LEN, sizeof(char));
     validate_memory_allocation("assert_num_of_args", error_message);
 
-    res = sprintf(error_message, "%s Correct command format: %s", error_type, command->format);
+    sprintf(error_message, "%s Correct command format: %s", error_type, command->format);
     invalidate(command, error_message, invalid_num_of_args);
 }
 
@@ -249,6 +250,7 @@ void guess_hint_args_parser(Command *self, char **args, int num_of_args) {
 
 /* A basic parser for commands with no additional arguments. */
 void basic_parser(Command *self, char **args, int num_of_args) {
+    UNUSED(args);
     assert_num_of_args(self, NO_ARGS, NO_ARGS, num_of_args);
 }
 
