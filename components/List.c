@@ -30,11 +30,13 @@ int destroy_list(List *list) {
 }
 
 void add(List *list, void *item) {
+    Node *node;
+
     if (item == NULL) {
         return;
     }
 
-    Node *node = malloc(sizeof(Node));
+    node = malloc(sizeof(Node));
     validate_memory_allocation("List -> add", node);
 
     node->item = item;
