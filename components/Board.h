@@ -60,4 +60,10 @@ bool is_erroneous_board(Board *board);
 /* Returns true if the (i,j) cell contains illegal value */
 bool is_erroneous_cell(Board *board, int row, int column);
 
+/* Returns a copy of the given board (deep copy) */
+Board* get_board_copy(Board *board);
+
+/* Sets all unempty cells in the given board to fixed */
+void fix_unempty_board_cells(Board *board);
+
 #endif

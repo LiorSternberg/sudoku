@@ -265,3 +265,33 @@ bool is_erroneous_board(Board *board){
 bool is_erroneous_cell(Board *board, int row, int column){
     return (get_board_cell(board, row, column)->erroneous);
 }
+
+Board* get_board_copy(Board *board){
+    int i, j, val, N;
+    Board *copy = create_board(board->num_of_rows_in_block, board->num_of_columns_in_block);
+    N = board->dim;
+    for (i=0 ; i<N ; i++){
+        for (j=0 ; j<N ; j++){
+            val = get_cell_value(board, i, j);
+            set_cell_value(copy, i, j, val);
+            if (is_cell_fixed(board, i, j)){
+                fix_cell(copy, i, j);
+            }
+        }
+    }
+
+    return copy;
+}
+
+void fix_unempty_board_cells(Board *board){
+    int i, j, N;
+    N = board->dim;
+
+    for (i=0 ; i<N ; i++){
+        for (j=0 ; j<N ; j++){
+            if (!is_cell_empty(board, i, j)){
+                fix_cell(board, i, j);
+            }
+        }
+    }
+}
