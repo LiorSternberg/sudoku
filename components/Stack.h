@@ -7,16 +7,12 @@
 
 #include <stdbool.h>
 
-typedef struct{
-    int i;
-    int j;
-    int val;
-} Parameters;
-
 typedef struct StackNode StackNode;
 
 struct StackNode{
-    Parameters params;
+    int i;
+    int j;
+    int val;
     StackNode *next;
 };
 
