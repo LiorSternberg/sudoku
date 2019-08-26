@@ -1,15 +1,17 @@
 #include <stdlib.h>
-#include <libintl.h>
+#include <stdio.h>
 #include "Board.h"
 #include "../MemoryError.h"
 #include "List.h"
 
 
-BoardCell* create_cell() {
+BoardCell* create_cell(int row, int column) {
     BoardCell *cell = malloc(sizeof(BoardCell));
     validate_memory_allocation("create_cell", cell);
 
     cell->val = CLEAR;
+    cell->row = row;
+    cell->column = column;
     cell->fixed = false;
     cell->erroneous = false;
     cell->neighbors = NULL;
@@ -29,13 +31,13 @@ void destroy_cell(BoardCell *cell) {
     free(cell);
 }
 
-BoardCell** create_row(int length) {
+BoardCell** create_row(int length, int index) {
     int i;
     BoardCell **row = malloc(length * sizeof(BoardCell*));
     validate_memory_allocation("create_row", row);
 
     for (i=0; i < length; i++) {
-        row[i] = create_cell();
+        row[i] = create_cell(index, i);
     }
 
     return row;
@@ -52,6 +54,7 @@ void destroy_row(BoardCell **row, int length) {
 
 Board* create_board(int rows_in_block, int columns_in_block){
     int i, dim;
+    BoardCell ***cells_arr;
 
     Board *board = malloc(sizeof(Board));
     validate_memory_allocation("create_board", board);
@@ -60,16 +63,15 @@ Board* create_board(int rows_in_block, int columns_in_block){
     board->num_of_rows_in_block = rows_in_block;
     board->num_of_columns_in_block = columns_in_block;
     board->dim = dim;
-    board->erroneous = false;
     board->solved = false;
-    board->empty_count = 0;
-    board->_errors_count = 0;
+    board->empty_count = dim * dim;
+    board->errors_count = 0;
 
-    BoardCell ***cells_arr = malloc(dim * sizeof(BoardCell**));
+    cells_arr = malloc(dim * sizeof(BoardCell**));
     validate_memory_allocation("create_board", board);
 
     for (i=0; i < dim; i++) {
-        cells_arr[i] = create_row(dim);
+        cells_arr[i] = create_row(dim, i);
     }
 
     board->cells_arr = cells_arr;
@@ -108,9 +110,9 @@ int get_cell_value(Board *board, int row, int column) {
 
 void get_block_indices(Board *board, int row, int column, int *r_start, int *r_end, int *c_start, int *c_end) {
     *r_start = row - (row % board->num_of_rows_in_block);
-    *r_end = (row % board->num_of_rows_in_block) + board->num_of_rows_in_block;
+    *r_end = *r_start + board->num_of_rows_in_block;
     *c_start = column - (column % board->num_of_columns_in_block);
-    *c_end = (column % board->num_of_columns_in_block) + board->num_of_columns_in_block;
+    *c_end = *c_start + board->num_of_columns_in_block;
 }
 
 List* generate_neighbors_list(Board *board, int row, int column) {
@@ -155,6 +157,28 @@ List* get_conflicting(Board *board, int row, int column) {
 
 /* Board manipulation functions */
 
+/* TODO: remove this function, it's for debug purposes */
+void print_cell_conflicts(Board *board, BoardCell *cell) {
+    List *conflicting = get_conflicting(board, cell->row, cell->column);
+    BoardCell *current;
+    printf("=============================\n");
+    printf("Board errors count: %d\n", board->errors_count);
+    printf("(%d, %d): [", cell->column+1, cell->row+1);
+    if (is_empty(conflicting)) {
+        printf(" ---");
+    } else {
+        current = (BoardCell*) get_current_item(conflicting);
+        printf("(%d, %d)", current->column+1, current->row+1);
+        while (has_next(conflicting)) {
+            next(conflicting);
+            current = (BoardCell*) get_current_item(conflicting);
+            printf(", (%d, %d)", current->column+1, current->row+1);
+        }
+    }
+    printf("]\n");
+
+}
+
 void add_conflict(Board *board, BoardCell *cell, BoardCell *conflicting_cell) {
     /* fixed cells are never erroneous */
     if (cell->fixed) {
@@ -163,7 +187,7 @@ void add_conflict(Board *board, BoardCell *cell, BoardCell *conflicting_cell) {
 
     if (is_empty(cell->conflicting)) {
         cell->erroneous = true;
-        board->_errors_count++;
+        board->errors_count++;
     }
     add(cell->conflicting, conflicting_cell);
 }
@@ -175,7 +199,7 @@ void remove_conflict(Board *board, BoardCell *cell, BoardCell *conflicting_cell)
 
     if (had_conflicts && is_empty(cell->conflicting)) {
         cell->erroneous = false;
-        board->_errors_count--;
+        board->errors_count--;
     }
 }
 
@@ -192,7 +216,9 @@ void set_cell_value(Board *board, int row, int column, int value) {
 
     do {
         neighbor = (BoardCell*) get_current_item(neighbors);
-        if (neighbor->val == value) {
+        if (neighbor->val == CLEAR) {
+            /* conflicts are not relevant for clear cells */
+        } else if (neighbor->val == value) {
             add_conflict(board, board->cells_arr[row][column], neighbor);
             add_conflict(board, neighbor, board->cells_arr[row][column]);
 
@@ -202,13 +228,17 @@ void set_cell_value(Board *board, int row, int column, int value) {
         }
     } while (next(neighbors) == 0);
 
+    if (value == CLEAR) {
+        board->empty_count++;
+    } else if (board->cells_arr[row][column]->val == CLEAR) {
+        board->empty_count--;
+    }
     board->cells_arr[row][column]->val = value;
 }
 
 bool fix_cell(Board *board, int row, int column) {
     BoardCell *conflicting_neighbor;
     List *conflicting = get_conflicting(board, row, column);
-    int value = get_cell_value(board, row, column);
 
     /* validate there are no conflicting fixed neighbors */
     if (!is_empty(conflicting)) {

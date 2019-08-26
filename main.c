@@ -1,23 +1,25 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "io/Parser.h"
-#include "UserHandler.h"
-#include "io/validators.h"
-#include "io/Serializer.h"
+
 #include "GameManager.h"
+#include "io/Printer.h"
 
 int main() {
-    Command *command;
+    Command *command = NULL;
     Game *game = create_game();
-    Error *error = create_error();
     announce_game_start();
-//    game->board = load_from_file("../test_files/boards/board_2_5_with_fixed.txt", error);
-//    save_to_file(game, "../test_files/boards/test.txt", error);
-//    announce_error(error);
 
-    while (true) {
+    /* Ty running:
+     *
+     * solve ../test_files/boards/board_2_5_with_fixed.txt
+     * solve ../test_files/boards/board_2_2_almost_full.txt
+     *
+     */
+
+    while (!game->over) {
         play_turn(game, command);
     }
 
+    destroy_game(game);
     return 0;
 }

@@ -14,6 +14,7 @@ typedef enum {
 typedef struct {
     GameMode mode;
     bool mark_errors;
+    bool over;
     States *states;
     Board *board;
 } Game;

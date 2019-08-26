@@ -9,6 +9,7 @@ Game* create_game() {
 
     game->mark_errors = true;
     game->mode = init_mode;
+    game->over = false;
     game->states = create_states_list();
     game->board = NULL;
 

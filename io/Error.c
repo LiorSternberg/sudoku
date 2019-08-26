@@ -19,6 +19,6 @@ void set_error(Error *error, char *message, ErrorLevel level) {
 }
 
 void destroy_error(Error* error) {
-    free(error->message);
+    /*free(error->message);*/
     free(error);
 }

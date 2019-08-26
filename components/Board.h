@@ -9,6 +9,8 @@
 
 typedef struct {
     int val;
+    int row;
+    int column;
     bool fixed;
     bool erroneous;
     List *neighbors;
@@ -21,8 +23,7 @@ typedef struct {
     int num_of_columns_in_block;
     BoardCell ***cells_arr;
     bool solved;
-    int _errors_count;
-    bool erroneous;
+    int errors_count;
     int empty_count;
 } Board;
 

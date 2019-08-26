@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 
 #include "Serializer.h"
-#include "../UserHandler.h"
 
 #define SUCCESS (0)
 #define FAILURE (1)

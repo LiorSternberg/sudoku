@@ -27,31 +27,43 @@ Command* create_command() {
 }
 
 void destroy_command(Command* command) {
-    if (command->data.solve != NULL) {
-        free(command->data.solve->path);
+    if (command->type == solve) {
+        /*free(command->data.solve->path);*/
         free(command->data.solve);
     }
-    if (command->data.edit != NULL) {
-        free(command->data.edit->path);
+    else if (command->type == edit) {
+        /*free(command->data.edit->path);*/
         free(command->data.edit);
     }
-    if (command->data.save != NULL) {
-        free(command->data.save->path);
+    else if (command->type == save) {
+        /*free(command->data.save->path);*/
         free(command->data.save);
     }
-    free(command->data.mark_errors);
-    free(command->data.set);
-    free(command->data.guess);
-    free(command->data.generate);
-    free(command->data.hint);
-    free(command->data.guess_hint);
+    else if (command->type == mark_errors) {
+        free(command->data.mark_errors);
+    }
+    else if (command->type == set) {
+        free(command->data.set);
+    }
+    else if (command->type == guess) {
+        free(command->data.guess);
+    }
+    else if (command->type == generate) {
+        free(command->data.generate);
+    }
+    else if (command->type == hint) {
+        free(command->data.hint);
+    }
+    else if (command->type == guess_hint) {
+        free(command->data.guess_hint);
+    }
     destroy_error(command->error);
     free(command);
 }
 
 
 void invalidate(Command *command, char *error_message, int error_level) {
-    if (command->error->level <= error_level) {
+    if ((signed int) command->error->level <= error_level) {
         return;
     }
 

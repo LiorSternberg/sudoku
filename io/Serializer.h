@@ -1,7 +1,6 @@
 #ifndef FINAL_PROJECT_LOADER_H
 #define FINAL_PROJECT_LOADER_H
 
-#include "../components/Board.h"
 #include "Error.h"
 #include "../components/Game.h"
 
