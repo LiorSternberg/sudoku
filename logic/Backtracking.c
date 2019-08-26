@@ -1,6 +1,24 @@
 #include "Backtracking.h"
 #include "../components/Stack.h"
 
+
+void execute_top_stack_node(Stack *stack, int *i, int *j, int *val){
+    StackNode top_node = pop(stack);
+    *i = top_node.i;
+    *j = top_node.j;
+    *val = top_node.val
+}
+
+void update_next_cell_coordinates(int *i, int *j, int N){
+    if (*j == N-1){ /* The rightmost cell in the row */
+        *i = *i+1;
+        *j = 0;
+    }
+    else { /* j < N-1 */
+        *j = *j+1; /*and i is not changing */
+    }
+}
+
 int get_num_of_solutions(Board *board) {
     int counter = 0, i = 0, j = 0, val = 0, backtrack = 0, N;
     Board *board_copy;
@@ -52,7 +70,7 @@ int get_num_of_solutions(Board *board) {
             }
 
             push(i, j, val, stack);
-            update_next_coordinate(&i, &j, N);
+            update_next_cell_coordinates(&i, &j, N);
             val = 0;
             continue;
         } else { /*fixed cell. In this case we'll use val as an indicator to backtrack next time */
@@ -63,7 +81,7 @@ int get_num_of_solutions(Board *board) {
                     continue;
                 }
                 push(i, j, 1, stack); /*val==1 to backtrack from this cell next time */
-                update_next_coordinate(&i, &j, N);
+                update_next_cell_coordinates(&i, &j, N);
                 continue;
             }
 
