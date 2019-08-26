@@ -253,3 +253,15 @@ bool fix_cell(Board *board, int row, int column) {
     board->cells_arr[row][column]->fixed = true;
     return true;
 }
+
+BoardCell* get_board_cell(Board *board, int row, int column){
+    return board->cells_arr[row][column];
+}
+
+bool is_erroneous_board(Board *board){
+    return (board->errors_count != 0);
+}
+
+bool is_erroneous_cell(Board *board, int row, int column){
+    return (get_board_cell(board, row, column)->erroneous);
+}

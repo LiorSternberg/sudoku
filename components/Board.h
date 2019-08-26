@@ -52,4 +52,12 @@ void set_cell_value(Board *board, int row, int column, int value);
 
 bool fix_cell(Board *board, int row, int column);
 
+BoardCell* get_board_cell(Board *board, int row, int column);
+
+/* Returns true if the board is erroneous, meaning the board contains cell with illegal value */
+bool is_erroneous_board(Board *board);
+
+/* Returns true if the (i,j) cell contains illegal value */
+bool is_erroneous_cell(Board *board, int row, int column);
+
 #endif
