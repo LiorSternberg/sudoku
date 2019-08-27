@@ -54,7 +54,7 @@ void print_row(Board *board, int row, bool mark_errors) {
         if ((col % board->num_of_columns_in_block) == 0) {
             printf(COL_SEP);
         }
-        print_cell(board->cells_arr[row][col], mark_errors);
+        print_cell(board->_cells_arr[row][col], mark_errors);
     }
     printf("|\n");
 }

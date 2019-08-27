@@ -25,7 +25,7 @@ int get_num_of_solutions(Board *board) {
     Stack *stack;
     N = board->dim;
 
-    if (is_erroneous_board(board)) {
+    if (is_board_erroneous(board)) {
         return -1; /* for Tslil: Maybe also print error*/
     }
 
@@ -33,13 +33,14 @@ int get_num_of_solutions(Board *board) {
         return 1; /*if the board is 1x1 there is 1 solution*/
     }
 
-    if (validate(board) != 1) { /*The board is unsolveable (using ILP)*/
+    /* TODO: add the validate function, and reinstate this portion of code
+     * if (validate(board) != 1) { *//*The board is unsolveable (using ILP)*//*
         return 0;
-    }
+    }*/
 
     stack = create_stack();
     board_copy = get_board_copy(board);
-    fix_unempty_board_cells(board_copy);
+    fix_non_empty_board_cells(board_copy);
 
     while (1) {
         if (!is_cell_fixed(board, i, j)) { /* unfixed cell */
@@ -50,7 +51,7 @@ int get_num_of_solutions(Board *board) {
                     break;
                 }
                 set_cell_value(board_copy, i, j, val);
-            } while (is_erroneous_cell(board_copy, i, j));
+            } while (is_cell_erroneous(board_copy, i, j));
 
             if (backtrack == 1) {
                 if (i == 0 && j == 0) {
@@ -74,7 +75,7 @@ int get_num_of_solutions(Board *board) {
             val = 0;
             continue;
         } else { /*fixed cell. In this case we'll use val as an indicator to backtrack next time */
-            if (!is_erroneous_cell(board_copy, i, j) && val == 0) {
+            if (!is_cell_erroneous(board_copy, i, j) && val == 0) {
                 if (i == N - 1 && j == N - 1) { /* if last cell - increment the counter and then backtrack */
                     counter++;
                     execute_top_stack_node(stack, &i, &j, &val);

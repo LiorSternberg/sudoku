@@ -7,21 +7,13 @@
 #define CLEAR (0)
 #define MIN_INDEX (1)
 
-typedef struct {
-    int val;
-    int row;
-    int column;
-    bool fixed;
-    bool erroneous;
-    List *neighbors;
-    List *conflicting;
-} BoardCell;
+typedef struct BoardCell BoardCell;
 
 typedef struct {
     int dim;
     int num_of_rows_in_block;
     int num_of_columns_in_block;
-    BoardCell ***cells_arr;
+    BoardCell ***_cells_arr;
     bool solved;
     int errors_count;
     int empty_count;
@@ -52,18 +44,16 @@ void set_cell_value(Board *board, int row, int column, int value);
 
 bool fix_cell(Board *board, int row, int column);
 
-BoardCell* get_board_cell(Board *board, int row, int column);
-
 /* Returns true if the board is erroneous, meaning the board contains cell with illegal value */
-bool is_erroneous_board(Board *board);
+bool is_board_erroneous(Board *board);
 
 /* Returns true if the (i,j) cell contains illegal value */
-bool is_erroneous_cell(Board *board, int row, int column);
+bool is_cell_erroneous(Board *board, int row, int column);
 
 /* Returns a copy of the given board (deep copy) */
 Board* get_board_copy(Board *board);
 
-/* Sets all unempty cells in the given board to fixed */
-void fix_unempty_board_cells(Board *board);
+/* Sets all non-empty cells in the given board to fixed */
+void fix_non_empty_board_cells(Board *board);
 
 #endif
