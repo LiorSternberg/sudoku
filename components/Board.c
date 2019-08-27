@@ -287,7 +287,7 @@ Board* get_board_copy(Board *board){
     }
 
     if (board->solved){
-        copy->solved = 1;
+        copy->solved = true;
     }
 
     return copy;
