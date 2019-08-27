@@ -294,6 +294,10 @@ Board* get_board_copy(Board *board){
 }
 
 void fix_non_empty_board_cells(Board *board){
+    /* TODO (question for Tslil): note that 'fix_cell' has a return value, and that
+     * it only fixes a cell if it can be fixed (i.e. it has no fixed conflicting cells)
+     * is that ok here? do you intend to always verify that the board has no errors
+     * before using this function? */
     int i, j, N;
     N = board->dim;
 
