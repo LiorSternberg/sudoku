@@ -35,15 +35,17 @@ char* generate_row_sep(Board *board) {
     return str;
 }
 
-void print_cell(BoardCell *cell, bool mark_errors) {
-    if (cell->val == CLEAR) {
+void print_cell(Board *board, int row, int column, bool mark_errors) {
+    int value = get_cell_value(board, row, column);
+
+    if (value == CLEAR) {
         printf(EMPTY_CELL_FORMAT);
-    } else if (cell->fixed) {
-        printf(CELL_FORMAT, cell->val, FIXED);
-    } else if (cell->erroneous && mark_errors) {
-        printf(CELL_FORMAT, cell->val, ERRONEOUS);
+    } else if (is_cell_fixed(board, row, column)) {
+        printf(CELL_FORMAT, value, FIXED);
+    } else if (is_cell_erroneous(board, row, column) && mark_errors) {
+        printf(CELL_FORMAT, value, ERRONEOUS);
     } else {
-        printf(CELL_FORMAT, cell->val, NO_MARK);
+        printf(CELL_FORMAT, value, NO_MARK);
     }
 }
 
@@ -54,7 +56,7 @@ void print_row(Board *board, int row, bool mark_errors) {
         if ((col % board->num_of_columns_in_block) == 0) {
             printf(COL_SEP);
         }
-        print_cell(board->_cells_arr[row][col], mark_errors);
+        print_cell(board, row, col, mark_errors);
     }
     printf("|\n");
 }
