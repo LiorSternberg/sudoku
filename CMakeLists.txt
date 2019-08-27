@@ -33,6 +33,8 @@ add_executable(final_project
         components/Move.h
         components/List.c
         components/List.h
+        components/Stack.h
+        components/Stack.c
         io/Serializer.c
         io/Serializer.h
         io/Error.c

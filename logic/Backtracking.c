@@ -3,10 +3,10 @@
 
 
 void execute_top_stack_node(Stack *stack, int *i, int *j, int *val){
-    StackNode top_node = pop(stack);
-    *i = top_node.i;
-    *j = top_node.j;
-    *val = top_node.val
+    StackNode* top_node = pop(stack);
+    *i = top_node->i;
+    *j = top_node->j;
+    *val = top_node->val;
 }
 
 void update_next_cell_coordinates(int *i, int *j, int N){
