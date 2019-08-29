@@ -23,6 +23,8 @@ Command.o: io/Command.c io/Command.h MemoryError.h components/Game.h io/Error.h
 		$(CC) $(COMP_FLAG) -c io/$*.c
 Error.o: io/Error.c io/Error.h MemoryError.h
 		$(CC) $(COMP_FLAG) -c io/$*.c
+Backtracking.o: logic/Backtracking.c logic/Backtracking.h components/Board.h components/Stack.h
+		$(CC) $(COMP_FLAG) -c logic/$*.c
 Game.o: components/Game.c components/Game.h MemoryError.h components/StatesList.h components/Board.h
 		$(CC) $(COMP_FLAG) -c components/$*.c
 StatesList.o: components/StatesList.c components/StatesList.h components/Move.h components/List.h MemoryError.h
@@ -32,6 +34,8 @@ Move.o: components/Move.c components/Move.h components/List.h MemoryError.h
 Board.o: components/Board.c components/Board.h components/List.h MemoryError.h
 		$(CC) $(COMP_FLAG) -c components/$*.c
 List.o: components/List.c components/List.h MemoryError.h
+		$(CC) $(COMP_FLAG) -c components/$*.c
+Stack.o: components/Stack.c components/Stack.h MemoryError.h
 		$(CC) $(COMP_FLAG) -c components/$*.c
 MemoryError.o: MemoryError.c MemoryError.h
 		$(CC) $(COMP_FLAG) -c $*.c
