@@ -44,7 +44,7 @@ void assert_num_of_args(Command *command, int min_expected, int max_expected, in
     validate_memory_allocation("assert_num_of_args", error_message);
 
     sprintf(error_message, "%s Correct command format: %s", error_type, command->format);
-    invalidate(command, error_message, invalid_num_of_args);
+    invalidate(command, error_message, invalid_num_of_args, true);
 }
 
 
@@ -386,11 +386,11 @@ void configure_by_type(Command *command, char *type_str, GameMode mode) {
 
     } else {
         if (mode == init_mode) {
-            invalidate(command, INVALID_COMMAND_INIT_ERROR, invalid_command_name);
+            invalidate(command, INVALID_COMMAND_INIT_ERROR, invalid_command_name, false);
         } else if (mode == edit_mode) {
-            invalidate(command, INVALID_COMMAND_EDIT_ERROR, invalid_command_name);
+            invalidate(command, INVALID_COMMAND_EDIT_ERROR, invalid_command_name, false);
         } else if (mode == solve_mode) {
-            invalidate(command, INVALID_COMMAND_SOLVE_ERROR, invalid_command_name);
+            invalidate(command, INVALID_COMMAND_SOLVE_ERROR, invalid_command_name, false);
         }
     }
 }

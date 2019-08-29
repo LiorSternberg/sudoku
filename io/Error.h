@@ -1,6 +1,8 @@
 #ifndef FINAL_PROJECT_ERROR_H
 #define FINAL_PROJECT_ERROR_H
 
+#include <stdbool.h>
+
 /* The possible error levels */
 
 typedef enum {
@@ -19,6 +21,7 @@ typedef enum {
 typedef struct  {
     char* message;
     ErrorLevel level;
+    bool _message_allocated;
 } Error;
 
 
@@ -29,7 +32,7 @@ typedef struct  {
 
 Error* create_error();
 
-void set_error(Error *error, char *message, ErrorLevel level);
+void set_error(Error *error, char *message, ErrorLevel level, bool message_allocated);
 
 /* Free all the resources used by the error */
 void destroy_error(Error* error);
