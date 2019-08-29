@@ -1,5 +1,5 @@
 CC = gcc
-OBJS = main.o GameManager.o Parser.o actions.o validators.o Printer.o Serializer.o Command.o Error.o Game.o StatesList.o Move.o Board.o List.o MemoryError.o
+OBJS = main.o GameManager.o Parser.o actions.o validators.o Printer.o Serializer.o Command.o Error.o Backtracking.o Game.o StatesList.o Move.o Board.o List.o Stack.o MemoryError.o
 EXEC = sudoku
 COMP_FLAG = -ansi -Wall -Wextra -Werror -pedantic-errors
 
@@ -11,7 +11,7 @@ GameManager.o: GameManager.c GameManager.h io/Parser.h io/validators.h io/Printe
 		$(CC) $(COMP_FLAG) -c $*.c
 Parser.o: io/Parser.c io/Parser.h io/validators.h logic/actions.h io/Command.h MemoryError.h
 		$(CC) $(COMP_FLAG) -c io/$*.c
-actions.o: logic/actions.c logic/actions.h io/Serializer.h io/Printer.h components/Game.h io/Command.h
+actions.o: logic/actions.c logic/actions.h logic/Backtracking.h io/Serializer.h io/Printer.h components/Game.h io/Command.h
 		$(CC) $(COMP_FLAG) -c logic/$*.c
 validators.o: io/validators.c io/validators.h components/Game.h io/Command.h MemoryError.h
 		$(CC) $(COMP_FLAG) -c io/$*.c

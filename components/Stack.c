@@ -29,12 +29,14 @@ void push(int row, int column, int val, Stack *stack) {
     stack->top = new_top;
 }
 
-StackNode* pop(Stack *stack) { /*Remember(for Tslil): free the node somewhere after using it*/
+StackNode* pop(Stack *stack) {
+    StackNode *res_node;
+
     if (is_empty_stack(stack)) {
         return NULL;
     }
 
-    StackNode *res_node = top(stack);
+    res_node = top(stack);
     stack->top = stack->top->next;
     return res_node;
 }
