@@ -2,6 +2,7 @@
 #include "actions.h"
 #include "../io/Serializer.h"
 #include "../io/Printer.h"
+#include "Backtracking.h"
 
 #define DEFAULT_SIZE (3)
 #define UNUSED(x) (void)(x)
@@ -149,7 +150,8 @@ void play_guess_hint(Command *command, Game *game) {
 
 void play_num_solutions(Command *command, Game *game) {
     UNUSED(command);
-    UNUSED(game);
+
+    announce_num_of_solutions(get_num_of_solutions(game->board));
 }
 
 void play_autofill(Command *command, Game *game) {

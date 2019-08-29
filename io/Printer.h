@@ -19,6 +19,8 @@ void announce_game_won();
 
 void announce_game_erroneous();
 
+void announce_num_of_solutions(int num_of_solutions);
+
 void announce_changes_made();
 
 void print_change(Change *change, bool reverted);

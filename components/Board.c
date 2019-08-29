@@ -293,19 +293,17 @@ Board* get_board_copy(Board *board){
     return copy;
 }
 
-void fix_non_empty_board_cells(Board *board){
-    /* TODO (question for Tslil): note that 'fix_cell' has a return value, and that
-     * it only fixes a cell if it can be fixed (i.e. it has no fixed conflicting cells)
-     * is that ok here? do you intend to always verify that the board has no errors
-     * before using this function? */
-    int i, j, N;
-    N = board->dim;
+bool fix_non_empty_board_cells(Board *board){
+    int row, column;
 
-    for (i=0 ; i<N ; i++){
-        for (j=0 ; j<N ; j++){
-            if (!is_cell_empty(board, i, j)){
-                fix_cell(board, i, j);
+    for (row = 0; row < board->dim; row++){
+        for (column = 0; column < board->dim; column++){
+            if (!is_cell_empty(board, row, column)){
+                if (!fix_cell(board, row, column)) {
+                    return false;
+                }
             }
         }
     }
+    return true;
 }

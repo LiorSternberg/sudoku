@@ -91,6 +91,10 @@ void announce_game_erroneous() {
     printf("Hmm this isn't quite right. You have some errors you need to fix in order to complete the game.\n\n");
 }
 
+void announce_num_of_solutions(int num_of_solutions) {
+    printf("Number of solutions for the current state: %d\n\n", num_of_solutions);
+}
+
 void announce_changes_made() {
     printf("The following changes were made: \n-------------------------------\n");
 }

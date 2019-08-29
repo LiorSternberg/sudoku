@@ -6,11 +6,11 @@
 
 #endif
 
-/* Removes the top from the stack and updates i, j and val accordingly */
-void execute_top_stack_node(Stack *stack, int *i, int *j, int *val);
+/* Removes the top from the stack and updates row, column and val accordingly */
+void backtrack_to_stack_top(Stack *stack, int *row, int *column, int *val);
 
-/* Updates i and j according to the next cell coordinates (assuming that (i,j) is not the last cell) */
-void update_next_cell_coordinates(int *i, int *j, int N);
+/* Updates row and column according to the next cell coordinates (assuming that (row, column) is not the last cell) */
+void update_next_cell_coordinates(int *row, int *column, int N);
 
 /* Returns the number of solutions of the board, and -1 if there is no solution (meaning the board is erroneous)*/
 int get_num_of_solutions(Board *board);

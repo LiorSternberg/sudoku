@@ -10,8 +10,8 @@
  * typedef struct StackNode StackNode;*/
 
 typedef struct StackNode_ {
-    int i; /* TODO (question for Tslil): What are i and j? row and column? */
-    int j;
+    int row;
+    int column;
     int val;
     struct StackNode_ *next;
 } StackNode;
@@ -22,9 +22,9 @@ typedef struct{
 
 Stack* create_stack();
 
-StackNode* create_stack_node(int i, int j, int val);
+StackNode* create_stack_node(int row, int column, int val);
 
-void push(int i, int j, int val, Stack *stack);
+void push(int row, int column, int val, Stack *stack);
 
 StackNode* pop(Stack *stack);
 

@@ -47,13 +47,13 @@ bool fix_cell(Board *board, int row, int column);
 /* Returns true if the board is erroneous, meaning the board contains cell with illegal value */
 bool is_board_erroneous(Board *board);
 
-/* Returns true if the (i,j) cell contains illegal value */
+/* Returns true if the (row, column) cell contains illegal value */
 bool is_cell_erroneous(Board *board, int row, int column);
 
 /* Returns a copy of the given board (deep copy) */
 Board* get_board_copy(Board *board);
 
-/* Sets all non-empty cells in the given board to fixed */
-void fix_non_empty_board_cells(Board *board);
+/* Sets all non-empty cells in the given board to fixed. Returns true on success, and false on failure. */
+bool fix_non_empty_board_cells(Board *board);
 
 #endif

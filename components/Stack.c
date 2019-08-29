@@ -12,32 +12,29 @@ Stack* create_stack() {
     return stack;
 }
 
-StackNode* create_stack_node(int i, int j, int val) {
+StackNode* create_stack_node(int row, int column, int val) {
     StackNode *stack_node = (StackNode*) malloc(sizeof(StackNode));
     validate_memory_allocation("create_stack_node", stack_node);
 
-    stack_node->i = i;
-    stack_node->j = j;
+    stack_node->row = row;
+    stack_node->column = column;
     stack_node->val = val;
 
     return stack_node;
 }
 
-void push(int i, int j, int val, Stack *stack) {
-    StackNode *new_top = create_stack_node(i, j, val);
+void push(int row, int column, int val, Stack *stack) {
+    StackNode *new_top = create_stack_node(row, column, val);
     new_top->next = stack->top;
     stack->top = new_top;
 }
 
 StackNode* pop(Stack *stack) { /*Remember(for Tslil): free the node somewhere after using it*/
-    StackNode *res_node = stack->top;
+    if (is_empty_stack(stack)) {
+        return NULL;
+    }
 
-    /* TODO (question for Tslil):
-     * 1.do you maybe need to make sure the stack is not empty first? or
-     * do you check that before calling this function?
-     * 2. Are you sure you want to return the Node? as you wrote above, that
-     * means someone else is responsible for freeing it, which might be hard
-     * to keep track of. */
+    StackNode *res_node = top(stack);
     stack->top = stack->top->next;
     return res_node;
 }
@@ -47,7 +44,7 @@ StackNode* top(Stack *stack) {
 }
 
 bool is_empty_stack(Stack *stack) {
-    return (stack->top == NULL);
+    return (top(stack) == NULL);
 }
 
 void destroy_stack_node(StackNode *node) {
@@ -56,9 +53,9 @@ void destroy_stack_node(StackNode *node) {
 
 void destroy_stack(Stack *stack) {
     StackNode *node;
-    while (stack->top != NULL) {
+    while (!is_empty_stack(stack)) {
         node = pop(stack);
-        free(node);
+        destroy_stack_node(node);
     }
     free(stack);
 }

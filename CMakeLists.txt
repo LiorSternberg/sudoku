@@ -41,4 +41,6 @@ add_executable(final_project
         io/Error.h
         logic/actions.c
         logic/actions.h
+        logic/LP.c
+        logic/LP.h
         )

@@ -2,39 +2,36 @@
 #include "../components/Stack.h"
 
 
-void execute_top_stack_node(Stack *stack, int *i, int *j, int *val){
+void backtrack_to_stack_top(Stack *stack, int *row, int *column, int *val){
     StackNode* top_node = pop(stack);
-    *i = top_node->i;
-    *j = top_node->j;
+    *row = top_node->row;
+    *column = top_node->column;
     *val = top_node->val;
+    destroy_stack_node(top_node);
 }
 
-void update_next_cell_coordinates(int *i, int *j, int N){
-    if (*j == N-1){ /* The rightmost cell in the row */
-        *i = *i+1;
-        *j = 0;
+void update_next_cell_coordinates(int *row, int *column, int N){
+    if (*column == N-1){ /* The rightmost cell in the row */
+        *row = *row + 1;
+        *column = 0;
     }
-    else { /* j < N-1 */
-        *j = *j+1; /*and i is not changing */
+    else { /* column < N-1 */
+        *column = *column + 1; /* and row is not changing */
     }
 }
 
 int get_num_of_solutions(Board *board) {
-    int counter = 0, i = 0, j = 0, val = 0, backtrack = 0, N;
+    int counter = 0, row = 0, column = 0, val = CLEAR, N = board->dim;
+    bool backtrack = false;
     Board *board_copy;
     Stack *stack;
-    N = board->dim;
-
-    if (is_board_erroneous(board)) {
-        return -1; /* for Tslil: Maybe also print error*/
-    }
 
     if (N == 1) {
         return 1; /*if the board is 1x1 there is 1 solution*/
     }
 
     /* TODO: add the validate function, and reinstate this portion of code
-     * if (validate(board) != 1) { *//*The board is unsolveable (using ILP)*//*
+     * if (validate(board) != 1) { *//*The board is unsolvable (using ILP)*//*
         return 0;
     }*/
 
@@ -43,56 +40,52 @@ int get_num_of_solutions(Board *board) {
     fix_non_empty_board_cells(board_copy);
 
     while (1) {
-        if (!is_cell_fixed(board, i, j)) { /* unfixed cell */
+        if (is_cell_fixed(board_copy, row, column)) {
+            if (row == N - 1 && column == N - 1) { /* if last cell - increment the counter and then backtrack */
+                counter++;
+                if (is_empty_stack(stack)) {
+                    break; /* can't backtrack  */
+                }
+                backtrack_to_stack_top(stack, &row, &column, &val);
+                continue;
+            }
+
+            update_next_cell_coordinates(&row, &column, N);
+            continue;
+        } else {
             do {
                 val++;
                 if (val > N) {
-                    backtrack = 1; /* No legal val for the cell, need to backtrack*/
+                    backtrack = true; /* No legal values for the cell, need to backtrack*/
                     break;
                 }
-                set_cell_value(board_copy, i, j, val);
-            } while (is_cell_erroneous(board_copy, i, j));
+                set_cell_value(board_copy, row, column, val);
+            } while (is_cell_erroneous(board_copy, row, column));
 
-            if (backtrack == 1) {
-                if (i == 0 && j == 0) {
-                    break; /* can't backtrack from first cell */
+            if (backtrack) {
+                if (is_empty_stack(stack)) {
+                    break; /* can't backtrack  */
                 }
-                set_cell_value(board_copy, i, j, 0); /* clean the cell */
-                backtrack = 0;
-                execute_top_stack_node(stack, &i, &j, &val);
+                set_cell_value(board_copy, row, column, CLEAR); /* clear the cell */
+                backtrack = false;
+                backtrack_to_stack_top(stack, &row, &column, &val);
                 continue;
             }
 
-            if (i == N - 1 && j == N - 1) { /* if last cell - increment the counter and then backtrack */
+            if (row == N - 1 && column == N - 1) { /* if last cell - increment the counter and then backtrack */
                 counter++;
-                set_cell_value(board_copy, i, j, 0); /* clean the cell */
-                execute_top_stack_node(stack, &i, &j, &val);
+                set_cell_value(board_copy, row, column, CLEAR); /* clear the cell */
+                if (is_empty_stack(stack)) {
+                    break; /* can't backtrack  */
+                }
+                backtrack_to_stack_top(stack, &row, &column, &val);
                 continue;
             }
 
-            push(i, j, val, stack);
-            update_next_cell_coordinates(&i, &j, N);
-            val = 0;
+            push(row, column, val, stack);
+            update_next_cell_coordinates(&row, &column, N);
+            val = CLEAR;
             continue;
-        } else { /*fixed cell. In this case we'll use val as an indicator to backtrack next time */
-            if (!is_cell_erroneous(board_copy, i, j) && val == 0) {
-                if (i == N - 1 && j == N - 1) { /* if last cell - increment the counter and then backtrack */
-                    counter++;
-                    execute_top_stack_node(stack, &i, &j, &val);
-                    continue;
-                }
-                push(i, j, 1, stack); /*val==1 to backtrack from this cell next time */
-                update_next_cell_coordinates(&i, &j, N);
-                continue;
-            }
-
-            else { /* need to backtrack if cell is erroneous or val == 0 */
-                if (i == 0 && j == 0) {
-                    break; /* can't backtrack from first cell */
-                }
-                execute_top_stack_node(stack, &i, &j, &val);
-                continue;
-            }
         }
     }
 

@@ -118,7 +118,7 @@ void assert_double_arg_in_range(Command *command, char *arg_name, double value, 
 
 /* Assert that the board is not currently erroneous. */
 void assert_board_not_erroneous(Command *command, Board *board) {
-    if (board != NULL && board->errors_count != 0) {
+    if (board != NULL && is_board_erroneous(board)) {
         invalidate(command, BOARD_ERRONEOUS_ERROR, invalid_state, false);
     }
 }
