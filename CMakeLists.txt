@@ -43,4 +43,6 @@ add_executable(final_project
         logic/actions.h
         logic/LP.c
         logic/LP.h
+        logic/ILP.c
+        logic/ILP.h
         )
