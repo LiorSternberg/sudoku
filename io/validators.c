@@ -190,7 +190,7 @@ void set_validator(Command *command, Game *game) {
     assert_int_arg_in_range(command, "row", command->data.set->row, MIN_INDEX, game->board->dim);
     assert_int_arg_in_range(command, "value", command->data.set->value, CLEAR, game->board->dim);
 
-    if (game->mode == solve_mode) {
+    if (is_valid(command) && game->mode == solve_mode) {
         assert_cell_not_fixed(command, game->board, command->data.set->row, command->data.set->column);
     }
 }
@@ -247,6 +247,10 @@ void hint_base_validator(Command *command, Board *board, int row, int column) {
     /* Check argument range by order of entry */
     assert_int_arg_in_range(command, "column", column, MIN_INDEX, board->dim);
     assert_int_arg_in_range(command, "row", row, MIN_INDEX, board->dim);
+
+    if (!is_valid(command)) {
+        return;
+    }
 
     /* Check state related errors by the required order */
     assert_board_not_erroneous(command, board);

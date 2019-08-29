@@ -13,8 +13,6 @@ add_executable(final_project
         io/Parser.c
         io/Printer.h
         io/Printer.c
-        Solver.h
-        Solver.c
         logic/Backtracking.h
         logic/Backtracking.c
         logic/ILP.h

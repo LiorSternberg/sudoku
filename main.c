@@ -13,6 +13,7 @@ int main() {
      *
      * solve ../test_files/boards/board_2_5_with_fixed.txt
      * solve ../test_files/boards/board_2_2_almost_full.txt
+     * solve ../test_files/boards/board_2_2_four_solutions_with_fixed.txt
      * solve ../test_files/boards/board_5_5_two_solutions.txt
      * solve test_files/boards/board_2_5_with_fixed.txt
      */

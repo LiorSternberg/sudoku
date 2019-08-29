@@ -7,7 +7,7 @@ bool solve(Board *board) {
      * change return value to be meaningful :) */
     UNUSED(board);
     return true;
-};
+}
 
 bool is_board_solvable(const Board *board) {
     /* TODO: actually implement this, and then remove the UNUSED and

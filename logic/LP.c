@@ -8,7 +8,7 @@
 void guess_solution(Board *board, int threshold) {
     UNUSED(board);
     UNUSED(threshold);
-};
+}
 
 int* get_cell_guesses(Board *board, int row, int column) {
     int *guesses = calloc(board->dim, sizeof(int));
