@@ -3,12 +3,6 @@
 
 #include <stdbool.h>
 
-/* TODO (question for Tslil): if you don't hide the implementation of a struct in the '.c' file
- * you don't need to split the declaration of the Node. I do wonder though - don't you want to
- * hide it? do you want other modules to access the Node directly?
- *
- * typedef struct StackNode StackNode;*/
-
 typedef struct StackNode_ {
     int row;
     int column;
