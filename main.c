@@ -13,7 +13,7 @@ int main() {
      *
      * solve ../test_files/boards/board_2_5_with_fixed.txt
      * solve ../test_files/boards/board_2_2_almost_full.txt
-     *
+     * solve test_files/boards/board_2_5_with_fixed.txt
      */
 
     while (!game->over) {

@@ -15,6 +15,12 @@ Error* create_error() {
 }
 
 void set_error(Error *error, char *message, ErrorLevel level, bool message_allocated) {
+    /* free the existing error message first if needed */
+    if (error->_message_allocated) {
+        free(error->message);
+        error->_message_allocated = false;
+    }
+
     error->message = message;
     error->level = level;
     error->_message_allocated = message_allocated;
