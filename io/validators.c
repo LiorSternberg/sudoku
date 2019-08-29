@@ -48,23 +48,23 @@ void assert_game_mode(Command *command, GameMode mode) {
         validate_memory_allocation("assert_game_mode", error_message);
 
         strcat(strcpy(error_message, INVALID_COMMAND_FOR_MODE_ERROR), modes[command->modes]);
-        invalidate(command, error_message, invalid_command_for_mode);
+        invalidate(command, error_message, invalid_command_for_mode, true);
     }
 }
 
 /* Assert that the given file exists and is readable. */
 void assert_file_readable(Command *command, char *path) {
     if(access(path, F_OK) == -1) { /* file doesn't exist */
-        invalidate(command, FILE_DOESNT_EXIST_ERROR, execution_failure);
+        invalidate(command, FILE_DOESNT_EXIST_ERROR, execution_failure, false);
     } else if (access(path, R_OK) == -1) { /* file doesn't have read permissions */
-        invalidate(command, FILE_NOT_READABLE_ERROR, execution_failure);
+        invalidate(command, FILE_NOT_READABLE_ERROR, execution_failure, false);
     }
 }
 
 /* Assert that the given file exists and is writable. */
 void assert_file_writable(Command *command, char *path) {
     if (access(path, W_OK) == -1) { /* file doesn't have write permissions */
-        invalidate(command, FILE_NOT_WRITABLE_ERROR, execution_failure);
+        invalidate(command, FILE_NOT_WRITABLE_ERROR, execution_failure, false);
     }
 }
 
@@ -81,7 +81,7 @@ void assert_bool_arg(Command *command, char *arg_name, int value) {
 
     strcat(strcpy(error_format, ARG_OUT_OF_RANGE_ERROR), BOOL_RANGE);
     sprintf(error_message, error_format, arg_name);
-    invalidate(command, error_message, invalid_arg_range);
+    invalidate(command, error_message, invalid_arg_range, true);
 }
 
 /* Assert that an int argument was parsed successfully, and contains a legal value in the allowed range. */
@@ -97,7 +97,7 @@ void assert_int_arg_in_range(Command *command, char *arg_name, int value, int mi
 
     strcat(strcpy(error_format, ARG_OUT_OF_RANGE_ERROR), INT_RANGE);
     sprintf(error_message, error_format, arg_name, min, max);
-    invalidate(command, error_message, invalid_arg_range);
+    invalidate(command, error_message, invalid_arg_range, true);
 }
 
 /* Assert that a double argument was parsed successfully, and contains a legal value in the allowed range. */
@@ -113,27 +113,27 @@ void assert_double_arg_in_range(Command *command, char *arg_name, double value, 
 
     strcat(strcpy(error_format, ARG_OUT_OF_RANGE_ERROR), DOUBLE_RANGE);
     sprintf(error_message, error_format, arg_name, min, max);
-    invalidate(command, error_message, invalid_arg_range);
+    invalidate(command, error_message, invalid_arg_range, true);
 }
 
 /* Assert that the board is not currently erroneous. */
 void assert_board_not_erroneous(Command *command, Board *board) {
     if (board != NULL && board->errors_count != 0) {
-        invalidate(command, BOARD_ERRONEOUS_ERROR, invalid_state);
+        invalidate(command, BOARD_ERRONEOUS_ERROR, invalid_state, false);
     }
 }
 
 /* Assert that the given cell is not fixed. */
 void assert_cell_not_fixed(Command *command, Board *board, int row, int column) {
     if (board != NULL && is_cell_fixed(board, row - 1, column - 1)) {
-        invalidate(command, FIXED_ERROR, invalid_state);
+        invalidate(command, FIXED_ERROR, invalid_state, false);
     }
 }
 
 /* Assert that the given cell is empty. */
 void assert_cell_empty(Command *command, Board *board, int row, int column) {
     if (board != NULL && !is_cell_empty(board, row - 1, column - 1)) {
-        invalidate(command, NOT_EMPTY_ERROR, invalid_state);
+        invalidate(command, NOT_EMPTY_ERROR, invalid_state, false);
     }
 }
 
@@ -222,13 +222,13 @@ void generate_validator(Command *command, Game *game) {
 
 void undo_validator(Command *command, Game *game) {
     if (has_prev(game->states->moves) == false) {
-        invalidate(command, NO_UNDO_MOVES_ERROR, execution_failure);
+        invalidate(command, NO_UNDO_MOVES_ERROR, execution_failure, false);
     }
 }
 
 void redo_validator(Command *command, Game *game) {
     if (has_next(game->states->moves) == false) {
-        invalidate(command, NO_REDO_MOVES_ERROR, execution_failure);
+        invalidate(command, NO_REDO_MOVES_ERROR, execution_failure, false);
     }
 }
 

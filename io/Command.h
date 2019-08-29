@@ -127,7 +127,7 @@ typedef struct Command_ {
 
 
 /* Sets a command's error message and error level, and by doing so, invalidating it. */
-void invalidate(Command *command, char *error_message, int error_level);
+void invalidate(Command *command, char *error_message, int error_level, bool message_allocated);
 
 /* Initialize a new command */
 Command* create_command();

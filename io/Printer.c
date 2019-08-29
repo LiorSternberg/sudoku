@@ -74,6 +74,7 @@ void print(Game *game) {
         print_row(game->board, row, mark_errors);
     }
     printf("%s\n", sep);
+    free(sep);
 }
 
 void announce_game_start() {

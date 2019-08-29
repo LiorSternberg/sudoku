@@ -83,19 +83,19 @@ int read_dimensions(FILE *file, int *rows, int *columns, Error *error) {
 
     /* Read dimension tokens */
     if (read_next(file, m) == FAILURE || read_next(file, n) == FAILURE) {
-        set_error(error, CANT_PARSE_DIMENSIONS_ERROR, execution_failure);
+        set_error(error, CANT_PARSE_DIMENSIONS_ERROR, execution_failure, false);
         return FAILURE;
     }
 
     /* Parse dimensions */
     if (parse_value(m, rows, &m_fixed) == FAILURE || parse_value(n, columns, &n_fixed) == FAILURE) {
-        set_error(error, CANT_PARSE_DIMENSIONS_ERROR, execution_failure);
+        set_error(error, CANT_PARSE_DIMENSIONS_ERROR, execution_failure, false);
         return FAILURE;
     }
 
     /* Assert dimensions are not marked as fixed (bad format) */
     if (m_fixed == true || n_fixed == true) {
-        set_error(error, CANT_PARSE_DIMENSIONS_ERROR, execution_failure);
+        set_error(error, CANT_PARSE_DIMENSIONS_ERROR, execution_failure, false);
         return FAILURE;
     }
 
@@ -110,13 +110,13 @@ int read_cell_data(FILE *file, Board *board, int row, int column, Error *error, 
     bool fixed;
 
     if (read_next(file, cell_token) == FAILURE || parse_value(cell_token, &value, &fixed) == FAILURE) {
-        set_error(error, CANT_PARSE_VALUE_ERROR, execution_failure);
+        set_error(error, CANT_PARSE_VALUE_ERROR, execution_failure, false);
         return FAILURE;
     }
 
     /* Assert value is in the allowed range for board size */
     if (value > board->dim) {
-        set_error(error, LARGE_VALUE_ERROR, execution_failure);
+        set_error(error, LARGE_VALUE_ERROR, execution_failure, false);
         return FAILURE;
     }
 
@@ -125,13 +125,13 @@ int read_cell_data(FILE *file, Board *board, int row, int column, Error *error, 
 
         /* Assert empty cells are not marked as fixed */
         if (value == CLEAR) {
-            set_error(error, CLEAR_FIXED_ERROR, execution_failure);
+            set_error(error, CLEAR_FIXED_ERROR, execution_failure, false);
             return FAILURE;
         }
 
         /* Assert cell is not conflicting with another fixed neighbor */
         if (fix_cell(board, row, column) == false) {
-            set_error(error, CONFLICTING_FIXED_ERROR, execution_failure);
+            set_error(error, CONFLICTING_FIXED_ERROR, execution_failure, false);
             return FAILURE;
         }
     }
@@ -146,7 +146,7 @@ Board* load_from_file(char *path, Error *error, GameMode mode) {
 
     /* Open the file */
     if ((file = fopen(path, "r")) == NULL) {
-        set_error(error, CANT_OPEN_FILE_ERROR, execution_failure);
+        set_error(error, CANT_OPEN_FILE_ERROR, execution_failure, false);
         return NULL;
     }
 
@@ -156,7 +156,7 @@ Board* load_from_file(char *path, Error *error, GameMode mode) {
     }
 
     if (rows * columns > MAX_BOARD_SIZE || rows * columns < MIN_BOARD_SIZE) {
-        set_error(error, ILLEGAL_BOARD_SIZE_ERROR, execution_failure);
+        set_error(error, ILLEGAL_BOARD_SIZE_ERROR, execution_failure, false);
         return NULL;
     }
 
@@ -173,14 +173,14 @@ Board* load_from_file(char *path, Error *error, GameMode mode) {
 
     /* Assert there isn't another token in the file (i.e. file contains correct number of values) */
     if (read_next(file, token) == SUCCESS) {
-        set_error(error, TOO_MANY_VALUES_ERROR, execution_failure);
+        set_error(error, TOO_MANY_VALUES_ERROR, execution_failure, false);
         destroy_board(board);
         return NULL;
     }
 
     /* Close file */
     if (fclose(file) == EOF) {
-        set_error(error, CANT_CLOSE_FILE_ERROR, execution_failure);
+        set_error(error, CANT_CLOSE_FILE_ERROR, execution_failure, false);
         destroy_board(board);
         return NULL;
     }
@@ -196,13 +196,13 @@ void save_to_file(Game *game, char *path, Error *error) {
 
     /* Open the file */
     if ((file = fopen(path, "w")) == NULL) {
-        set_error(error, CANT_OPEN_FILE_ERROR, execution_failure);
+        set_error(error, CANT_OPEN_FILE_ERROR, execution_failure, false);
         return;
     }
 
     /* Write dimensions */
     if (fprintf(file, "%d %d\n", game->board->num_of_rows_in_block, game->board->num_of_columns_in_block) < 0) {
-        set_error(error, CANT_WRITE_ERROR, execution_failure);
+        set_error(error, CANT_WRITE_ERROR, execution_failure, false);
         return;
     }
 
@@ -218,7 +218,7 @@ void save_to_file(Game *game, char *path, Error *error) {
             fixed = (game->mode == edit_mode || is_cell_fixed(game->board, i, j)) ? FIXED_MARK : EMPTY;
 
             if (fprintf(file, format, get_cell_value(game->board, i, j), fixed) < 0) {
-                set_error(error, CANT_WRITE_ERROR, execution_failure);
+                set_error(error, CANT_WRITE_ERROR, execution_failure, false);
                 return;
             }
         }
@@ -226,6 +226,6 @@ void save_to_file(Game *game, char *path, Error *error) {
 
     /* Close file */
     if (fclose(file) == EOF) {
-        set_error(error, CANT_CLOSE_FILE_ERROR, execution_failure);
+        set_error(error, CANT_CLOSE_FILE_ERROR, execution_failure, false);
     }
 }

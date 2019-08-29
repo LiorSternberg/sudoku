@@ -10,15 +10,25 @@ Error* create_error() {
 
     error->message = NULL;
     error->level = no_error;
+    error->_message_allocated = false;
     return error;
 }
 
-void set_error(Error *error, char *message, ErrorLevel level) {
+void set_error(Error *error, char *message, ErrorLevel level, bool message_allocated) {
+    /* free the existing error message first if needed */
+    if (error->_message_allocated) {
+        free(error->message);
+        error->_message_allocated = false;
+    }
+
     error->message = message;
     error->level = level;
+    error->_message_allocated = message_allocated;
 }
 
 void destroy_error(Error* error) {
-    /*free(error->message);*/
+    if (error->_message_allocated) {
+        free(error->message);
+    }
     free(error);
 }

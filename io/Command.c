@@ -28,15 +28,15 @@ Command* create_command() {
 
 void destroy_command(Command* command) {
     if (command->type == solve) {
-        /*free(command->data.solve->path);*/
+        free(command->data.solve->path);
         free(command->data.solve);
     }
     else if (command->type == edit) {
-        /*free(command->data.edit->path);*/
+        free(command->data.edit->path);
         free(command->data.edit);
     }
     else if (command->type == save) {
-        /*free(command->data.save->path);*/
+        free(command->data.save->path);
         free(command->data.save);
     }
     else if (command->type == mark_errors) {
@@ -62,12 +62,12 @@ void destroy_command(Command* command) {
 }
 
 
-void invalidate(Command *command, char *error_message, int error_level) {
+void invalidate(Command *command, char *error_message, int error_level, bool message_allocated) {
     if ((signed int) command->error->level <= error_level) {
         return;
     }
 
-    set_error(command->error, error_message, error_level);
+    set_error(command->error, error_message, error_level, message_allocated);
 }
 
 bool is_valid(Command *command) {
