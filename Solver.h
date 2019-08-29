@@ -1,4 +1,0 @@
-#ifndef FINAL_PROJECT_SOLVER_H
-#define FINAL_PROJECT_SOLVER_H
-
-#endif
