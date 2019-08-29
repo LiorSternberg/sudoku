@@ -1,5 +1,6 @@
 #include "Backtracking.h"
 #include "../components/Stack.h"
+#include "ILP.h"
 
 
 void backtrack_to_stack_top(Stack *stack, int *row, int *column, int *val){
@@ -30,10 +31,9 @@ int get_num_of_solutions(Board *board) {
         return 1; /*if the board is 1x1 there is 1 solution*/
     }
 
-    /* TODO: add the validate function, and reinstate this portion of code
-     * if (validate(board) != 1) { *//*The board is unsolvable (using ILP)*//*
+    if (!is_board_solvable(board)) { /* The board is unsolvable (using ILP) */
         return 0;
-    }*/
+    }
 
     stack = create_stack();
     board_copy = get_board_copy(board);
