@@ -1,4 +1,5 @@
 #include "../components/Board.h"
+#include "gurobi_c.h"
 
 #ifndef FINAL_PROJECT_LP_H
 #define FINAL_PROJECT_LP_H
