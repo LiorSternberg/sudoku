@@ -1,5 +1,4 @@
 #include "../components/Board.h"
-#include "gurobi_c.h"
 
 #ifndef FINAL_PROJECT_LP_H
 #define FINAL_PROJECT_LP_H
@@ -50,8 +49,8 @@ Variable* create_variable(int row, int column, int val, int var_index);
 /* Assigns a variable to (row, col) List in "map_by_cell" field with value val and stores it's index */
 void add_variable(LPSol *board_sol, int row, int column, int val, int index);
 
-/* Returns the "var_index" of the variable Xijv */
-int get_variable_index(LPSol *board_sol, i, j, v);
+/* Returns the "var_index" of the variable Xrow,col,val */
+int get_variable_index(LPSol *board_sol, int row, int column, int val);
 
 void destroy_variable(Variable *var);
 
