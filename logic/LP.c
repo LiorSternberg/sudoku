@@ -2,6 +2,7 @@
 #include "LP.h"
 #include "../MemoryError.h"
 #include "gurobi_c.h"
+#include <stdio.h>
 
 #define UNUSED(x) (void)(x)
 
@@ -33,11 +34,11 @@ Variable* create_variable(int row, int column, int val, int var_index){
     return var;
 }
 
-void add_variable(LPSol *board_sol, int i, int j, int v, int index){
+void add_variable(LPSol *board_sol, int row, int column, int val, int index){
     /* TODO */
 }
 
-int get_variable_index(LPSol *board_sol, int i, int j, int v){
+int get_variable_index(LPSol *board_sol, int row, int column, int val){
     /* TODO */
 }
 
