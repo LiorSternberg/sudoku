@@ -2,6 +2,13 @@ CC = gcc
 OBJS = main.o GameManager.o Parser.o actions.o validators.o Printer.o Serializer.o Command.o Error.o Backtracking.o ILP.o LP.o Game.o StatesList.o Move.o Board.o List.o Stack.o MemoryError.o
 EXEC = sudoku
 COMP_FLAG = -ansi -Wall -Wextra -Werror -pedantic-errors
+GUROBI_COMP = -I/usr/local/lib/gurobi563/include
+GUROBI_LIB = -L/usr/local/lib/gurobi563/lib -lgurobi56
+
+all: $(OBJS)
+	    $(CC) $(OBJS) $(GUROBI_LIB) -o $(EXEC)
+$(EXEC): $(OBJS)
+	    $(CC) $(OBJS) $(GUROBI_LIB) -o $@ -lm
 
 $(EXEC): $(OBJS)
 		$(CC) $(OBJS) -o $@
@@ -28,7 +35,7 @@ Backtracking.o: logic/Backtracking.c logic/Backtracking.h components/Board.h com
 ILP.o: logic/ILP.c logic/ILP.h components/Board.h MemoryError.h
 		$(CC) $(COMP_FLAG) -c logic/$*.c
 LP.o: logic/LP.c logic/LP.h components/Board.h MemoryError.h
-		$(CC) $(COMP_FLAG) -c logic/$*.c
+		$(CC) $(COMP_FLAG) $(GUROBI_COMP) -c logic/$*.c
 Game.o: components/Game.c components/Game.h MemoryError.h components/StatesList.h components/Board.h
 		$(CC) $(COMP_FLAG) -c components/$*.c
 StatesList.o: components/StatesList.c components/StatesList.h components/Move.h components/List.h MemoryError.h
