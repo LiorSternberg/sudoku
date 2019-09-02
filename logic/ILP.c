@@ -2,7 +2,7 @@
 
 #define UNUSED(x) (void)(x)
 
-bool solve(Board *board) {
+bool solve_puzzle(Board *board) {
     /* TODO: actually implement this, and then remove the UNUSED and
      * change return value to be meaningful :) */
     UNUSED(board);

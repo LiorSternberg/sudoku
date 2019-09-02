@@ -3,6 +3,7 @@
 #include "../io/Serializer.h"
 #include "../io/Printer.h"
 #include "Backtracking.h"
+#include "ILP.h"
 
 #define DEFAULT_SIZE (3)
 #define UNUSED(x) (void)(x)
@@ -81,7 +82,12 @@ void play_set(Command *command, Game *game) {
 
 void play_validate(Command *command, Game *game) {
     UNUSED(command);
-    UNUSED(game);
+
+    if (is_board_solvable(game->board)) {
+        announce_game_solvable();
+    } else {
+        announce_game_not_solvable();
+    }
 }
 
 void play_guess(Command *command, Game *game) {

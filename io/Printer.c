@@ -91,6 +91,15 @@ void announce_game_erroneous() {
     printf("Hmm this isn't quite right. You have some errors you need to fix in order to complete the game.\n\n");
 }
 
+void announce_game_solvable() {
+    printf("The current state of the puzzle is indeed solvable.\n\n");
+}
+
+void announce_game_not_solvable() {
+    printf("Unfortunately the current state of the puzzle is not solvable.\n\n");
+}
+
+
 void announce_num_of_solutions(int num_of_solutions) {
     printf("Number of solutions for the current state: %d\n\n", num_of_solutions);
 }
