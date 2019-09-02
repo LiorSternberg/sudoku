@@ -118,6 +118,15 @@ int get_cell_value(Board *board, int row, int column) {
     return board->_cells_arr[row][column]->val;
 }
 
+bool is_board_erroneous(Board *board){
+    return (board->errors_count != 0);
+}
+
+bool is_cell_erroneous(Board *board, int row, int column){
+    return board->_cells_arr[row][column]->erroneous;
+}
+
+
 void get_block_indices(Board *board, int row, int column, int *r_start, int *r_end, int *c_start, int *c_end) {
     *r_start = row - (row % board->num_of_rows_in_block);
     *r_end = *r_start + board->num_of_rows_in_block;
@@ -262,14 +271,6 @@ bool fix_cell(Board *board, int row, int column) {
 
     board->_cells_arr[row][column]->fixed = true;
     return true;
-}
-
-bool is_board_erroneous(Board *board){
-    return (board->errors_count != 0);
-}
-
-bool is_cell_erroneous(Board *board, int row, int column){
-    return board->_cells_arr[row][column]->erroneous;
 }
 
 Board* get_board_copy(Board *board){

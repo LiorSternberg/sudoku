@@ -91,11 +91,13 @@ void play_validate(Command *command, Game *game) {
 }
 
 void play_guess(Command *command, Game *game) {
+    /* Needs undo/redo support */
     UNUSED(command);
     UNUSED(game);
 }
 
 void play_generate(Command *command, Game *game) {
+    /* Needs undo/redo support */
     UNUSED(command);
     UNUSED(game);
 }
@@ -161,6 +163,7 @@ void play_num_solutions(Command *command, Game *game) {
 }
 
 void play_autofill(Command *command, Game *game) {
+    /* Needs undo/redo support */
     UNUSED(command);
     UNUSED(game);
 }
