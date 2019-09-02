@@ -11,7 +11,7 @@ GameManager.o: GameManager.c GameManager.h io/Parser.h io/validators.h io/Printe
 		$(CC) $(COMP_FLAG) -c $*.c
 Parser.o: io/Parser.c io/Parser.h io/validators.h logic/actions.h io/Command.h MemoryError.h
 		$(CC) $(COMP_FLAG) -c io/$*.c
-actions.o: logic/actions.c logic/actions.h logic/Backtracking.h io/Serializer.h io/Printer.h components/Game.h io/Command.h
+actions.o: logic/actions.c logic/actions.h logic/Backtracking.h logic/LP.h logic/ILP.h io/Serializer.h io/Printer.h components/Game.h io/Command.h
 		$(CC) $(COMP_FLAG) -c logic/$*.c
 validators.o: io/validators.c io/validators.h components/Game.h io/Command.h MemoryError.h
 		$(CC) $(COMP_FLAG) -c io/$*.c
@@ -27,11 +27,11 @@ Backtracking.o: logic/Backtracking.c logic/Backtracking.h components/Board.h com
 		$(CC) $(COMP_FLAG) -c logic/$*.c
 ILP.o: logic/ILP.c logic/ILP.h components/Board.h MemoryError.h
 		$(CC) $(COMP_FLAG) -c logic/$*.c
-LP.o: logic/LP.c logic/LP.h components/Board.h MemoryError.h
+LP.o: logic/LP.c logic/LP.h components/Board.h components/StatesList.h MemoryError.h
 		$(CC) $(COMP_FLAG) -c logic/$*.c
 Game.o: components/Game.c components/Game.h MemoryError.h components/StatesList.h components/Board.h
 		$(CC) $(COMP_FLAG) -c components/$*.c
-StatesList.o: components/StatesList.c components/StatesList.h components/Move.h components/List.h MemoryError.h
+StatesList.o: components/StatesList.c components/StatesList.h components/Board.h components/Move.h components/List.h MemoryError.h
 		$(CC) $(COMP_FLAG) -c components/$*.c
 Move.o: components/Move.c components/Move.h components/List.h MemoryError.h
 		$(CC) $(COMP_FLAG) -c components/$*.c

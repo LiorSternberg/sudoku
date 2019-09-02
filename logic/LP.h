@@ -1,4 +1,5 @@
 #include "../components/Board.h"
+#include "../components/StatesList.h"
 
 #ifndef FINAL_PROJECT_LP_H
 #define FINAL_PROJECT_LP_H
@@ -9,7 +10,7 @@
  *
  * Note: if more than one possible value is found, randomly chooses a value,
  *       using the scores as weights for the random choice. */
-void guess_solution(Board *board, int threshold);
+void guess_solution(Board *board, States *states, double threshold);
 
 /* Returns an array of scores that represents the possible values and their
  * score for the given cell (size of the array is always the board dimension).

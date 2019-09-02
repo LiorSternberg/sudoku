@@ -27,6 +27,8 @@ void announce_num_of_solutions(int num_of_solutions);
 
 void announce_changes_made();
 
+void announce_no_changes_made();
+
 void print_change(Change *change, bool reverted);
 
 void announce_error(Error *error);

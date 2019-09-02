@@ -58,3 +58,18 @@ Change* add_change(States *states, int row, int column, int prev_val, int new_va
     return change;
 }
 
+void set_change(Board *board, Change *change) {
+    set_cell_value(board, change->actual_row, change->actual_column, change->value);
+}
+
+void reset_change(Board *board, Change *change) {
+    set_cell_value(board, change->actual_row, change->actual_column, change->prev_value);
+}
+
+void make_change(Board *board, States *states, int row, int column, int new_value) {
+    int actual_row = row - 1, actual_column = column - 1;
+    int prev_value = get_cell_value(board, actual_row, actual_column);
+    Change *change = add_change(states, row, column, prev_value, new_value);
+
+    set_change(board, change);
+}

@@ -108,6 +108,10 @@ void announce_changes_made() {
     printf("The following changes were made: \n-------------------------------\n");
 }
 
+void announce_no_changes_made() {
+    printf("The move does not contain changes.\n");
+}
+
 void print_change(Change *change, bool reverted) {
     int from_value, to_value;
 
