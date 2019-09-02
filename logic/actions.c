@@ -87,9 +87,11 @@ void play_guess(Command *command, Game *game) {
 }
 
 void play_generate(Command *command, Game *game) {
-    /* Needs undo/redo support */
-    UNUSED(command);
-    UNUSED(game);
+    add_new_move(game->states);
+    generate_puzzle(game->board, game->states, command->data.generate->num_to_fill,
+                    command->data.generate->num_to_leave);
+    print(game);
+    check_puzzle_finished(game);
 }
 
 void play_undo(Command *command, Game *game) {

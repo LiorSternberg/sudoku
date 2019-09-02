@@ -25,7 +25,7 @@ Error.o: io/Error.c io/Error.h MemoryError.h
 		$(CC) $(COMP_FLAG) -c io/$*.c
 Backtracking.o: logic/Backtracking.c logic/Backtracking.h components/Board.h components/Stack.h
 		$(CC) $(COMP_FLAG) -c logic/$*.c
-ILP.o: logic/ILP.c logic/ILP.h components/Board.h MemoryError.h
+ILP.o: logic/ILP.c logic/ILP.h components/Board.h components/StatesList.h MemoryError.h
 		$(CC) $(COMP_FLAG) -c logic/$*.c
 LP.o: logic/LP.c logic/LP.h components/Board.h components/StatesList.h MemoryError.h
 		$(CC) $(COMP_FLAG) -c logic/$*.c

@@ -25,6 +25,8 @@ void set_change(Board *board, Change *change);
 
 void reset_change(Board *board, Change *change);
 
+void reset_move(Board *board, Move *move);
+
 void make_change(Board *board, States *states, int row, int column, int new_value);
 
 #endif

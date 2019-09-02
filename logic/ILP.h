@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include "../components/Board.h"
+#include "../components/StatesList.h"
 
 #ifndef FINAL_PROJECT_ILP_H
 #define FINAL_PROJECT_ILP_H
@@ -23,6 +24,6 @@ bool is_board_solvable(const Board *board);
  * Returns true if the puzzle was generated successfully, and false if 1000
  * iterations failed to generate a legal puzzle.
  *  */
-bool generate_puzzle(Board *board, int num_to_fill, int num_to_leave);
+bool generate_puzzle(Board *board, States *states, int num_to_fill, int num_to_leave);
 
 #endif
