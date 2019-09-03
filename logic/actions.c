@@ -6,6 +6,9 @@
 #include "ILP.h"
 #include "LP.h"
 
+
+#define CANT_SAVE_UNSOLVABLE "Unfortunately the current state of the puzzle " \
+                             "is not solvable, so the board cannot be saved."
 #define DEFAULT_SIZE (3)
 #define UNUSED(x) (void)(x)
 
@@ -142,8 +145,12 @@ void play_redo(Command *command, Game *game) {
 }
 
 void play_save(Command *command, Game *game) {
-    UNUSED(command);
-    UNUSED(game);
+    if (!is_board_solvable(game->board)) {
+        invalidate(command, CANT_SAVE_UNSOLVABLE, execution_failure, false);
+        return;
+    }
+
+    save_to_file(game, command->data.save->path, command->error);
 }
 
 void play_hint(Command *command, Game *game) {
