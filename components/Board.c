@@ -106,35 +106,35 @@ void destroy_board(Board *board){
 
 /* Query functions */
 
-bool is_cell_fixed(Board *board, int row, int column) {
+bool is_cell_fixed(const Board *board, int row, int column) {
     return board->_cells_arr[row][column]->fixed;
 }
 
-bool is_cell_empty(Board *board, int row, int column) {
+bool is_cell_empty(const Board *board, int row, int column) {
     return board->_cells_arr[row][column]->val == CLEAR;
 }
 
-int get_cell_value(Board *board, int row, int column) {
+int get_cell_value(const Board *board, int row, int column) {
     return board->_cells_arr[row][column]->val;
 }
 
-bool is_board_erroneous(Board *board){
+bool is_board_erroneous(const Board *board){
     return (board->errors_count != 0);
 }
 
-bool is_cell_erroneous(Board *board, int row, int column){
+bool is_cell_erroneous(const Board *board, int row, int column){
     return board->_cells_arr[row][column]->erroneous;
 }
 
 
-void get_block_indices(Board *board, int row, int column, int *r_start, int *r_end, int *c_start, int *c_end) {
+void get_block_indices(const Board *board, int row, int column, int *r_start, int *r_end, int *c_start, int *c_end) {
     *r_start = row - (row % board->num_of_rows_in_block);
     *r_end = *r_start + board->num_of_rows_in_block;
     *c_start = column - (column % board->num_of_columns_in_block);
     *c_end = *c_start + board->num_of_columns_in_block;
 }
 
-List* generate_neighbors_list(Board *board, int row, int column) {
+List* generate_neighbors_list(const Board *board, int row, int column) {
     int i, r_start, r_end, j, c_start, c_end;
     List *neighbors = create_list();
 
@@ -273,7 +273,7 @@ bool fix_cell(Board *board, int row, int column) {
     return true;
 }
 
-Board* get_board_copy(Board *board){
+Board* get_board_copy(const Board *board){
     int i, j, val, N;
     Board *copy = create_board(board->num_of_rows_in_block, board->num_of_columns_in_block);
     N = board->dim;

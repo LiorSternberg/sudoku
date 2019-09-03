@@ -9,6 +9,19 @@ bool solve_puzzle(Board *board) {
     return true;
 }
 
+int get_cell_solution(const Board *board, int row, int column) {
+    Board* copy = get_board_copy(board);
+    int cell_solution = 0;
+
+    if (!solve_puzzle(copy)) {
+        return ERROR_VALUE;
+    }
+
+    cell_solution = get_cell_value(copy, row, column);
+    destroy_board(copy);
+    return cell_solution;
+}
+
 bool is_board_solvable(const Board *board) {
     /* TODO: actually implement this, and then remove the UNUSED and
      * change return value to be meaningful :) */

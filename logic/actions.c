@@ -7,8 +7,11 @@
 #include "LP.h"
 
 
-#define CANT_SAVE_UNSOLVABLE "Unfortunately the current state of the puzzle " \
+#define CANT_SAVE_UNSOLVABLE "Error: The current state of the puzzle " \
                              "is not solvable, so the board cannot be saved."
+#define UNSOLVABLE_ERROR "Error: The current state of the puzzle " \
+                         "is not solvable."
+
 #define DEFAULT_SIZE (3)
 #define UNUSED(x) (void)(x)
 
@@ -64,8 +67,8 @@ void play_print_board(Command *command, Game *game) {
 
 void play_set(Command *command, Game *game) {
     add_new_move(game->states);
-    make_change(game->board, game->states, command->data.set->row,
-                command->data.set->column, command->data.set->value);
+    make_change(game->board, game->states, command->data.set->row - 1,
+                command->data.set->column - 1, command->data.set->value);
     print(game);
 
     /* Check if this is the last cell to be filled */
@@ -154,8 +157,16 @@ void play_save(Command *command, Game *game) {
 }
 
 void play_hint(Command *command, Game *game) {
-    UNUSED(command);
-    UNUSED(game);
+    int actual_row = command->data.hint->row - 1;
+    int actual_column = command->data.hint->column - 1;
+    int hint = get_cell_solution(game->board, actual_row, actual_column);
+
+    if (hint == ERROR_VALUE) {
+        invalidate(command, UNSOLVABLE_ERROR, execution_failure, false);
+        return;
+    }
+
+    announce_hint(hint);
 }
 
 void play_guess_hint(Command *command, Game *game) {

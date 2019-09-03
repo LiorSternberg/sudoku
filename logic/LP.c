@@ -20,7 +20,7 @@ void guess_solution(Board *board, States *states, double threshold) {
 
 }
 
-int* get_cell_guesses(Board *board, int row, int column) {
+int* get_cell_guesses(const Board *board, int row, int column) {
     int *guesses = calloc(board->dim, sizeof(int));
     validate_memory_allocation("create_stack", guesses);
 

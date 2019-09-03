@@ -99,6 +99,9 @@ void announce_game_not_solvable() {
     printf("Unfortunately the current state of the puzzle is not solvable.\n\n");
 }
 
+void announce_hint(int hint) {
+    printf("Your hint is: %d. Use it wisely!\n\n", hint);
+}
 
 void announce_num_of_solutions(int num_of_solutions) {
     printf("Number of solutions for the current state: %d\n\n", num_of_solutions);

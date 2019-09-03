@@ -76,8 +76,7 @@ void reset_move(Board *board, Move *move) {
 }
 
 void make_change(Board *board, States *states, int row, int column, int new_value) {
-    int actual_row = row - 1, actual_column = column - 1;
-    int prev_value = get_cell_value(board, actual_row, actual_column);
+    int prev_value = get_cell_value(board, row, column);
     Change *change = add_change(states, row, column, prev_value, new_value);
 
     set_change(board, change);

@@ -23,6 +23,8 @@ void announce_game_solvable();
 
 void announce_game_not_solvable();
 
+void announce_hint(int hint);
+
 void announce_num_of_solutions(int num_of_solutions);
 
 void announce_changes_made();

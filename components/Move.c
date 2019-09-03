@@ -8,10 +8,10 @@ Change* create_change(int row, int column, int prev_value, int new_value) {
     Change *change = malloc(sizeof(Change));
     validate_memory_allocation("create_change", change);
 
-    change->row = row;
-    change->actual_row = row - 1;
-    change->column = column;
-    change->actual_column = column - 1;
+    change->row = row + 1;
+    change->actual_row = row;
+    change->column = column + 1;
+    change->actual_column = column;
     change->value = new_value;
     change->prev_value = prev_value;
 
