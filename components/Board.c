@@ -139,7 +139,7 @@ List* generate_neighbors_list(const Board *board, int row, int column) {
     List *neighbors = create_list();
 
     /* row & column neighbors */
-    for (i = 0; i < board->dim; i++) {
+    for (i=0; i < board->dim; i++) {
         if (i != column) {
             add(neighbors, board->_cells_arr[row][i]);
         }

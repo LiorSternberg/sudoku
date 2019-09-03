@@ -33,6 +33,10 @@ void announce_no_changes_made();
 
 void print_change(Change *change, bool reverted);
 
+void announce_guesses_list();
+
+void print_guess(int value, double score);
+
 void announce_error(Error *error);
 
 void announce_exit();

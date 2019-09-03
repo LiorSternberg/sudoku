@@ -80,31 +80,31 @@ void print(Game *game) {
 void announce_game_start() {
     printf(HEADLINE1);
     printf(HEADLINE2);
-    printf("Welcome! Let the Games Begin!\n\n");
+    printf("Welcome! Let the Games Begin!\n");
 }
 
 void announce_game_won() {
-    printf("*~*~*~*~* Woo Hoo! You did it! *~*~*~*~* \nPlease load another game or exit.\n\n");
+    printf("*~*~*~*~* Woo Hoo! You did it! *~*~*~*~* \nPlease load another game or exit.\n");
 }
 
 void announce_game_erroneous() {
-    printf("Hmm this isn't quite right. You have some errors you need to fix in order to complete the game.\n\n");
+    printf("Hmm this isn't quite right. You have some errors you need to fix in order to complete the game.\n");
 }
 
 void announce_game_solvable() {
-    printf("The current state of the puzzle is indeed solvable.\n\n");
+    printf("The current state of the puzzle is indeed solvable.\n");
 }
 
 void announce_game_not_solvable() {
-    printf("Unfortunately the current state of the puzzle is not solvable.\n\n");
+    printf("Unfortunately the current state of the puzzle is not solvable.\n");
 }
 
 void announce_hint(int hint) {
-    printf("Your hint is: %d. Use it wisely!\n\n", hint);
+    printf("Your hint is: %d. Use it wisely!\n", hint);
 }
 
 void announce_num_of_solutions(int num_of_solutions) {
-    printf("Number of solutions for the current state: %d\n\n", num_of_solutions);
+    printf("Number of solutions for the current state: %d\n", num_of_solutions);
 }
 
 void announce_changes_made() {
@@ -126,6 +126,15 @@ void print_change(Change *change, bool reverted) {
         from_value = change->prev_value;
     }
     printf(" @ Cell (%d, %d): [%d] --> [%d]\n", change->column, change->row, from_value, to_value);
+}
+
+void announce_guesses_list() {
+    printf("Guess values and their scores:\n"
+           "-----------------------------\n");
+}
+
+void print_guess(int value, double score) {
+    printf(" @ Value %d: score %f \n", value, score);
 }
 
 void announce_error(Error *error) {

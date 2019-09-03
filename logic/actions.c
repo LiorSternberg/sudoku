@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "actions.h"
 #include "../io/Serializer.h"
 #include "../io/Printer.h"
@@ -11,6 +12,8 @@
                              "is not solvable, so the board cannot be saved."
 #define UNSOLVABLE_ERROR "Error: The current state of the puzzle " \
                          "is not solvable."
+#define UNGUESSABLE_ERROR "Error: Could not make a guess based on the current " \
+                          "state of the puzzle."
 
 #define DEFAULT_SIZE (3)
 #define UNUSED(x) (void)(x)
@@ -170,8 +173,23 @@ void play_hint(Command *command, Game *game) {
 }
 
 void play_guess_hint(Command *command, Game *game) {
-    UNUSED(command);
-    UNUSED(game);
+    int i;
+    int actual_row = command->data.hint->row - 1;
+    int actual_column = command->data.hint->column - 1;
+    double *guesses = get_cell_guesses(game->board, actual_row, actual_column);
+
+    if (guesses == NULL) {
+        invalidate(command, UNGUESSABLE_ERROR, execution_failure, false);
+        return;
+    }
+
+    announce_guesses_list();
+    for (i=0; i < game->board->dim; i++) {
+        if (guesses[i] != 0) {
+            print_guess(i, guesses[i]);
+        }
+    }
+    free(guesses);
 }
 
 void play_num_solutions(Command *command, Game *game) {

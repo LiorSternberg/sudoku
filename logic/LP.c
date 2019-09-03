@@ -20,13 +20,21 @@ void guess_solution(Board *board, States *states, double threshold) {
 
 }
 
-int* get_cell_guesses(const Board *board, int row, int column) {
-    int *guesses = calloc(board->dim, sizeof(int));
+double* get_cell_guesses(const Board *board, int row, int column) {
+    double *guesses = calloc(board->dim, sizeof(double));
     validate_memory_allocation("create_stack", guesses);
 
     /* TODO: actually implement this, and then remove the UNUSED :) */
     UNUSED(row);
     UNUSED(column);
+
+    /* In case of an error:
+     *
+     * if (*//* had an error running LP *//*) {
+        free(guesses);
+        return NULL;
+    }
+    */
 
     return guesses;
 }
