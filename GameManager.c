@@ -9,7 +9,7 @@
 #define MAX_COMMAND_LEN 256
 #define INPUT_LEN (MAX_COMMAND_LEN + 2)
 
-#define COMMAND_TOO_LONG_ERROR "Error: command is too long\n"
+#define COMMAND_TOO_LONG_ERROR "Error: command is too long.\n"
 
 
 void handle_eof(Game *game, Command *command) {
