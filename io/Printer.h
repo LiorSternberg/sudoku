@@ -19,11 +19,23 @@ void announce_game_won();
 
 void announce_game_erroneous();
 
+void announce_game_solvable();
+
+void announce_game_not_solvable();
+
+void announce_hint(int hint);
+
 void announce_num_of_solutions(int num_of_solutions);
 
 void announce_changes_made();
 
+void announce_no_changes_made();
+
 void print_change(Change *change, bool reverted);
+
+void announce_guesses_list();
+
+void print_guess(int value, double score);
 
 void announce_error(Error *error);
 

@@ -9,7 +9,7 @@
 #define MAX_COMMAND_LEN 256
 #define INPUT_LEN (MAX_COMMAND_LEN + 2)
 
-#define COMMAND_TOO_LONG_ERROR "Error: command is too long\n"
+#define COMMAND_TOO_LONG_ERROR "Error: command is too long.\n"
 
 
 void handle_eof(Game *game, Command *command) {
@@ -24,7 +24,7 @@ void handle_eof(Game *game, Command *command) {
 void get_user_command(Game *game, Command *command) {
     char raw_command[INPUT_LEN] = {0};
 
-    printf("Please enter a command:\n");
+    printf("\nPlease enter a command:\n");
     fgets(raw_command, INPUT_LEN, stdin);
     handle_eof(game, command);
     if (raw_command[MAX_COMMAND_LEN] != 0) {

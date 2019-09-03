@@ -54,7 +54,7 @@ void assert_game_mode(Command *command, GameMode mode) {
 
 /* Assert that the given file exists and is readable. */
 void assert_file_readable(Command *command, char *path) {
-    if(access(path, F_OK) == -1) { /* file doesn't exist */
+    if (access(path, F_OK) == -1) { /* file doesn't exist */
         invalidate(command, FILE_DOESNT_EXIST_ERROR, execution_failure, false);
     } else if (access(path, R_OK) == -1) { /* file doesn't have read permissions */
         invalidate(command, FILE_NOT_READABLE_ERROR, execution_failure, false);
@@ -63,7 +63,7 @@ void assert_file_readable(Command *command, char *path) {
 
 /* Assert that the given file exists and is writable. */
 void assert_file_writable(Command *command, char *path) {
-    if (access(path, W_OK) == -1) { /* file doesn't have write permissions */
+    if (access(path, F_OK) == 0 && access(path, W_OK) == -1) { /* file doesn't have write permissions */
         invalidate(command, FILE_NOT_WRITABLE_ERROR, execution_failure, false);
     }
 }

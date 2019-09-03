@@ -1,28 +1,33 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "actions.h"
 #include "../io/Serializer.h"
 #include "../io/Printer.h"
 #include "Backtracking.h"
+#include "ILP.h"
+#include "LP.h"
+
+
+#define CANT_SAVE_UNSOLVABLE "Error: The current state of the puzzle " \
+                             "is not solvable, so the board cannot be saved."
+#define UNSOLVABLE_ERROR "Error: The current state of the puzzle " \
+                         "is not solvable."
+#define UNGUESSABLE_ERROR "Error: Could not make a guess based on the current " \
+                          "state of the puzzle."
 
 #define DEFAULT_SIZE (3)
 #define UNUSED(x) (void)(x)
 
-void set_change(Board *board, Change *change) {
-    set_cell_value(board, change->actual_row, change->actual_column, change->value);
+void check_puzzle_finished(Game *game) {
+    if (game->mode == solve_mode && game->board->empty_count == 0) {
+        if (game->board->errors_count == 0) {
+            announce_game_won();
+            game->mode = init_mode;
+        } else {
+            announce_game_erroneous();
+        }
+    }
 }
-
-void reset_change(Board *board, Change *change) {
-    set_cell_value(board, change->actual_row, change->actual_column, change->prev_value);
-}
-
-void make_change(Game *game, int row, int column, int new_value) {
-    int actual_row = row - 1, actual_column = column - 1;
-    int prev_value = get_cell_value(game->board, actual_row, actual_column);
-    Change *change = add_change(game->states, row, column, prev_value, new_value);
-
-    set_change(game->board, change);
-}
-
 
 /* The different plays */
 
@@ -65,33 +70,37 @@ void play_print_board(Command *command, Game *game) {
 
 void play_set(Command *command, Game *game) {
     add_new_move(game->states);
-    make_change(game, command->data.set->row, command->data.set->column, command->data.set->value);
+    make_change(game->board, game->states, command->data.set->row - 1,
+                command->data.set->column - 1, command->data.set->value);
     print(game);
 
     /* Check if this is the last cell to be filled */
-    if (game->mode == solve_mode && game->board->empty_count == 0) {
-        if (game->board->errors_count == 0) {
-            announce_game_won();
-            game->mode = init_mode;
-        } else {
-            announce_game_erroneous();
-        }
-    }
+    check_puzzle_finished(game);
 }
 
 void play_validate(Command *command, Game *game) {
     UNUSED(command);
-    UNUSED(game);
+
+    if (is_board_solvable(game->board)) {
+        announce_game_solvable();
+    } else {
+        announce_game_not_solvable();
+    }
 }
 
 void play_guess(Command *command, Game *game) {
-    UNUSED(command);
-    UNUSED(game);
+    add_new_move(game->states);
+    guess_solution(game->board, game->states, command->data.guess->threshold);
+    print(game);
+    check_puzzle_finished(game);
 }
 
 void play_generate(Command *command, Game *game) {
-    UNUSED(command);
-    UNUSED(game);
+    add_new_move(game->states);
+    generate_puzzle(game->board, game->states, command->data.generate->num_to_fill,
+                    command->data.generate->num_to_leave);
+    print(game);
+    check_puzzle_finished(game);
 }
 
 void play_undo(Command *command, Game *game) {
@@ -101,13 +110,18 @@ void play_undo(Command *command, Game *game) {
     UNUSED(command);
 
     reset_head(current_move->changes);
-    announce_changes_made();
-    do {
-        change = (Change*) get_current_item(current_move->changes);
-        reset_change(game->board, change);
-        print_change(change, true);
+    if (is_empty(current_move->changes)) {
+        announce_no_changes_made();
     }
-    while (next(current_move->changes) == 0);
+    else {
+        announce_changes_made();
+        do {
+            change = (Change*) get_current_item(current_move->changes);
+            reset_change(game->board, change);
+            print_change(change, true);
+        }
+        while (next(current_move->changes) == 0);
+    }
 
     prev(game->states->moves);
     print(game);
@@ -123,29 +137,59 @@ void play_redo(Command *command, Game *game) {
     current_move = (Move*) get_current_item(game->states->moves);
 
     reset_head(current_move->changes);
-    announce_changes_made();
-    do {
-        change = (Change*) get_current_item(current_move->changes);
-        set_change(game->board, change);
-        print_change(change, false);
+    if (is_empty(current_move->changes)) {
+        announce_no_changes_made();
+    } else {
+        announce_changes_made();
+        do {
+            change = (Change *) get_current_item(current_move->changes);
+            set_change(game->board, change);
+            print_change(change, false);
+        } while (next(current_move->changes) == 0);
     }
-    while (next(current_move->changes) == 0);
     print(game);
 }
 
 void play_save(Command *command, Game *game) {
-    UNUSED(command);
-    UNUSED(game);
+    if (!is_board_solvable(game->board)) {
+        invalidate(command, CANT_SAVE_UNSOLVABLE, execution_failure, false);
+        return;
+    }
+
+    save_to_file(game, command->data.save->path, command->error);
 }
 
 void play_hint(Command *command, Game *game) {
-    UNUSED(command);
-    UNUSED(game);
+    int actual_row = command->data.hint->row - 1;
+    int actual_column = command->data.hint->column - 1;
+    int hint = get_cell_solution(game->board, actual_row, actual_column);
+
+    if (hint == ERROR_VALUE) {
+        invalidate(command, UNSOLVABLE_ERROR, execution_failure, false);
+        return;
+    }
+
+    announce_hint(hint);
 }
 
 void play_guess_hint(Command *command, Game *game) {
-    UNUSED(command);
-    UNUSED(game);
+    int i;
+    int actual_row = command->data.hint->row - 1;
+    int actual_column = command->data.hint->column - 1;
+    double *guesses = get_cell_guesses(game->board, actual_row, actual_column);
+
+    if (guesses == NULL) {
+        invalidate(command, UNGUESSABLE_ERROR, execution_failure, false);
+        return;
+    }
+
+    announce_guesses_list();
+    for (i=0; i < game->board->dim; i++) {
+        if (guesses[i] != 0) {
+            print_guess(i, guesses[i]);
+        }
+    }
+    free(guesses);
 }
 
 void play_num_solutions(Command *command, Game *game) {
@@ -155,6 +199,7 @@ void play_num_solutions(Command *command, Game *game) {
 }
 
 void play_autofill(Command *command, Game *game) {
+    /* Needs undo/redo support */
     UNUSED(command);
     UNUSED(game);
 }

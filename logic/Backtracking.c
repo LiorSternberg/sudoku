@@ -21,7 +21,7 @@ void update_next_cell_coordinates(int *row, int *column, int N){
     }
 }
 
-int get_num_of_solutions(Board *board) {
+int get_num_of_solutions(const Board *board) {
     int counter = 0, row = 0, column = 0, val = CLEAR, N = board->dim;
     bool backtrack = false;
     Board *board_copy;
