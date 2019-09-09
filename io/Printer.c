@@ -112,7 +112,7 @@ void announce_changes_made() {
 }
 
 void announce_no_changes_made() {
-    printf("The move does not contain changes.\n");
+    printf("No changes were made.\n");
 }
 
 void print_change(Change *change, bool reverted) {
@@ -135,6 +135,10 @@ void announce_guesses_list() {
 
 void print_guess(int value, double score) {
     printf(" @ Value %d: score %f \n", value, score);
+}
+
+void print_autofill(int row, int column, int value) {
+    printf(" @ Cell (%d, %d) auto-filled: [%d] \n", column + 1, row + 1, value);
 }
 
 void announce_error(Error *error) {

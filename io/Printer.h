@@ -37,6 +37,8 @@ void announce_guesses_list();
 
 void print_guess(int value, double score);
 
+void print_autofill(int row, int column, int value);
+
 void announce_error(Error *error);
 
 void announce_exit();

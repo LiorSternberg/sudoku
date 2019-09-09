@@ -233,19 +233,21 @@ void set_cell_value(Board *board, int row, int column, int value) {
 
     neighbors = get_neighbors(board, row, column);
 
-    do {
-        neighbor = (BoardCell*) get_current_item(neighbors);
-        if (neighbor->val == CLEAR) {
-            /* conflicts are not relevant for clear cells */
-        } else if (neighbor->val == value) {
-            add_conflict(board, board->_cells_arr[row][column], neighbor);
-            add_conflict(board, neighbor, board->_cells_arr[row][column]);
+    if (!is_empty(neighbors)) {
+        do {
+            neighbor = (BoardCell*) get_current_item(neighbors);
+            if (neighbor->val == CLEAR) {
+                /* conflicts are not relevant for clear cells */
+            } else if (neighbor->val == value) {
+                add_conflict(board, board->_cells_arr[row][column], neighbor);
+                add_conflict(board, neighbor, board->_cells_arr[row][column]);
 
-        } else if (neighbor->val == board->_cells_arr[row][column]->val) {
-            remove_conflict(board, board->_cells_arr[row][column], neighbor);
-            remove_conflict(board, neighbor, board->_cells_arr[row][column]);
-        }
-    } while (next(neighbors) == 0);
+            } else if (neighbor->val == board->_cells_arr[row][column]->val) {
+                remove_conflict(board, board->_cells_arr[row][column], neighbor);
+                remove_conflict(board, neighbor, board->_cells_arr[row][column]);
+            }
+        } while (next(neighbors) == 0);
+    }
 
     if (value == CLEAR) {
         board->empty_count++;
@@ -287,7 +289,7 @@ Board* get_board_copy(const Board *board){
         }
     }
 
-    if (board->solved){
+    if (board->solved) {
         copy->solved = true;
     }
 
@@ -307,4 +309,45 @@ bool fix_non_empty_board_cells(Board *board){
         }
     }
     return true;
+}
+
+
+void mark_neighboring_values(Board *board, bool *marks, int row, int column) {
+    int i;
+    BoardCell *neighbor;
+    List *neighbors = get_neighbors(board, row, column);
+
+    if (is_empty(neighbors)) {
+        return;
+    }
+
+    /* Clear marks */
+    for (i=0; i < board->dim; i++) {
+        marks[i] = false;
+    }
+
+    do {
+        neighbor = (BoardCell*) get_current_item(neighbors);
+        if (neighbor->val != CLEAR) {
+            marks[neighbor->val - 1] = true;
+        }
+    } while (next(neighbors) == 0);
+}
+
+int get_obvious_value(Board *board, bool *marks, int row, int column) {
+    int i, total = 0, value = 0;
+    mark_neighboring_values(board, marks, row, column);
+
+    for (i=0; i < board->dim; i++) {
+        if (marks[i]) {
+            total++;
+        } else {
+            value = i + 1;
+        }
+    }
+
+    if (total == board->dim - 1) {
+        return value;
+    }
+    return ERROR_VALUE; /* return value ERROR_VALUE means no obvious value exists */
 }

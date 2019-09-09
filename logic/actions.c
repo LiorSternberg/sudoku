@@ -6,6 +6,7 @@
 #include "Backtracking.h"
 #include "ILP.h"
 #include "LP.h"
+#include "../MemoryError.h"
 
 
 #define CANT_SAVE_UNSOLVABLE "Error: The current state of the puzzle " \
@@ -199,9 +200,45 @@ void play_num_solutions(Command *command, Game *game) {
 }
 
 void play_autofill(Command *command, Game *game) {
-    /* Needs undo/redo support */
+    int i, j, value;
+    bool changes = false;
+
+    Board *copy = get_board_copy(game->board);
+    bool *marks = malloc(copy->dim * sizeof(bool));
+    validate_memory_allocation("play_autofill", marks);
+
     UNUSED(command);
-    UNUSED(game);
+    add_new_move(game->states);
+
+    for (i=0; i < copy->dim; i++) {
+        for (j=0; j < copy->dim; j++) {
+            if (!is_cell_empty(copy, i, j)) {
+                continue;
+            }
+
+            value = get_obvious_value(copy, marks, i, j);
+            if (value == ERROR_VALUE) {
+                continue;
+            }
+
+            if (!changes) {
+                changes = true;
+                announce_changes_made();
+            }
+
+            make_change(game->board, game->states, i, j, value);
+            print_autofill(i, j, value);
+        }
+    }
+    free(marks);
+
+    if (!changes) {
+        announce_no_changes_made();
+    }
+    print(game);
+
+    /* Check if this is the last cell to be filled */
+    check_puzzle_finished(game);
 }
 
 void play_reset(Command *command, Game *game) {

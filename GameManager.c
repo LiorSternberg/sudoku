@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "GameManager.h"
 #include "io/Parser.h"
@@ -22,21 +23,21 @@ void handle_eof(Game *game, Command *command) {
 }
 
 void get_user_command(Game *game, Command *command) {
-    char raw_command[INPUT_LEN] = {0};
+    char raw_command[INPUT_LEN];
 
     printf("\nPlease enter a command:\n");
-    fgets(raw_command, INPUT_LEN, stdin);
-    handle_eof(game, command);
-    if (raw_command[MAX_COMMAND_LEN] != 0) {
-        invalidate(command, COMMAND_TOO_LONG_ERROR, invalid_command_length, false);
-        fflush(stdin);
-        return;
-    }
+    do {
+        memset(raw_command, 0, INPUT_LEN);
+        fgets(raw_command, INPUT_LEN, stdin);
+        handle_eof(game, command);
+        if (raw_command[MAX_COMMAND_LEN] != 0) {
+            invalidate(command, COMMAND_TOO_LONG_ERROR, invalid_command_length, false);
+            fflush(stdin);
+            return;
+        }
 
-    parse_command(raw_command,  command, game);
-    if (command->type == empty) {
-        return;
-    }
+        parse_command(raw_command,  command, game);
+    } while (command->type == empty);
 
     validate_command(command, game);
 }
@@ -52,11 +53,6 @@ void play_turn(Game *game, Command *command) {
 
     if (!is_valid(command)) {
         dispose_of_command_on_error(command);
-        return;
-    }
-
-    if (command->type == empty) {
-        destroy_command(command);
         return;
     }
 
