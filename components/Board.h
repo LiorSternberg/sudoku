@@ -6,6 +6,7 @@
 
 #define CLEAR (0)
 #define MIN_INDEX (1)
+#define ERROR_VALUE (-1)
 
 typedef struct BoardCell BoardCell;
 
@@ -42,6 +43,10 @@ bool is_board_erroneous(const Board *board);
 
 /* Returns true if the (row, column) cell contains illegal value */
 bool is_cell_erroneous(const Board *board, int row, int column);
+
+/* If the given cell has only one legal value, returns it. Otherwise, returns ERROR_VALUE. */
+int get_obvious_value(Board *board, bool *marks, int row, int column);
+
 
 
 /* Board manipulation functions */
