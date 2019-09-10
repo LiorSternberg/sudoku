@@ -1,8 +1,8 @@
+#include <stdio.h>
 #include <stdlib.h>
+
 #include "LP.h"
 #include "../MemoryError.h"
-#include "gurobi_c.h"
-#include <stdio.h>
 
 #define UNUSED(x) (void)(x)
 

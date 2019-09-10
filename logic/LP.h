@@ -1,8 +1,10 @@
-#include "../components/Board.h"
-#include "../components/StatesList.h"
-
 #ifndef FINAL_PROJECT_LP_H
 #define FINAL_PROJECT_LP_H
+
+#include "../components/Board.h"
+#include "../components/StatesList.h"
+#include "gurobi_c.h"
+
 
 typedef struct {
     int row;
@@ -60,3 +62,5 @@ LPSol* create_LP_sol(int dim);
 void destroy_LP_sol(LPSol *board_sol);
 
 void destroyGurobi(GRBenv *env, GRBmodel *model, int *ind, double *val, double *obj, char *vtype);
+
+#endif
