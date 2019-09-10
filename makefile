@@ -31,7 +31,7 @@ Error.o: io/Error.c io/Error.h MemoryError.h
 Backtracking.o: logic/Backtracking.c logic/Backtracking.h components/Board.h components/Stack.h
 		$(CC) $(COMP_FLAG) -c logic/$*.c
 ILP.o: logic/ILP.c logic/ILP.h components/Board.h components/StatesList.h MemoryError.h
-		$(CC) $(COMP_FLAG) -c logic/$*.c
+		$(CC) $(COMP_FLAG) $(GUROBI_COMP) -c logic/$*.c
 LP.o: logic/LP.c logic/LP.h components/Board.h components/StatesList.h MemoryError.h
 		$(CC) $(COMP_FLAG) $(GUROBI_COMP) -c logic/$*.c
 Game.o: components/Game.c components/Game.h MemoryError.h components/StatesList.h components/Board.h

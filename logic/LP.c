@@ -41,6 +41,7 @@ double* get_cell_guesses(const Board *board, int row, int column) {
     return guesses;
 }
 
+/*
 Variable* create_variable(int row, int column, int val, int var_index){
     Variable *var = (Variable*)malloc(sizeof(Variable));
     validate_memory_allocation("create_variable", var);
@@ -54,11 +55,15 @@ Variable* create_variable(int row, int column, int val, int var_index){
 }
 
 void add_variable(LPSol *board_sol, int row, int column, int val, int index){
-    /* TODO */
+    */
+/* TODO *//*
+
 }
 
 int get_variable_index(LPSol *board_sol, int row, int column, int val){
-    /* TODO */
+    */
+/* TODO *//*
+
 }
 
 void destroy_variable(Variable *var){
@@ -71,7 +76,7 @@ LPSol* create_LP_sol(int dim){
     validate_memory_allocation("create_LP_sol", board_sol);
 
     board_sol->dim = dim;
-    board_sol->map_by_cell = (List)malloc(dim * dim * sizeof(List));
+    board_sol->map_by_cell = (List) malloc(dim * dim * sizeof(List));
     validate_memory_allocation("create_LP_sol", board_sol->map_by_cell);
 
     for (i = 0; i < dim; i++) {
@@ -80,7 +85,9 @@ LPSol* create_LP_sol(int dim){
         }
     }
     board_sol->sol = NULL;
-    board_sol->solved = -1; /* Default. */
+    board_sol->solved = -1; */
+/* Default. *//*
+
     return board_sol;
 }
 
@@ -91,7 +98,9 @@ void destroy_LP_sol(LPSol *board_sol) {
     for (i = 0; i < dim; i++) {
         for (j = 0; j < dim; j++) {
             if (map_by_cell[i * dim + j] != NULL) {
-                destroy_list(map_by_cell[i * dim + j]); /*for Tslil: need to destroy all nodes and variables fields before*/
+                destroy_list(map_by_cell[i * dim + j]); */
+/*for Tslil: need to destroy all nodes and variables fields before*//*
+
             }
         }
     }
@@ -116,7 +125,9 @@ void destroyGurobi(GRBenv *env, GRBmodel *model, int *ind, double *val, double *
     if (vtype != NULL) {
         free(vtype);
     }
-    /* LPSolution will be freed outside */
+    */
+/* LPSolution will be freed outside *//*
+
 }
 
 LPSol* get_LP_solution(Board *board, int integer){
@@ -127,11 +138,21 @@ LPSol* get_LP_solution(Board *board, int integer){
             N = board->dim, index = 0, valid;
     int constraints = 0, vars_in_constraint , found_val = 0;
     int error = 0;
-    double *sol = NULL; /* The solution values of the variables */
-    int *ind = malloc(N * sizeof(int)); /* Which variables participate in the constraint */
-    double *val = malloc(N * sizeof(double)); /* The coefficients of the variables that participate in the constraint */
-    double *obj = NULL; /* The coefficients of the target function */
-    char *vtype = NULL; /* The variables types */
+    double *sol = NULL; */
+/* The solution values of the variables *//*
+
+    int *ind = malloc(N * sizeof(int)); */
+/* Which variables participate in the constraint *//*
+
+    double *val = malloc(N * sizeof(double)); */
+/* The coefficients of the variables that participate in the constraint *//*
+
+    double *obj = NULL; */
+/* The coefficients of the target function *//*
+
+    char *vtype = NULL; */
+/* The variables types *//*
+
     int optimstatus;
     double objval;
 
@@ -140,7 +161,9 @@ LPSol* get_LP_solution(Board *board, int integer){
 
     board_sol = create_LP_sol(N);
 
-    /* Create environment - log file is board.log */
+    */
+/* Create environment - log file is board.log *//*
+
     error = GRBloadenv(&env, "board.log");
     if (error) {
         printf("ERROR %d GRBloadenv(): %s\n", error, GRBgeterrormsg(env));
@@ -155,7 +178,9 @@ LPSol* get_LP_solution(Board *board, int integer){
         return board_sol;
     }
 
-    /* Create an empty model named "board" */
+    */
+/* Create an empty model named "board" *//*
+
     error = GRBnewmodel(env, &model, "board", 0, NULL, NULL, NULL, NULL, NULL);
     if (error) {
         printf("ERROR %d GRBnewmodel(): %s\n", error, GRBgeterrormsg(env));
@@ -163,11 +188,15 @@ LPSol* get_LP_solution(Board *board, int integer){
         return board_sol;
     }
 
-    /* Determine which variables should be defined */
+    */
+/* Determine which variables should be defined *//*
+
 
     for (i = 0; i < N; i++) {
         for (j = 0; j < N; j++) {
-            if (get_cell_value(board, i, j) != 0) { /* Cell is not empty */
+            if (get_cell_value(board, i, j) != 0) { */
+/* Cell is not empty *//*
+
                 continue;
             }
 
@@ -175,16 +204,26 @@ LPSol* get_LP_solution(Board *board, int integer){
 
             for (v = 1; v <= N; v++) {
                 set_cell_value(board, i, j, v);
-                if (!is_cell_erroneous(board, i, j)) { /* Value v is legal for cell (i,j), assign a variable and save it's index */
-                    valid = 1; /* Indicates we found a possible value for cell (i,j) */
+                if (!is_cell_erroneous(board, i, j)) { */
+/* Value v is legal for cell (i,j), assign a variable and save it's index *//*
+
+                    valid = 1; */
+/* Indicates we found a possible value for cell (i,j) *//*
+
                     add_variable(board_sol, i, j, v, index);
                     index++;
                 }
             }
-            set_cell_value(board, i, j, 0); /*Clean the cell, as it was before */
+            set_cell_value(board, i, j, 0); */
+/*Clean the cell, as it was before *//*
 
-            if (!valid) { /* An empty cell without any legal values */
-                add_variable(board_sol, i, j, -1, -1); /* Indicates that cell (i,j) is empty (not to mistake with non-empty cells later) */
+
+            if (!valid) { */
+/* An empty cell without any legal values *//*
+
+                add_variable(board_sol, i, j, -1, -1); */
+/* Indicates that cell (i,j) is empty (not to mistake with non-empty cells later) *//*
+
             }
         }
     }
@@ -197,24 +236,32 @@ LPSol* get_LP_solution(Board *board, int integer){
     validate_memory_allocation("get_LP_solution", obj);
     board_sol ->sol = sol;
 
-    /* Set the coefficients of the target function & variable types */
+    */
+/* Set the coefficients of the target function & variable types *//*
+
 
     if (integer == 1) {
         for (i = 0; i < index; i++) {
-            obj[i] = 0; /* Target function is zero (we only need to find a feasible solution) */
+            obj[i] = 0; */
+/* Target function is zero (we only need to find a feasible solution) *//*
+
             vtype[i] = GRB_BINARY;
         }
     }
 
     else {
         for (i = 0; i < index; i++) {
-            obj[i] = 1 + rand()%10; /* Assign random weight from 1 to 10 to each variable */
+            obj[i] = 1 + rand()%10; */
+/* Assign random weight from 1 to 10 to each variable *//*
+
             vtype[i] = GRB_CONTINUOUS;
         }
     }
 
 
-    /* add variables to model */
+    */
+/* add variables to model *//*
+
     error = GRBaddvars(model, index, 0, NULL, NULL, NULL, obj, NULL, NULL,
                        vtype, NULL);
     if (error) {
@@ -223,7 +270,9 @@ LPSol* get_LP_solution(Board *board, int integer){
         return board_sol;
     }
 
-    /* Change objective sense to maximization */
+    */
+/* Change objective sense to maximization *//*
+
     error = GRBsetintattr(model, GRB_INT_ATTR_MODELSENSE, GRB_MAXIMIZE);
     if (error) {
         printf("ERROR %d GRBsetintattr(): %s\n", error, GRBgeterrormsg(env));
@@ -231,7 +280,9 @@ LPSol* get_LP_solution(Board *board, int integer){
         return board_sol;
     }
 
-    /* update the model - to integrate new variables */
+    */
+/* update the model - to integrate new variables *//*
+
     error = GRBupdatemodel(model);
     if (error) {
         printf("ERROR %d GRBupdatemodel(): %s\n", error, GRBgeterrormsg(env));
@@ -239,19 +290,29 @@ LPSol* get_LP_solution(Board *board, int integer){
         return board_sol;
     }
 
-    /* Set constraints */
+    */
+/* Set constraints *//*
 
-    /* cell constraints (exactly one value in each cell) */
+
+    */
+/* cell constraints (exactly one value in each cell) *//*
+
     for (i = 0; i < N; i++) {
         for (j = 0; j < N; j++) {
-            if (get_variable_index(board_sol, i, j, 1) == -1) { /* The cell is not empty */
+            if (get_variable_index(board_sol, i, j, 1) == -1) { */
+/* The cell is not empty *//*
+
                 continue;
             }
 
-            vars_in_constraint = 0; /* Count how many variables participate in each constraint */
+            vars_in_constraint = 0; */
+/* Count how many variables participate in each constraint *//*
+
 
             for (v = 1; v <= N; v++) {
-                if (get_variable_index(board_sol, i, j, v) == -2) { /* value v is not available for this cell (e.g. doesn't have a variable) */
+                if (get_variable_index(board_sol, i, j, v) == -2) { */
+/* value v is not available for this cell (e.g. doesn't have a variable) *//*
+
                     continue;
                 }
                 ind[vars_in_constraint] = get_variable_index(board_sol, i, j, v);
@@ -260,9 +321,13 @@ LPSol* get_LP_solution(Board *board, int integer){
             }
 
             if (vars_in_constraint == 0) {
-                /* An empty cell with no legal values - means the board is unsolveable (constraint of sum of variables on cell (i,j) == 1 can't be fulfilled */
+                */
+/* An empty cell with no legal values - means the board is unsolveable (constraint of sum of variables on cell (i,j) == 1 can't be fulfilled *//*
+
                 destroyGurobi(env, model, ind, val, obj, vtype);
-                board_sol->solved = 0; /* There is no solution */
+                board_sol->solved = 0; */
+/* There is no solution *//*
+
                 return board_sol;
             }
 
@@ -277,7 +342,9 @@ LPSol* get_LP_solution(Board *board, int integer){
         }
     }
 
-    /* row constraints */
+    */
+/* row constraints *//*
+
 
     for (v = 1; v <= N; v++) {
         for (i = 0; i < N; i++) {
@@ -286,11 +353,15 @@ LPSol* get_LP_solution(Board *board, int integer){
 
             for (j = 0; j < N; j++) {
                 if (get_cell_value(board, i, j) == v) {
-                    found_val = 1; /* Indicates we found value v in row i, therefore no need to set this constraint */
+                    found_val = 1; */
+/* Indicates we found value v in row i, therefore no need to set this constraint *//*
+
                     break;
                 }
 
-                if (get_variable_index(board_sol, i, j, v) == -1 || get_variable_index(board_sol, i, j, v) == -2) { /* Cell (i,j) already contains a number, or value v is not legal for (i,j) */
+                if (get_variable_index(board_sol, i, j, v) == -1 || get_variable_index(board_sol, i, j, v) == -2) { */
+/* Cell (i,j) already contains a number, or value v is not legal for (i,j) *//*
+
                     continue;
                 }
 
@@ -320,7 +391,9 @@ LPSol* get_LP_solution(Board *board, int integer){
         }
     }
 
-    /* column constraints */
+    */
+/* column constraints *//*
+
 
     for (v = 1; v <= N; v++) {
         for (j = 0; j < N; j++) {
@@ -329,11 +402,15 @@ LPSol* get_LP_solution(Board *board, int integer){
 
             for (i = 0; i < N; i++) {
                 if (get_cell_value(board, i, j) == v) {
-                    found_val = 1; /* Indicates we found value v in column j, therefore no need to set a constraint */
+                    found_val = 1; */
+/* Indicates we found value v in column j, therefore no need to set a constraint *//*
+
                     break;
                 }
 
-                if (get_variable_index(board_sol, i, j, v) == -1 || get_variable_index(board_sol, i, j, v) == -2) { /* Cell (i,j) already contains a number, or value v is not legal for (i,j) */
+                if (get_variable_index(board_sol, i, j, v) == -1 || get_variable_index(board_sol, i, j, v) == -2) { */
+/* Cell (i,j) already contains a number, or value v is not legal for (i,j) *//*
+
                     continue;
                 }
 
@@ -363,21 +440,29 @@ LPSol* get_LP_solution(Board *board, int integer){
         }
     }
 
-    /* block constraints */
+    */
+/* block constraints *//*
 
-    for (k = 0; k < n; k++) { /* k and l iterate over blocks, i and j over cells in each block */
+
+    for (k = 0; k < n; k++) { */
+/* k and l iterate over blocks, i and j over cells in each block *//*
+
         for (l = 0; l < m; l++) {
             for (v = 1; v <= N; v++) {
                 vars_in_constraint = 0;
                 for (i = k * m; i < (k + 1) * m; i++) {
                     for (j = l * n; j < (l + 1) * n; j++) {
                         if (get_cell_value(board, i, j) == v) {
-                            found_val = 1; /* Indicates we found value v in block (i,j), therefore no need to set a constraint */
+                            found_val = 1; */
+/* Indicates we found value v in block (i,j), therefore no need to set a constraint *//*
+
                             break;
                         }
 
                         if (get_variable_index(board_sol, i, j, v) == -1
-                            || get_variable_index(board_sol, i, j, v) == -2) { /* Cell (i,j) already contains a number, or value v is not legal for (i,j) */
+                            || get_variable_index(board_sol, i, j, v) == -2) { */
+/* Cell (i,j) already contains a number, or value v is not legal for (i,j) *//*
+
                             continue;
                         }
 
@@ -408,7 +493,9 @@ LPSol* get_LP_solution(Board *board, int integer){
         }
     }
 
-    /* Optimize model - need to call this before calculation */
+    */
+/* Optimize model - need to call this before calculation *//*
+
     error = GRBoptimize(model);
     if (error) {
         printf("ERROR %d GRBoptimize(): %s\n", error, GRBgeterrormsg(env));
@@ -416,7 +503,9 @@ LPSol* get_LP_solution(Board *board, int integer){
         return board_sol;
     }
 
-    /* Write model to 'board.lp' - this is not necessary but very helpful */
+    */
+/* Write model to 'board.lp' - this is not necessary but very helpful *//*
+
     error = GRBwrite(model, "board.lp");
     if (error) {
         printf("ERROR %d GRBwrite(): %s\n", error, GRBgeterrormsg(env));
@@ -424,7 +513,9 @@ LPSol* get_LP_solution(Board *board, int integer){
         return board_sol;
     }
 
-    /* Get solution information */
+    */
+/* Get solution information *//*
+
 
     error = GRBgetintattr(model, GRB_INT_ATTR_STATUS, &optimstatus);
     if (error) {
@@ -433,17 +524,25 @@ LPSol* get_LP_solution(Board *board, int integer){
         return board_sol;
     }
 
-    /* get the objective - the optimal result of the function */
+    */
+/* get the objective - the optimal result of the function *//*
+
     error = GRBgetdblattr(model, GRB_DBL_ATTR_OBJVAL, &objval);
     if (error) {
         destroyGurobi(env, model, ind, val, obj, vtype);
         board_sol->solved = 0;
-        /*printf("ERROR %d GRBgettdblattr(): %s\n", error, GRBgeterrormsg(env));*/
+        */
+/*printf("ERROR %d GRBgettdblattr(): %s\n", error, GRBgeterrormsg(env));*//*
+
         return board_sol;
     }
 
-    /* get the solution - the assignment to each variable */
-    /* 3-- number of variables, the size of "sol" should match */
+    */
+/* get the solution - the assignment to each variable *//*
+
+    */
+/* 3-- number of variables, the size of "sol" should match *//*
+
     error = GRBgetdblattrarray(model, GRB_DBL_ATTR_X, 0, index, sol);
     if (error) {
         printf("ERROR %d GRBgetdblattrarray(): %s\n", error,
@@ -452,26 +551,39 @@ LPSol* get_LP_solution(Board *board, int integer){
         return board_sol;
     }
 
-    /* print results */
-    /*printf("\nOptimization complete\n");*/
+    */
+/* print results *//*
 
-    /* solution found */
+    */
+/*printf("\nOptimization complete\n");*//*
+
+
+    */
+/* solution found *//*
+
     if (optimstatus == GRB_OPTIMAL) {
         board_sol->solved = 1;
     }
 
-        /* no solution found */
+        */
+/* no solution found *//*
+
     else if (optimstatus == GRB_INF_OR_UNBD) {
         board_sol->solved = 0;
     }
-        /* error or calculation stopped */
+        */
+/* error or calculation stopped *//*
+
     else {
         printf("Optimization was stopped early\n");
     }
 
-    /* IMPORTANT !!! - Free model and environment */
+    */
+/* IMPORTANT !!! - Free model and environment *//*
+
     destroyGurobi(env, model, ind, val, obj, vtype);
     board_sol->sol = sol;
 
     return board_sol;
 }
+*/

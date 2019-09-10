@@ -1,6 +1,13 @@
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "ILP.h"
+#include "../MemoryError.h"
 
 #define UNUSED(x) (void)(x)
+#define VAR_NAME_LEN (13)
+
 
 bool solve_puzzle(Board *board) {
     /* TODO: actually implement this, and then remove the UNUSED and
@@ -53,3 +60,86 @@ bool generate_puzzle(Board *board, States *states, int num_to_fill, int num_to_l
     return true;
 }
 
+
+bool handle_gurobi_error(GRBenv *env, char *func_name, int error_code) {
+    printf("ERROR %d %s(): %s\n", error_code, func_name, GRBgeterrormsg(env));
+    return false;
+}
+
+bool gurobi_solver(Board *board) {
+    GRBenv   *env;
+    GRBmodel *model;
+    int       error = 0;
+    char      name[VAR_NAME_LEN];
+
+    int       dim   = board->dim;
+    int       i, j, v;
+    bool     *marks, has_possible_value;
+
+    printf("1\n");
+
+    /* Create environment */
+
+    printf("2\n");
+    error = GRBloadenv(&env, "sudoku.log");
+    if (error) {
+        return handle_gurobi_error(env, "GRBloadenv", error);
+    }
+
+    printf("3\n");
+
+    /* Create new model */
+
+    error = GRBnewmodel(env, &model, "sudoku", 0, NULL, NULL, NULL, NULL, NULL);
+    if (error) {
+        return handle_gurobi_error(env, "GRBloadenv", error);
+    }
+    printf("4\n");
+
+    marks = malloc(dim * sizeof(bool));
+    validate_memory_allocation("gurobi_solver: marks", marks);
+
+    printf("5\n");
+    for (i = 0; i < dim; i++) {
+        for (j = 0; j < dim; j++) {
+
+            /* only add variables for empty cells */
+            if (!is_cell_empty(board, i, j)) {
+                continue;
+            }
+
+            /* don't add variables for obvious values */
+            if ((v = get_obvious_value(board, marks, i, j)) != ERROR_VALUE) {
+                set_cell_value(board, i, j, v);
+                continue;
+            }
+
+            has_possible_value = false;
+            mark_neighboring_values(board, marks, i, j);
+            for (v = 0; v < dim; v++) {
+                if (!marks[v]) { /* no conflicting neighbor, so this is a possible value */
+                    has_possible_value = true;
+                    sprintf(name, "x[%d,%d,%d]", i, j, v+1);
+                    GRBaddvar(model, 0, NULL, NULL, 1, 0, 1, GRB_BINARY, name);
+                }
+            }
+            if (!has_possible_value) {
+                return false;
+            }
+        }
+    }
+
+    printf("6\n");
+
+    GRBupdatemodel(model);
+    free(marks);
+
+    printf("7\n");
+
+
+
+    printf("8\n");
+
+
+    return 0;
+}

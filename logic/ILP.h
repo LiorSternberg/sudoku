@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include "../components/Board.h"
 #include "../components/StatesList.h"
+#include "gurobi_c.h"
 
 #ifndef FINAL_PROJECT_ILP_H
 #define FINAL_PROJECT_ILP_H
@@ -31,5 +32,7 @@ bool is_board_solvable(const Board *board);
  * iterations failed to generate a legal puzzle.
  *  */
 bool generate_puzzle(Board *board, States *states, int num_to_fill, int num_to_leave);
+
+bool gurobi_solver(Board *board);
 
 #endif

@@ -44,6 +44,12 @@ bool is_board_erroneous(const Board *board);
 /* Returns true if the (row, column) cell contains illegal value */
 bool is_cell_erroneous(const Board *board, int row, int column);
 
+/* Fill the marks array according to the values of the cell's neighbors (for
+ * example, if there exists a neighbor with value 3, then cell 2 (value-1) will
+ * be set to true. Additionally, if there's no neighbor with value 4, then cell
+ * 3 will be set to false). */
+void mark_neighboring_values(Board *board, bool *marks, int row, int column);
+
 /* If the given cell has only one legal value, returns it. Otherwise, returns ERROR_VALUE. */
 int get_obvious_value(Board *board, bool *marks, int row, int column);
 
