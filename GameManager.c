@@ -11,6 +11,7 @@
 #define INPUT_LEN (MAX_COMMAND_LEN + 2)
 
 #define COMMAND_TOO_LONG_ERROR "Error: command is too long.\n"
+#define COMMAND_NOT_READ_ERROR "Error: command could not be read.\n"
 
 
 void handle_eof(Game *game, Command *command) {
@@ -24,12 +25,19 @@ void handle_eof(Game *game, Command *command) {
 
 void get_user_command(Game *game, Command *command) {
     char raw_command[INPUT_LEN];
+    char *res;
 
     printf("\nPlease enter a command:\n");
     do {
         memset(raw_command, 0, INPUT_LEN);
-        fgets(raw_command, INPUT_LEN, stdin);
+        res = fgets(raw_command, INPUT_LEN, stdin);
         handle_eof(game, command);
+        if (res == NULL) {
+            invalidate(command, COMMAND_NOT_READ_ERROR, invalid_command_length, false);
+            fflush(stdin);
+            return;
+        }
+
         if (raw_command[MAX_COMMAND_LEN] != 0) {
             invalidate(command, COMMAND_TOO_LONG_ERROR, invalid_command_length, false);
             fflush(stdin);

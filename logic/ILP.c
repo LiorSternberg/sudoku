@@ -6,8 +6,9 @@
 #include "../MemoryError.h"
 
 #define UNUSED(x) (void)(x)
-#define VAR_NAME_LEN (13)
+#define VAR_NAME_LEN (100)
 
+bool gurobi_ILP_solver(Board *board);
 
 bool solve_puzzle(Board *board) {
     return gurobi_ILP_solver(board);
@@ -134,21 +135,6 @@ bool gurobi_ILP_solver(Board *board) {
 
             /* Only add variables for empty cells. */
             if (!is_cell_empty(board, i, j)) {
-                for (v = 0; v < dim; v++) {
-                    vars_indices[i * dim * dim + j * dim + v] = ERROR_VALUE;
-                }
-                continue;
-            }
-
-            /* Don't add variables for obvious values, just fill them.
-             * If as a result the board becomes erroneous then it is invalid. */
-            if ((v = get_obvious_value(board, marks, i, j)) != ERROR_VALUE) {
-                set_cell_value(board, i, j, v);
-                if (is_board_erroneous(board)) {
-                    free_gurobi_solver_resources(env, model, marks, vars_indices, constraint_indices, constraint_coefs);
-                    return false;
-                }
-
                 for (v = 0; v < dim; v++) {
                     vars_indices[i * dim * dim + j * dim + v] = ERROR_VALUE;
                 }
@@ -313,11 +299,12 @@ bool gurobi_ILP_solver(Board *board) {
     /* Add constraints: each value appears exactly once in each block */
 
     for (v = 0; v < dim; v++) {
-        for (r_start = 0; r_start < dim; r_start += board->num_of_columns_in_block) {
-            r_end = r_start + board->num_of_columns_in_block;
+        for (r_start = 0; r_start < dim; r_start += board->num_of_rows_in_block) {
+            r_end = r_start + board->num_of_rows_in_block;
 
-            for (c_start = 0; c_start < dim; c_start += board->num_of_rows_in_block) {
-                c_end = c_start + board->num_of_rows_in_block;
+            for (c_start = 0; c_start < dim; c_start += board->num_of_columns_in_block) {
+                c_end = c_start + board->num_of_columns_in_block;
+
 
                 vars_counter = 0;
                 sprintf(name, "block_val[(%d,%d),%d]", r_start, c_start, v+1);

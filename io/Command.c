@@ -27,15 +27,15 @@ Command* create_command() {
 }
 
 void destroy_command(Command* command) {
-    if (command->type == solve) {
+    if (command->type == solve && command->data.solve != NULL) {
         free(command->data.solve->path);
         free(command->data.solve);
     }
-    else if (command->type == edit) {
+    else if (command->type == edit && command->data.edit != NULL) {
         free(command->data.edit->path);
         free(command->data.edit);
     }
-    else if (command->type == save) {
+    else if (command->type == save && command->data.save != NULL) {
         free(command->data.save->path);
         free(command->data.save);
     }
