@@ -33,6 +33,6 @@ bool is_board_solvable(const Board *board);
  *  */
 bool generate_puzzle(Board *board, States *states, int num_to_fill, int num_to_leave);
 
-bool gurobi_solver(Board *board);
+bool gurobi_ILP_solver(Board *board);
 
 #endif

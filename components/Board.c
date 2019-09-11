@@ -127,6 +127,8 @@ bool is_cell_erroneous(const Board *board, int row, int column){
 }
 
 
+/* updates the integers r_start, r_end, c_start, c_end to the row and column indices of
+ * the block of cell (row, column) in the board. */
 void get_block_indices(const Board *board, int row, int column, int *r_start, int *r_end, int *c_start, int *c_end) {
     *r_start = row - (row % board->num_of_rows_in_block);
     *r_end = *r_start + board->num_of_rows_in_block;
