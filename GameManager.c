@@ -45,7 +45,11 @@ void get_user_command(Game *game, Command *command) {
         }
 
         parse_command(raw_command,  command, game);
-    } while (command->type == empty);
+    } while (command->type == empty && is_valid(command));
+
+    if (command->type == empty) {
+        return;
+    }
 
     validate_command(command, game);
 }
