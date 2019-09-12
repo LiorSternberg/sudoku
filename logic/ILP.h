@@ -4,7 +4,6 @@
 #include <stdbool.h>
 #include "../components/Board.h"
 #include "../components/StatesList.h"
-#include "gurobi_c.h"
 
 #define ERROR_VALUE (-1)
 
