@@ -15,6 +15,8 @@
                          "is not solvable."
 #define UNGUESSABLE_ERROR "Error: Could not make a guess based on the current " \
                           "state of the puzzle."
+#define MAX_TRIALS_REACHED "Error: The maximum number of attempts to generate a " \
+                          "puzzle has been reached. Could not generate puzzle."
 
 #define DEFAULT_SIZE (3)
 #define UNUSED(x) (void)(x)
@@ -98,10 +100,13 @@ void play_guess(Command *command, Game *game) {
 
 void play_generate(Command *command, Game *game) {
     add_new_move(game->states);
-    generate_puzzle(game->board, game->states, command->data.generate->num_to_fill,
-                    command->data.generate->num_to_leave);
+    if (!generate_puzzle(game->board, game->states, command->data.generate->num_to_fill,
+                    command->data.generate->num_to_leave)) {
+        invalidate(command, MAX_TRIALS_REACHED, execution_failure, false);
+        return;
+    }
+
     print(game);
-    check_puzzle_finished(game);
 }
 
 void play_undo(Command *command, Game *game) {

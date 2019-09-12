@@ -43,4 +43,4 @@ add_executable(final_project
         logic/LP.h
         logic/ILP.c
         logic/ILP.h
-        logic/solver.c logic/solver.h)
+        logic/solver.c logic/solver.h logic/random.c logic/random.h)

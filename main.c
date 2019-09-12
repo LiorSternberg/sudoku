@@ -5,11 +5,13 @@
 #include "io/Printer.h"
 #include "logic/ILP.h"
 #include "io/Serializer.h"
+#include "logic/random.h"
 
 int main() {
     Command *command = NULL;
     Game *game = create_game();
-
+    initialize_random();
+    
     /*Error *error = create_error();*/
     announce_game_start();
 

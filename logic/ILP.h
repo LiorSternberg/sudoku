@@ -22,7 +22,7 @@ bool is_board_solvable(const Board *board);
 
 /* This function generates a puzzle in the following way:
  *  - Chooses <num_to_fill> random empty cells.
- *  - Fills the chosen cells with legal values.
+ *  - Fills the chosen cells with random legal values.
  *  - Solves the board using ILP (if it's unsolvable restart the process)
  *  - Clear all but <num_to_leave> cells (any cells, unrelated to the
  *    previously chosen cells, or the ones that were originally filled).
