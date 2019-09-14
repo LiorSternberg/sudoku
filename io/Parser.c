@@ -105,7 +105,7 @@ void solve_args_parser(Command *self, char **args, int num_of_args) {
         return;
     }
 
-    data->path = (char*) calloc(strlen(args[0]), sizeof(char));
+    data->path = (char*) calloc(strlen(args[0]) + 1, sizeof(char));
     validate_memory_allocation("solve_args_parser", data->path);
     strcpy(data->path, args[0]);
     self->data.solve = data;
@@ -124,7 +124,7 @@ void edit_args_parser(Command *self, char **args, int num_of_args) {
 
     if (num_of_args == EDIT_MAX_ARGS) {
         data->from_file = true;
-        data->path = calloc(strlen(args[0]), sizeof(char));
+        data->path = calloc(strlen(args[0]) + 1, sizeof(char));
         validate_memory_allocation("edit_args_parser", data);
         strcpy(data->path, args[0]);
 
@@ -210,7 +210,7 @@ void save_args_parser(Command *self, char **args, int num_of_args) {
         return;
     }
 
-    data->path = calloc(strlen(args[0]), sizeof(char));
+    data->path = calloc(strlen(args[0]) + 1, sizeof(char));
     validate_memory_allocation("save_args_parser", data);
     strcpy(data->path, args[0]);
     self->data.save = data;

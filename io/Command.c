@@ -22,6 +22,9 @@ Command* create_command() {
     command->data.save = NULL;
     command->data.hint = NULL;
     command->data.guess_hint = NULL;
+    command->_play = NULL;
+    command->_validate = NULL;
+    command->_parse_args = NULL;
 
     return command;
 }
