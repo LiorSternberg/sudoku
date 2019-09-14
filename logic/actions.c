@@ -93,7 +93,10 @@ void play_validate(Command *command, Game *game) {
 
 void play_guess(Command *command, Game *game) {
     add_new_move(game->states);
-    guess_solution(game->board, game->states, command->data.guess->threshold);
+    if (!guess_solution(game->board, game->states, command->data.guess->threshold)) {
+        invalidate(command, UNGUESSABLE_ERROR, execution_failure, false);
+        return;
+    }
     print(game);
     check_puzzle_finished(game);
 }

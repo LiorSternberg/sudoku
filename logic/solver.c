@@ -3,8 +3,11 @@
 #include "gurobi_c.h"
 #include "solver.h"
 #include "../MemoryError.h"
+#include "random.h"
+#include "../components/StatesList.h"
 
 #define VAR_NAME_LEN (100)
+#define RANGE_CONST (10)
 #define CELL_NAME_FORMAT "cell[%d,%d]"
 #define ROW_NAME_FORMAT "row_val[%d,%d]"
 #define COLUMN_NAME_FORMAT "column_val[%d,%d]"
@@ -17,15 +20,14 @@ typedef enum {
     column
 } ConstraintType;
 
-/* Gurobi ILP Model Solving */
 
+/* Gurobi ILP/LP Model Solving */
 
 /* Report error in gurobi and return error status */
 bool handle_gurobi_error(GRBenv *env, char *func_name, int error_code) {
     printf("ERROR %d %s(): %s\n", error_code, func_name, GRBgeterrormsg(env));
     return false;
 }
-
 
 /* Free resources used in the gurobi solver */
 void free_gurobi_resources(GRBenv *env, GRBmodel *model, int *vars_indices) {
@@ -40,7 +42,6 @@ void set_constraint(int *constraint_indices, double *constraint_coefs, const int
     constraint_indices[*vars_counter] = vars_indices[index];
     constraint_coefs[*vars_counter] = 1.0;
     (*vars_counter)++;
-
 }
 
 /* Add a constraint to the model */
@@ -56,8 +57,7 @@ bool add_constraints(GRBenv *env, GRBmodel *model, int dim, char *name, int *var
     if (error) {
         free_gurobi_resources(env, model, vars_indices);
         return handle_gurobi_error(env, "GRBaddconstr", error);
-    };
-
+    }
     return true;
 }
 
@@ -70,8 +70,9 @@ int calc_index_for_constraint(ConstraintType type, int primary, int secondary, i
             return secondary*dim*dim + internal*dim + primary;
         case column:
             return internal*dim*dim + secondary*dim + primary;
+        default:
+            return 0;
     }
-    return 0;
 }
 
 /* Format the name of constraint */
@@ -116,7 +117,7 @@ bool add_constraints_by_type(GRBenv *env, GRBmodel *model, int dim, int *vars_in
             if (!add_constraints(env, model, dim, name, vars_indices, constraint_indices,
                                  constraint_coefs, vars_counter)) {
                 return false;
-            };
+            }
         }
     }
     return true;
@@ -160,19 +161,41 @@ bool add_block_constraints(GRBenv *env, GRBmodel *model, Board *board, int *vars
     return true;
 }
 
+double get_objective_coefficient(VariableType var_type, int dim) {
+    switch (var_type) {
+        case integer:
+            return 1.0;
+        case continuous:
+            return get_rand_index(dim * dim * RANGE_CONST);
+        default:
+            return 1.0;
+    }
+}
+
+char get_gurobi_var_type(VariableType var_type) {
+    switch (var_type) {
+        case integer:
+            return GRB_BINARY;
+        case continuous:
+            return GRB_CONTINUOUS;
+        default:
+            return GRB_BINARY;
+    }
+}
 
 /* Add a variable for each empty cell and legal value */
-bool add_variables(GRBenv *env, GRBmodel *model, Board *board, int dim, char *name,
-        int *vars_indices, int *vars_counter) {
+bool add_variables(GRBenv *env, GRBmodel *model, VariableType var_type, Board *board,
+        int dim, char *name, int *vars_indices, int *vars_counter) {
     int i, j, v, error;
+    double obj;
+    char gurobi_var_type;
     bool has_possible_value, *marks;
 
     marks = malloc(dim * sizeof(bool));
-    validate_memory_allocation("gurobi_ILP_solver: marks", marks);
+    validate_memory_allocation("gurobi_solver: marks", marks);
 
     for (i = 0; i < dim; i++) {
-                for (j = 0; j < dim; j++) {
-
+        for (j = 0; j < dim; j++) {
             /* Only add variables for empty cells. */
             if (!is_cell_empty(board, i, j)) {
                 for (v = 0; v < dim; v++) {
@@ -183,35 +206,32 @@ bool add_variables(GRBenv *env, GRBmodel *model, Board *board, int dim, char *na
 
             has_possible_value = false;
             mark_neighboring_values(board, marks, i, j);
-                        for (v = 0; v < dim; v++) {
-
+            for (v = 0; v < dim; v++) {
                 if (marks[v]) { /* found conflicting neighbor, so this is not a possible value */
-                                        vars_indices[i * dim * dim + j * dim + v] = ERROR_VALUE;
+                    vars_indices[i * dim * dim + j * dim + v] = ERROR_VALUE;
                 }
                 else {
-                                        has_possible_value = true;
+                    has_possible_value = true;
                     sprintf(name, "x[(%d,%d),%d]", i, j, v+1);
-                                        error = GRBaddvar(model, 0, NULL, NULL, 1.0, 0.0, 1.0, GRB_BINARY, name);
-                                        if (error) {
+                    obj = get_objective_coefficient(var_type, dim);
+                    gurobi_var_type = get_gurobi_var_type(var_type);
+                    error = GRBaddvar(model, 0, NULL, NULL, obj, 0.0, 1.0, gurobi_var_type, name);
+                    if (error) {
                         free(marks);
                         free_gurobi_resources(env, model, vars_indices);
                         return handle_gurobi_error(env, "GRBaddvar", error);
                     }
-
                     vars_indices[i * dim * dim + j * dim + v] = (*vars_counter);
                     (*vars_counter)++;
-                                    }
+                }
             }
-
             if (!has_possible_value) {
                 free(marks);
                 free_gurobi_resources(env, model, vars_indices);
                 return false;
             }
-
         }
     }
-
     free(marks);
     return true;
 }
@@ -265,18 +285,93 @@ bool set_environment(GRBenv **env, GRBmodel **model) {
     return true;
 }
 
-/* Extract the optimal solution, and update the board accordingly */
-bool fill_solution(GRBenv *env, GRBmodel *model, Board *board, int *vars_indices, int vars_counter) {
-    int error, i, j, v, dim = board->dim;
+bool get_cell_guess_probabilities(GRBenv *env, GRBmodel *model, double *guesses,
+        int row, int column, int dim, int *vars_indices) {
+    int error, v, index;
 
-    double *solution = malloc(vars_counter * sizeof(double));
-    validate_memory_allocation("gurobi_ILP_solver: solution", solution);
+    for (v = 0; v < dim; v++) {
+        index = vars_indices[row * dim * dim + column * dim + v];
+        if (index == ERROR_VALUE) {
+            guesses[v] = 0.0;
+            continue;
+        }
+        error = GRBgetdblattrelement(model, GRB_DBL_ATTR_X, index, &(guesses[v]));
+        if (error) {
+            free_gurobi_resources(env, model, vars_indices);
+            return handle_gurobi_error(env, "GRBgetdblattrelement", error);
+        }
+    }
+    return true;
+}
+
+bool fill_cell_guess_solution(GRBenv *env, GRBmodel *model, SolutionData *data,
+        int dim, int *vars_indices) {
+    double *guesses = malloc(dim * sizeof(double));
+    validate_memory_allocation("fill_cell_guess_solution", guesses);
+
+    if (!get_cell_guess_probabilities(env, model, guesses, data->row, data->column, dim, vars_indices)) {
+        free(guesses);
+        return false;
+    }
+
+    data->guesses = guesses;
+    return true;
+}
+
+bool fill_board_guess_solution(GRBenv *env, GRBmodel *model, Board *board, States *states,
+        double threshold, int *vars_indices, int vars_counter) {
+    int error, i, j, value, dim = board->dim;
+    double *solution, *guesses;
+
+    solution = malloc(vars_counter * sizeof(double));
+    validate_memory_allocation("fill_board_guess_solution", solution);
+    guesses = malloc(dim * sizeof(double));
+    validate_memory_allocation("fill_cell_guess_solution", guesses);
 
     error = GRBgetdblattrarray(model, GRB_DBL_ATTR_X, 0, vars_counter, solution);
     if (error) {
         free(solution);
         free_gurobi_resources(env, model, vars_indices);
-        return handle_gurobi_error(env, "GRBwrite", error);
+        return handle_gurobi_error(env, "GRBgetdblattrarray", error);
+    }
+
+    for (i = 0; i < dim; i++) {
+        for (j = 0; j < dim; j++) {
+            if (!is_cell_empty(board, i, j)) {
+                continue;
+            }
+
+            if (!get_cell_guess_probabilities(env, model, guesses, i, j, dim, vars_indices)) {
+                reset_move(board, (Move*) get_current_item(states->moves));
+                free(guesses);
+                free(solution);
+                return false;
+            }
+            value = weighted_random_choice_with_threshold(guesses, dim, threshold) + 1;
+            if (value == ERROR_VALUE) {
+                continue;
+            }
+            make_change(board, states, i, j, value);
+        }
+    }
+    free(guesses);
+    free(solution);
+    return true;
+}
+
+/* Extract the optimal solution, and update the board accordingly */
+bool fill_board_solution(GRBenv *env, GRBmodel *model, Board *board, int *vars_indices,
+        int vars_counter) {
+    int error, i, j, v, dim = board->dim;
+
+    double *solution = malloc(vars_counter * sizeof(double));
+    validate_memory_allocation("fill_board_solution", solution);
+
+    error = GRBgetdblattrarray(model, GRB_DBL_ATTR_X, 0, vars_counter, solution);
+    if (error) {
+        free(solution);
+        free_gurobi_resources(env, model, vars_indices);
+        return handle_gurobi_error(env, "GRBgetdblattrarray", error);
     }
 
     for (i = 0; i < dim; i++) {
@@ -293,50 +388,67 @@ bool fill_solution(GRBenv *env, GRBmodel *model, Board *board, int *vars_indices
         }
     }
     free(solution);
-    return true;
+
+    /* Check if the board is solved */
+    if (!is_board_erroneous(board) && board->empty_count == 0) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
-/* The main ILP board solving function. Solves the board if possible using ILP, and returns true on
+
+bool fill_solution(GRBenv *env, GRBmodel *model, Board *board, States *states, VariableType var_type,
+        SolutionType sol_type, SolutionData *data, double threshold, int *vars_indices, int vars_counter) {
+    switch (var_type) {
+        case integer:
+            return fill_board_solution(env, model, board, vars_indices, vars_counter);
+        case continuous:
+            switch (sol_type) {
+                case cell_hint:
+                    return fill_cell_guess_solution(env, model, data, board->dim, vars_indices);
+                case solve_board:
+                    return fill_board_guess_solution(env, model, board, states, threshold, vars_indices, vars_counter);
+                default:
+                    return false;
+            }
+        default:
+            return false;
+    }
+}
+
+
+/* The main board solving function. Solves the board if possible using ILP/LP, and returns true on
  * success, or false on error. */
-bool gurobi_ILP_solver(Board *board) {
+bool gurobi_solver(Board *board, States *states, VariableType var_type, SolutionType sol_type,
+                   SolutionData *data, double threshold) {
     GRBenv   *env = NULL;
     GRBmodel *model = NULL;
     int       error = 0;
     char      name[VAR_NAME_LEN];
-
     int       dim = board->dim;
     int       optstatus, vars_counter = 0;
-
+    bool      success;
     int      *vars_indices = NULL;
     int      *constraint_indices = NULL;
     double   *constraint_coefs = NULL;
 
-
     /* Create environment & model */
-
     set_environment(&env, &model);
 
-
-
     /* Add variables */
-
     vars_indices = malloc(dim * dim * dim * sizeof(int));
-    validate_memory_allocation("gurobi_ILP_solver: vars_indices", vars_indices);
-    if (!add_variables(env, model, board, dim, name, vars_indices, &vars_counter)) {
+    validate_memory_allocation("gurobi_solver: vars_indices", vars_indices);
+    if (!add_variables(env, model, var_type, board, dim, name, vars_indices, &vars_counter)) {
         return false;
     };
-
-
     assert_variables_added(env, model, board, vars_indices, &vars_counter);
 
-
-
     /* Add constraints */
-
     constraint_indices = malloc(dim * sizeof(int));
-    validate_memory_allocation("gurobi_ILP_solver: constraint_indices", constraint_indices);
+    validate_memory_allocation("gurobi_solver: constraint_indices", constraint_indices);
     constraint_coefs = malloc(dim * sizeof(double));
-    validate_memory_allocation("gurobi_ILP_solver: constraint_coefs", constraint_coefs);
+    validate_memory_allocation("gurobi_solver: constraint_coefs", constraint_coefs);
 
     if (!add_constraints_by_type(env, model, dim, vars_indices, name, constraint_indices, constraint_coefs, cell)
      || !add_constraints_by_type(env, model, dim, vars_indices, name, constraint_indices, constraint_coefs, row)
@@ -346,10 +458,8 @@ bool gurobi_ILP_solver(Board *board) {
         free(constraint_coefs);
         return false;
     }
-
     free(constraint_indices);
     free(constraint_coefs);
-
 
     error = GRBupdatemodel(model);
     if (error) {
@@ -358,7 +468,6 @@ bool gurobi_ILP_solver(Board *board) {
     }
 
     /* Write model to 'sudoku.lp'*/
-
     error = GRBwrite(model, "sudoku.lp");
     if (error) {
         free_gurobi_resources(env, model, vars_indices);
@@ -366,7 +475,6 @@ bool gurobi_ILP_solver(Board *board) {
     }
 
     /* Solve */
-
     error = GRBoptimize(model);
     if (error) {
         free_gurobi_resources(env, model, vars_indices);
@@ -380,20 +488,14 @@ bool gurobi_ILP_solver(Board *board) {
     }
 
     /* Handle solution */
-
     if (optstatus != GRB_OPTIMAL) {
         free_gurobi_resources(env, model, vars_indices);
         return false;
     }
 
-    fill_solution(env, model, board, vars_indices, vars_counter);
-
-    /* Check if the board is solved */
-    if (!is_board_erroneous(board) && board->empty_count == 0) {
-        free_gurobi_resources(env, model, vars_indices);
-        return true;
-    } else {
-        free_gurobi_resources(env, model, vars_indices);
-        return false;
-    }
+    success = fill_solution(env, model, board, states, var_type, sol_type, data, threshold,
+            vars_indices, vars_counter);
+    free_gurobi_resources(env, model, vars_indices);
+    return success;
 }
+

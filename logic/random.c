@@ -7,12 +7,10 @@ void initialize_random() {
 
 }
 
-/* Get a random index between 0 and limit */
 int get_rand_index(int limit) {
     return rand() % limit;
 }
 
-/* Shuffles the first <size_to_shuffle> indices of an array of size <total_size> */
 void shuffle(int *array, int size_to_shuffle, int total_size) {
     int i, rand_index, temp;
 
@@ -23,3 +21,40 @@ void shuffle(int *array, int size_to_shuffle, int total_size) {
         array[rand_index] = temp;
     }
 }
+
+int weighted_random_choice(double *weights, int size) {
+    double sum = 0.0, rand_value = ((double) rand()) / RAND_MAX;
+    int i;
+
+    for (i = 0; i < size; i++) {
+        sum += weights[i];
+        if (rand_value <= sum) {
+            return i;
+        }
+    }
+    return size-1;
+}
+
+int weighted_random_choice_with_threshold(double *weights, int size, double threshold) {
+    double sum = 0.0;
+    int i;
+
+    for (i = 0; i < size; i++) {
+        if (weights[i] >= threshold) {
+            sum += weights[i];
+        }
+    }
+    if (sum == 0.0) {
+        return ERROR_VALUE;
+    }
+
+    for (i = 0; i < size; i++) {
+        if (weights[i] >= threshold) {
+            weights[i] = weights[i] / sum;
+        } else {
+            weights[i] = 0.0;
+        }
+    }
+    return weighted_random_choice(weights, size);
+}
+

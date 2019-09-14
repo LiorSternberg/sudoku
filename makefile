@@ -34,7 +34,7 @@ ILP.o: logic/ILP.c logic/ILP.h logic/random.h logic/solver.h components/Board.h 
 		$(CC) $(COMP_FLAG) -c logic/$*.c
 LP.o: logic/LP.c logic/LP.h components/Board.h components/StatesList.h MemoryError.h
 		$(CC) $(COMP_FLAG) $(GUROBI_COMP) -c logic/$*.c
-solver.o: logic/solver.c logic/solver.h components/Board.h MemoryError.h
+solver.o: logic/solver.c logic/solver.h logic/random.h components/Board.h components/StatesList.h MemoryError.h
 		$(CC) $(COMP_FLAG) $(GUROBI_COMP) -c logic/$*.c
 random.o: logic/random.c logic/random.h
 		$(CC) $(COMP_FLAG) -c logic/$*.c

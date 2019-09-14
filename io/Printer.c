@@ -134,7 +134,7 @@ void announce_guesses_list() {
 }
 
 void print_guess(int value, double score) {
-    printf(" @ Value %d: score %f \n", value, score);
+    printf(" @ Value %d: score %.2f \n", value, score);
 }
 
 void print_autofill(int row, int column, int value) {

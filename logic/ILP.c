@@ -10,7 +10,7 @@
 
 
 bool solve_puzzle(Board *board) {
-    return gurobi_ILP_solver(board);
+    return gurobi_solver(board, NULL, integer, solve_board, NULL, 1.0);
 }
 
 int get_cell_solution(const Board *board, int row, int column) {
