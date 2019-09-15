@@ -55,6 +55,16 @@ void add_new_move(States *states) {
     next(states->moves);
 }
 
+void delete_last_move(Board *board, States *states) {
+    if (is_empty(states->moves)) {
+        return;
+    }
+
+    Move *move = remove_last(states->moves);
+    reset_move(board, move);
+    destroy_move(move);
+}
+
 Change* add_change(States *states, int row, int column, int prev_val, int new_val) {
     Change *change = create_change(row, column, prev_val, new_val);
     Move *current_move = get_current_item(states->moves);

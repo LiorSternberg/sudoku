@@ -43,6 +43,13 @@ void clear_states_list(States *states);
 void add_new_move(States *states);
 
 /**
+ * Deletes the last move that was added to the states list.
+ * @param board: the board to undo the move over.
+ * @param states: the current states list.
+ */
+void delete_last_move(Board *board, States *states);
+
+/**
  * Adds a Change to the current Move in the given states list, based on the row,
  * column and values (previous and new) that were supplied.
  * @param states: the states list to add the change to.

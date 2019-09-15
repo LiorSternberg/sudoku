@@ -95,6 +95,7 @@ void play_guess(Command *command, Game *game) {
     add_new_move(game->states);
     if (!guess_solution(game->board, game->states, command->data.guess->threshold)) {
         invalidate(command, UNGUESSABLE_ERROR, execution_failure, false);
+        delete_last_move(game->board, game->states);
         return;
     }
     print(game);
@@ -106,6 +107,7 @@ void play_generate(Command *command, Game *game) {
     if (!generate_puzzle(game->board, game->states, command->data.generate->num_to_fill,
                     command->data.generate->num_to_leave)) {
         invalidate(command, MAX_TRIALS_REACHED, execution_failure, false);
+        delete_last_move(game->board, game->states);
         return;
     }
 
