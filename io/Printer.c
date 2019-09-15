@@ -24,6 +24,7 @@
 "                                                                                     \n\n" \
 
 
+/* Generate a separation row for printing between blocks of the board. */
 char* generate_row_sep(Board *board) {
     int len = (4 * board->dim + board->num_of_rows_in_block + 1);
     char *str = malloc((len + 2) * sizeof(char));
@@ -35,6 +36,7 @@ char* generate_row_sep(Board *board) {
     return str;
 }
 
+/* Prints the cell value in the given coordinates according to it's state. */
 void print_cell(Board *board, int row, int column, bool mark_errors) {
     int value = get_cell_value(board, row, column);
 
@@ -49,6 +51,7 @@ void print_cell(Board *board, int row, int column, bool mark_errors) {
     }
 }
 
+/* Prints a row of cells. */
 void print_row(Board *board, int row, bool mark_errors) {
     int col;
 
