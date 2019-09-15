@@ -20,6 +20,10 @@ States* create_states_list() {
 void clear_states_list(States *states) {
     Move *move;
 
+    while (has_next(states->moves)) {
+        next(states->moves);
+    }
+
     /* clear all moves but the dummy */
     while (has_prev(states->moves)) {
         move = remove_last(states->moves);
