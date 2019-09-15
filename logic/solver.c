@@ -318,19 +318,35 @@ bool fill_cell_guess_solution(GRBenv *env, GRBmodel *model, SolutionData *data,
     return true;
 }
 
+void clear_illegal_probabilities(Board *board, double *guesses, bool *marks, int i, int j) {
+    int v;
+    mark_neighboring_values(board, marks, i, j);
+
+    for (v = 0; v < board->dim; v++) {
+        if (marks[v]) {
+            guesses[v] = 0.0;
+        }
+    }
+}
+
 bool fill_board_guess_solution(GRBenv *env, GRBmodel *model, Board *board, States *states,
         double threshold, int *vars_indices, int vars_counter) {
     int error, i, j, value, dim = board->dim;
     double *solution, *guesses;
+    bool *marks;
 
     solution = malloc(vars_counter * sizeof(double));
     validate_memory_allocation("fill_board_guess_solution", solution);
     guesses = malloc(dim * sizeof(double));
     validate_memory_allocation("fill_cell_guess_solution", guesses);
+    marks = malloc(dim * sizeof(bool));
+    validate_memory_allocation("gurobi_solver: marks", marks);
 
     error = GRBgetdblattrarray(model, GRB_DBL_ATTR_X, 0, vars_counter, solution);
     if (error) {
+        free(guesses);
         free(solution);
+        free(marks);
         free_gurobi_resources(env, model, vars_indices);
         return handle_gurobi_error(env, "GRBgetdblattrarray", error);
     }
@@ -342,20 +358,20 @@ bool fill_board_guess_solution(GRBenv *env, GRBmodel *model, Board *board, State
             }
 
             if (!get_cell_guess_probabilities(env, model, guesses, i, j, dim, vars_indices)) {
-                reset_move(board, (Move*) get_current_item(states->moves));
-                free(guesses);
-                free(solution);
-                return false;
+                continue;
             }
-            value = weighted_random_choice_with_threshold(guesses, dim, threshold) + 1;
+
+            clear_illegal_probabilities(board, guesses, marks, i, j);
+            value = weighted_random_choice_with_threshold(guesses, dim, threshold);
             if (value == ERROR_VALUE) {
                 continue;
             }
-            make_change(board, states, i, j, value);
+            make_change(board, states, i, j, value+1);
         }
     }
     free(guesses);
     free(solution);
+    free(marks);
     return true;
 }
 
