@@ -84,7 +84,7 @@ void announce_game_start() {
 }
 
 void announce_game_won() {
-    printf("*~*~*~*~* Woo Hoo! You did it! *~*~*~*~* \nPlease load another game or exit.\n");
+    printf("\n*~*~*~*~* Woo Hoo! You did it! *~*~*~*~* \nPlease load another game or exit.\n");
 }
 
 void announce_game_erroneous() {

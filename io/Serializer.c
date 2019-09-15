@@ -215,7 +215,8 @@ void save_to_file(Game *game, char *path, Error *error) {
                 format = "%d%s ";
             }
 
-            fixed = (game->mode == edit_mode || is_cell_fixed(game->board, i, j)) ? FIXED_MARK : EMPTY;
+            fixed = ((game->mode == edit_mode && !is_cell_empty(game->board, i, j))
+                    || is_cell_fixed(game->board, i, j)) ? FIXED_MARK : EMPTY;
 
             if (fprintf(file, format, get_cell_value(game->board, i, j), fixed) < 0) {
                 set_error(error, CANT_WRITE_ERROR, execution_failure, false);

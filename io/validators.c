@@ -218,6 +218,7 @@ void generate_validator(Command *command, Game *game) {
                             MIN_CELLS, game->board->empty_count);
     assert_int_arg_in_range(command, "#cells to leave", command->data.generate->num_to_leave,
                             MIN_CELLS, game->board->dim * game->board->dim);
+    assert_board_not_erroneous(command, game->board);
 }
 
 void undo_validator(Command *command, Game *game) {
