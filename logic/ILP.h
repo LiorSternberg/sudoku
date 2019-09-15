@@ -10,7 +10,7 @@
 
 /* Solves the board using ILP. Returns true if the board was solved
  * successfully, and false if it is not solvable. */
-bool solve_puzzle(Board *board);
+bool solve_puzzle(Board *board, States *states);
 
 /* Emulates solving the board using ILP. Returns the value of the solution
  * for the given cell. If the board is not solvable -1 is returned. */

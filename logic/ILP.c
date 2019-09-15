@@ -9,15 +9,15 @@
 #define MAX_TRIALS (1000)
 
 
-bool solve_puzzle(Board *board) {
-    return gurobi_solver(board, NULL, integer, solve_board, NULL, 1.0);
+bool solve_puzzle(Board *board, States *states) {
+    return gurobi_solver(board, states, integer, solve_board, NULL, 1.0);
 }
 
 int get_cell_solution(const Board *board, int row, int column) {
     Board* copy = get_board_copy(board);
     int cell_solution;
 
-    if (!solve_puzzle(copy)) {
+    if (!solve_puzzle(copy, NULL)) {
         return ERROR_VALUE;
     }
 
@@ -28,7 +28,7 @@ int get_cell_solution(const Board *board, int row, int column) {
 
 bool is_board_solvable(const Board *board) {
     Board* copy = get_board_copy(board);
-    bool solvable = solve_puzzle(copy);
+    bool solvable = solve_puzzle(copy, NULL);
 
     destroy_board(copy);
     return solvable;
@@ -115,7 +115,7 @@ bool fill_board_randomly(Board *board, States *states, bool *marks, int num_to_f
             continue;
         }
 
-        if (solve_puzzle(board)) {
+        if (solve_puzzle(board, states)) {
             break;
         }
         reset_move(board, (Move*) get_current_item(states->moves));

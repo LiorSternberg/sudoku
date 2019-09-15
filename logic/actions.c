@@ -258,11 +258,15 @@ void play_reset(Command *command, Game *game) {
     while (has_prev(game->states->moves)) {
         current_move = (Move*) get_current_item(game->states->moves);
         if (!is_empty(current_move->changes)) {
-            reset_head(current_move->changes);
+            while (has_next(current_move->changes)) {
+                next(current_move->changes);
+            }
+
             do {
                 change = (Change*) get_current_item(current_move->changes);
                 reset_change(game->board, change);
-            } while (next(current_move->changes) == 0);
+                print_change(change, true);
+            } while (prev(current_move->changes) == 0);
         }
         prev(game->states->moves);
     };

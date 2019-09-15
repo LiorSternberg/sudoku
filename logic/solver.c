@@ -360,8 +360,8 @@ bool fill_board_guess_solution(GRBenv *env, GRBmodel *model, Board *board, State
 }
 
 /* Extract the optimal solution, and update the board accordingly */
-bool fill_board_solution(GRBenv *env, GRBmodel *model, Board *board, int *vars_indices,
-        int vars_counter) {
+bool fill_board_solution(GRBenv *env, GRBmodel *model, Board *board, States *states,
+        int *vars_indices, int vars_counter) {
     int error, i, j, v, dim = board->dim;
 
     double *solution = malloc(vars_counter * sizeof(double));
@@ -382,7 +382,11 @@ bool fill_board_solution(GRBenv *env, GRBmodel *model, Board *board, int *vars_i
                 }
 
                 if (solution[vars_indices[i * dim * dim + j * dim + v]] == 1.0) {
-                    set_cell_value(board, i, j, v+1);
+                    if (states != NULL) {
+                        make_change(board, states, i, j, v+1);
+                    } else {
+                        set_cell_value(board, i, j, v+1);
+                    }
                 }
             }
         }
@@ -402,7 +406,7 @@ bool fill_solution(GRBenv *env, GRBmodel *model, Board *board, States *states, V
         SolutionType sol_type, SolutionData *data, double threshold, int *vars_indices, int vars_counter) {
     switch (var_type) {
         case integer:
-            return fill_board_solution(env, model, board, vars_indices, vars_counter);
+            return fill_board_solution(env, model, board, states, vars_indices, vars_counter);
         case continuous:
             switch (sol_type) {
                 case cell_hint:
