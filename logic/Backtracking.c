@@ -43,7 +43,7 @@ int get_num_of_solutions(const Board *board) {
         if (is_cell_fixed(board_copy, row, column)) {
             if (row == N - 1 && column == N - 1) { /* if last cell - increment the counter and then backtrack */
                 counter++;
-                if (is_empty_stack(stack)) {
+                if (is_stack_empty(stack)) {
                     break; /* can't backtrack  */
                 }
                 backtrack_to_stack_top(stack, &row, &column, &val);
@@ -63,7 +63,7 @@ int get_num_of_solutions(const Board *board) {
             } while (is_cell_erroneous(board_copy, row, column));
 
             if (backtrack) {
-                if (is_empty_stack(stack)) {
+                if (is_stack_empty(stack)) {
                     break; /* can't backtrack  */
                 }
                 set_cell_value(board_copy, row, column, CLEAR); /* clear the cell */
@@ -75,7 +75,7 @@ int get_num_of_solutions(const Board *board) {
             if (row == N - 1 && column == N - 1) { /* if last cell - increment the counter and then backtrack */
                 counter++;
                 set_cell_value(board_copy, row, column, CLEAR); /* clear the cell */
-                if (is_empty_stack(stack)) {
+                if (is_stack_empty(stack)) {
                     break; /* can't backtrack  */
                 }
                 backtrack_to_stack_top(stack, &row, &column, &val);

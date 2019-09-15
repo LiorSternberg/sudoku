@@ -32,7 +32,7 @@ void push(int row, int column, int val, Stack *stack) {
 StackNode* pop(Stack *stack) {
     StackNode *res_node;
 
-    if (is_empty_stack(stack)) {
+    if (is_stack_empty(stack)) {
         return NULL;
     }
 
@@ -45,7 +45,7 @@ StackNode* top(Stack *stack) {
     return stack->top;
 }
 
-bool is_empty_stack(Stack *stack) {
+bool is_stack_empty(Stack *stack) {
     return (top(stack) == NULL);
 }
 
@@ -55,7 +55,7 @@ void destroy_stack_node(StackNode *node) {
 
 void destroy_stack(Stack *stack) {
     StackNode *node;
-    while (!is_empty_stack(stack)) {
+    while (!is_stack_empty(stack)) {
         node = pop(stack);
         destroy_stack_node(node);
     }
