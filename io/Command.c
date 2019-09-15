@@ -67,6 +67,9 @@ void destroy_command(Command* command) {
 
 void invalidate(Command *command, char *error_message, int error_level, bool message_allocated) {
     if ((signed int) command->error->level <= error_level) {
+        if (message_allocated) {
+            free(error_message);
+        }
         return;
     }
 
