@@ -265,7 +265,6 @@ void play_reset(Command *command, Game *game) {
             do {
                 change = (Change*) get_current_item(current_move->changes);
                 reset_change(game->board, change);
-                print_change(change, true);
             } while (prev(current_move->changes) == 0);
         }
         prev(game->states->moves);
