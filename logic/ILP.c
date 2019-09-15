@@ -18,6 +18,7 @@ int get_cell_solution(const Board *board, int row, int column) {
     int cell_solution;
 
     if (!solve_puzzle(copy, NULL)) {
+        destroy_board(copy);
         return ERROR_VALUE;
     }
 

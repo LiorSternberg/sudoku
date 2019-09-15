@@ -76,6 +76,7 @@ void reset_move(Board *board, Move *move) {
     while (!is_empty(move->changes)) {
         change = (Change*) remove_last(move->changes);
         reset_change(board, change);
+        free(change);
     }
 }
 

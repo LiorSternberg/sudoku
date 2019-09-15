@@ -238,6 +238,7 @@ void play_autofill(Command *command, Game *game) {
             print_autofill(i, j, value);
         }
     }
+    destroy_board(copy);
     free(marks);
 
     if (!changes) {
