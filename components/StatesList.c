@@ -56,11 +56,13 @@ void add_new_move(States *states) {
 }
 
 void delete_last_move(Board *board, States *states) {
+    Move *move;
+
     if (is_empty(states->moves)) {
         return;
     }
 
-    Move *move = remove_last(states->moves);
+    move = remove_last(states->moves);
     reset_move(board, move);
     destroy_move(move);
 }
