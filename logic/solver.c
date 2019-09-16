@@ -23,20 +23,20 @@ typedef enum {
 
 /* Gurobi ILP/LP Model Solving */
 
-/* Report error in gurobi and return error status */
+/* Reports error in gurobi and return error status */
 bool handle_gurobi_error(GRBenv *env, char *func_name, int error_code) {
     printf("ERROR %d %s(): %s\n", error_code, func_name, GRBgeterrormsg(env));
     return false;
 }
 
-/* Free resources used in the gurobi solver */
+/* Frees resources used in the gurobi solver */
 void free_gurobi_resources(GRBenv *env, GRBmodel *model, int *vars_indices) {
     free(vars_indices);
     GRBfreemodel(model);
     GRBfreeenv(env);
 }
 
-/* Set the constraint indices and coefficients */
+/* Sets the constraint indices and coefficients */
 void set_constraint(int *constraint_indices, double *constraint_coefs, const int *vars_indices, int *vars_counter,
         int index) {
     constraint_indices[*vars_counter] = vars_indices[index];
@@ -44,7 +44,7 @@ void set_constraint(int *constraint_indices, double *constraint_coefs, const int
     (*vars_counter)++;
 }
 
-/* Add a constraint to the model */
+/* Adds a constraint to the model */
 bool add_constraints(GRBenv *env, GRBmodel *model, int dim, char *name, int *vars_indices,
         int *constraint_indices, double *constraint_coefs, int vars_counter) {
     int error, index;
@@ -61,7 +61,7 @@ bool add_constraints(GRBenv *env, GRBmodel *model, int dim, char *name, int *var
     return true;
 }
 
-/* Calculate the variable index based on the type of the constraint */
+/* Calculates the variable index based on the type of the constraint */
 int calc_index_for_constraint(ConstraintType type, int primary, int secondary, int internal, int dim) {
     switch (type) {
         case cell:
@@ -75,7 +75,7 @@ int calc_index_for_constraint(ConstraintType type, int primary, int secondary, i
     }
 }
 
-/* Format the name of constraint */
+/* Formats the name of constraint */
 void format_constraint_name(ConstraintType type, int primary, int secondary, char *name) {
     switch (type) {
         case cell:
@@ -90,7 +90,7 @@ void format_constraint_name(ConstraintType type, int primary, int secondary, cha
     }
 }
 
-/* Add constraints by type (cell, row, column):
+/* Adds constraints by type (cell, row, column):
  *  # 'cell' - make sure each cell has exactly one value */
 /*  # 'row' - make sure each value appears exactly once in each row */
 /*  # 'column' - make sure each value appears exactly once in each column */
@@ -123,7 +123,7 @@ bool add_constraints_by_type(GRBenv *env, GRBmodel *model, int dim, int *vars_in
     return true;
 }
 
-/* Add constraints to make sure each value appears exactly once in each block */
+/* Adds constraints to make sure each value appears exactly once in each block */
 bool add_block_constraints(GRBenv *env, GRBmodel *model, Board *board, int *vars_indices, char *name,
                            int *constraint_indices, double *constraint_coefs) {
     int i, j, v, r_start, c_start, r_end, c_end, index, vars_counter, dim = board->dim;
@@ -161,6 +161,9 @@ bool add_block_constraints(GRBenv *env, GRBmodel *model, Board *board, int *vars
     return true;
 }
 
+/* Gets the objective function variable coefficient based on the given
+ * VariableType. in case of a continuous variable (LP) randomly chooses a
+ * coefficient in a range determined by the board dimension. */
 double get_objective_coefficient(VariableType var_type, int dim) {
     switch (var_type) {
         case integer:
@@ -172,6 +175,7 @@ double get_objective_coefficient(VariableType var_type, int dim) {
     }
 }
 
+/* Gets the Gurobi variable type based on the given VariableType. */
 char get_gurobi_var_type(VariableType var_type) {
     switch (var_type) {
         case integer:
@@ -183,7 +187,7 @@ char get_gurobi_var_type(VariableType var_type) {
     }
 }
 
-/* Add a variable for each empty cell and legal value */
+/* Adds a variable for each empty cell and legal value */
 bool add_variables(GRBenv *env, GRBmodel *model, VariableType var_type, Board *board,
         int dim, char *name, int *vars_indices, int *vars_counter) {
     int i, j, v, error;
@@ -236,9 +240,10 @@ bool add_variables(GRBenv *env, GRBmodel *model, VariableType var_type, Board *b
     return true;
 }
 
-/* Assert some variables were added (otherwise no need for the solver), and update the model. */
-bool assert_variables_added(GRBenv *env, GRBmodel *model, Board *board, int *vars_indices,
-        const int *vars_counter) {
+/* Asserts some variables were added (otherwise no need for the solver), and
+ * updates the model. */
+bool assert_variables_added(GRBenv *env, GRBmodel *model, Board *board,
+        int *vars_indices, const int *vars_counter) {
     int error;
 
     /* If no vars were needed, so the board is either solved or is unsolvable */
@@ -260,7 +265,7 @@ bool assert_variables_added(GRBenv *env, GRBmodel *model, Board *board, int *var
     return true;
 }
 
-/* Set up the gurobi environment and create empty model. */
+/* Sets up the gurobi environment and creates an empty model. */
 bool set_environment(GRBenv **env, GRBmodel **model) {
     int error;
 
@@ -285,6 +290,8 @@ bool set_environment(GRBenv **env, GRBmodel **model) {
     return true;
 }
 
+/* Extracts the optimal solution probabilities for a single cell, and updates
+ * the given guesses array accordingly. */
 bool get_cell_guess_probabilities(GRBenv *env, GRBmodel *model, double *guesses,
         int row, int column, int dim, int *vars_indices) {
     int error, v, index;
@@ -304,6 +311,8 @@ bool get_cell_guess_probabilities(GRBenv *env, GRBmodel *model, double *guesses,
     return true;
 }
 
+/* Extracts the optimal solution probabilities for a single cell, and updates
+ * the data's guesses array accordingly. */
 bool fill_cell_guess_solution(GRBenv *env, GRBmodel *model, SolutionData *data,
         int dim, int *vars_indices) {
     double *guesses = malloc(dim * sizeof(double));
@@ -318,6 +327,8 @@ bool fill_cell_guess_solution(GRBenv *env, GRBmodel *model, SolutionData *data,
     return true;
 }
 
+/* Clears illegal values created along the way from the probabilities so they won't
+ * be considered */
 void clear_illegal_probabilities(Board *board, double *guesses, bool *marks, int i, int j) {
     int v;
     mark_neighboring_values(board, marks, i, j);
@@ -329,6 +340,7 @@ void clear_illegal_probabilities(Board *board, double *guesses, bool *marks, int
     }
 }
 
+/* Extracts the optimal solution, and updates the board accordingly */
 bool fill_board_guess_solution(GRBenv *env, GRBmodel *model, Board *board, States *states,
         double threshold, int *vars_indices, int vars_counter) {
     int error, i, j, value, dim = board->dim;
@@ -375,7 +387,7 @@ bool fill_board_guess_solution(GRBenv *env, GRBmodel *model, Board *board, State
     return true;
 }
 
-/* Extract the optimal solution, and update the board accordingly */
+/* Extracts the optimal solution, and updates the board accordingly */
 bool fill_board_solution(GRBenv *env, GRBmodel *model, Board *board, States *states,
         int *vars_indices, int vars_counter) {
     int error, i, j, v, dim = board->dim;
@@ -417,7 +429,8 @@ bool fill_board_solution(GRBenv *env, GRBmodel *model, Board *board, States *sta
     }
 }
 
-
+/* Fills the optimal solution that was found based on the type of variable (determines
+ * LP/ILP), and the solution type (whole board or single cell). */
 bool fill_solution(GRBenv *env, GRBmodel *model, Board *board, States *states, VariableType var_type,
         SolutionType sol_type, SolutionData *data, double threshold, int *vars_indices, int vars_counter) {
     switch (var_type) {
