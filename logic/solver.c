@@ -23,7 +23,7 @@ typedef enum {
 
 /* Gurobi ILP/LP Model Solving */
 
-/* Reports error in gurobi and return error status */
+/* Reports error in gurobi and returns error status */
 bool handle_gurobi_error(GRBenv *env, char *func_name, int error_code) {
     printf("ERROR %d %s(): %s\n", error_code, func_name, GRBgeterrormsg(env));
     return false;
