@@ -13,10 +13,15 @@
  *   function for more comprehensive validations.] */
 
 
-/* Given the raw command entered by the player, parses it into a structured
+/**
+ * Given the raw command entered by the player, parses it into a structured
  * Command containing all relevant information.
  * If any parsing errors occur, a relevant error message will be added to
- * the Command. */
+ * the Command.
+ * @param raw_command: the text the user entered.
+ * @param command: the command to set according to the parsed data.
+ * @param game: the current game.
+ */
 void parse_command(char *raw_command, Command *command, Game *game);
 
 #endif

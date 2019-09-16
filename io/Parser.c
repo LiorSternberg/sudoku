@@ -48,8 +48,9 @@ void assert_num_of_args(Command *command, int min_expected, int max_expected, in
 }
 
 
-/* parsers for specific types of args */
+/* Parsers for specific types of args */
 
+/* Parses an argument that should be an int. */
 void parse_int_arg(char *token, int *p_int) {
     int num;
     char *end_p;
@@ -65,6 +66,7 @@ void parse_int_arg(char *token, int *p_int) {
     }
 }
 
+/* Parses an argument that should be a double. */
 void parse_double_arg(char *token, double *p_double) {
     double num;
     char *end_p;
@@ -80,6 +82,7 @@ void parse_double_arg(char *token, double *p_double) {
     }
 }
 
+/* Parses an argument that should be a boolean. */
 void parse_bool_arg(char *token, int *p_bool) {
     if (strcmp(token, "0") == 0) {
         *p_bool = 0;
@@ -94,6 +97,7 @@ void parse_bool_arg(char *token, int *p_bool) {
 
 /* Command-specific arg parsers */
 
+/* Parses the arguments of a solve command. */
 void solve_args_parser(Command *self, char **args, int num_of_args) {
     SolveCommand *data = malloc(sizeof(SolveCommand));
     validate_memory_allocation("solve_args_parser", data);
@@ -111,6 +115,7 @@ void solve_args_parser(Command *self, char **args, int num_of_args) {
     self->data.solve = data;
 }
 
+/* Parses the arguments of an edit command. */
 void edit_args_parser(Command *self, char **args, int num_of_args) {
     EditCommand *data = malloc(sizeof(EditCommand));
     validate_memory_allocation("edit_args_parser", data);
@@ -136,6 +141,7 @@ void edit_args_parser(Command *self, char **args, int num_of_args) {
     self->data.edit = data;
 }
 
+/* Parses the arguments of a mark_errors command. */
 void mark_errors_args_parser(Command *self, char **args, int num_of_args) {
     MarkErrorsCommand *data = malloc(sizeof(MarkErrorsCommand));
     validate_memory_allocation("mark_errors_args_parser", data);
@@ -151,6 +157,7 @@ void mark_errors_args_parser(Command *self, char **args, int num_of_args) {
     self->data.mark_errors = data;
 }
 
+/* Parses the arguments of a set command. */
 void set_args_parser(Command *self, char **args, int num_of_args) {
     SetCommand *data = malloc(sizeof(SetCommand));
     validate_memory_allocation("set_args_parser", data);
@@ -168,6 +175,7 @@ void set_args_parser(Command *self, char **args, int num_of_args) {
     self->data.set = data;
 }
 
+/* Parses the arguments of a guess command. */
 void guess_args_parser(Command *self, char **args, int num_of_args) {
     GuessCommand *data = malloc(sizeof(GuessCommand));
     validate_memory_allocation("guess_args_parser", data);
@@ -183,6 +191,7 @@ void guess_args_parser(Command *self, char **args, int num_of_args) {
     self->data.guess = data;
 }
 
+/* Parses the arguments of a generate command. */
 void generate_args_parser(Command *self, char **args, int num_of_args) {
     GenerateCommand *data = malloc(sizeof(GenerateCommand));
     validate_memory_allocation("generate_args_parser", data);
@@ -199,6 +208,7 @@ void generate_args_parser(Command *self, char **args, int num_of_args) {
     self->data.generate = data;
 }
 
+/* Parses the arguments of a save command. */
 void save_args_parser(Command *self, char **args, int num_of_args) {
     SaveCommand *data = malloc(sizeof(SaveCommand));
     validate_memory_allocation("save_args_parser", data);
@@ -216,6 +226,7 @@ void save_args_parser(Command *self, char **args, int num_of_args) {
     self->data.save = data;
 }
 
+/* Parses the arguments of a hint command. */
 void hint_args_parser(Command *self, char **args, int num_of_args) {
     HintCommand *data = malloc(sizeof(HintCommand));
     validate_memory_allocation("hint_args_parser", data);
@@ -232,6 +243,7 @@ void hint_args_parser(Command *self, char **args, int num_of_args) {
     self->data.hint = data;
 }
 
+/* Parses the arguments of a guess_hint command. */
 void guess_hint_args_parser(Command *self, char **args, int num_of_args) {
     GuessHintCommand *data = malloc(sizeof(GuessHintCommand));
     validate_memory_allocation("guess_hint_args_parser", data);
@@ -255,7 +267,7 @@ void basic_parser(Command *self, char **args, int num_of_args) {
 }
 
 
-/* Configures the Command fields based ont the parsed type. */
+/* Configures the Command fields based on the parsed type. */
 void configure_by_type(Command *command, char *type_str, GameMode mode) {
     command->_parse_args = basic_parser;
 
