@@ -21,6 +21,10 @@
 #define DEFAULT_SIZE (3)
 #define UNUSED(x) (void)(x)
 
+/* Checks if the puzzle is finished in solve mode. If so, announces it to the
+ * user, and switches to init mode. If the puzzle is finished but contains
+ * errors, lets the user know that the the puzzle must be fixed before the game
+ * can be won. */
 void check_puzzle_finished(Game *game) {
     if (game->mode == solve_mode && game->board->empty_count == 0) {
         if (game->board->errors_count == 0) {
