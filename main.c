@@ -5,6 +5,13 @@
 #include "io/Printer.h"
 #include "logic/random.h"
 
+/** main:
+ *
+ * Runs the game - creates a new game, announces it's starting, and plays turns
+ * until the user wishes to quit.
+ */
+
+
 int main() {
     Game *game = create_game();
     initialize_random();
