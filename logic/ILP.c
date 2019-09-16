@@ -35,7 +35,7 @@ bool is_board_solvable(const Board *board) {
     return solvable;
 }
 
-/* get the row & column coordinates from the board cell index */
+/* Gets the row & column coordinates from the board cell index. */
 void get_coordinates(int cell_index, int dim, int *row, int *column) {
     *column = cell_index % dim;
     *row = cell_index / dim;
@@ -60,7 +60,7 @@ int* get_board_empty_cells_indices(Board *board) {
     return board_indices;
 }
 
-/* Fill the given cell with a random legal value. return false if no legal
+/* Fills the given cell with a random legal value. Returns false if no legal
  * value exists, and true on success. */
 bool fill_cell_with_random_value(Board *board, States *states, bool *marks, int row, int column) {
     int i, rand_index, possible_values_counter = 0;
@@ -92,7 +92,7 @@ bool fill_cell_with_random_value(Board *board, States *states, bool *marks, int 
 }
 
 
-/* randomly choose empty cells and fill them with legal values */
+/* Randomly chooses empty cells and fills them with legal values. */
 bool fill_board_randomly(Board *board, States *states, bool *marks, int num_to_fill) {
     int i, row, column, trial_counter = 0, *indices_to_fill;
     bool trial_success = true;
@@ -127,7 +127,7 @@ bool fill_board_randomly(Board *board, States *states, bool *marks, int num_to_f
 }
 
 
-/* randomly choose cells to clear, and leave the rest */
+/* Randomly chooses cells to clear, and leaves the rest. */
 void clear_board_randomly(Board *board, States *states, int num_to_leave) {
     int i, row, column, size = board->dim * board->dim, num_to_clear = size - num_to_leave;
     int *board_indices = malloc(size * sizeof(int));
