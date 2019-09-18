@@ -201,7 +201,7 @@ void play_guess_hint(Command *command, Game *game) {
     announce_guesses_list();
     for (i=0; i < game->board->dim; i++) {
         if (guesses[i] != 0) {
-            print_guess(i, guesses[i]);
+            print_guess(i+1, guesses[i]);
         }
     }
     free(guesses);

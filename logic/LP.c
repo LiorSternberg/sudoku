@@ -13,8 +13,8 @@ bool guess_solution(Board *board, States *states, double threshold) {
 }
 
 double* get_cell_guesses(Board *board, int row, int column) {
-    SolutionData *data = malloc(sizeof(SolutionData));
     double *guesses;
+    SolutionData *data = malloc(sizeof(SolutionData));
     validate_memory_allocation("get_cell_guesses", data);
 
     data->row = row;
