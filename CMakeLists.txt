@@ -13,8 +13,8 @@ add_executable(final_project
         io/Parser.c
         io/Printer.h
         io/Printer.c
-        logic/Backtracking.h
-        logic/Backtracking.c
+        logic/backtracking.h
+        logic/backtracking.c
         logic/ILP.h
         logic/ILP.c
         io/Command.c
@@ -43,4 +43,7 @@ add_executable(final_project
         logic/LP.h
         logic/ILP.c
         logic/ILP.h
-        logic/solver.c logic/solver.h logic/random.c logic/random.h)
+        logic/solver.c
+        logic/solver.h
+        logic/random.c
+        logic/random.h)

@@ -6,8 +6,8 @@
 /** Stack:
  *
  *  The component is used to manage pseudo-recursive calls in the
- *  Backtracking algorithm. It's a generic stack that supports pop, push
- *  and top. The stack nodes are specific to the Backtracking algorithm
+ *  backtracking algorithm. It's a generic stack that supports pop, push
+ *  and top. The stack nodes are specific to the backtracking algorithm
  *  requirements.
  */
 

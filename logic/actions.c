@@ -3,7 +3,7 @@
 #include "actions.h"
 #include "../io/Serializer.h"
 #include "../io/Printer.h"
-#include "Backtracking.h"
+#include "backtracking.h"
 #include "ILP.h"
 #include "LP.h"
 #include "../MemoryError.h"

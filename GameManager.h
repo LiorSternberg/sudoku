@@ -4,7 +4,7 @@
 #include "io/Command.h"
 
 /**
- * Plays a turn in the game:
+ * Plays a turn of the game:
  *  - Gets a command from the user.
  *  - Validates the command.
  *  - Executes the command.
